@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Window
     x:Class="BBIHardwareSupport.MDM.IntuneConfigManager.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -8,17 +9,33 @@
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Padding="30" Spacing="15">
 
         <!-- Header -->
-        <TextBlock Text="Git Branch Manager" FontSize="24" FontWeight="Bold" />
+        <TextBlock Text="Git Repository Manager" FontSize="24" FontWeight="Bold" />
 
         <!-- Branch Name Input -->
         <TextBlock Text="Enter Branch Name:" />
         <TextBox Width="300" Text="{x:Bind ViewModel.BranchName, Mode=TwoWay}" PlaceholderText="feature/new-branch" />
-
-        <!-- Create Branch Button -->
         <Button Content="Create Branch" Command="{x:Bind ViewModel.CreateBranchCommand}" Width="200" />
 
-        <!-- Status Message -->
-        <TextBlock Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}" Foreground="DarkGreen" FontSize="14" />
+        <!-- Commit Changes -->
+        <Button Content="Commit Changes" Command="{x:Bind ViewModel.CommitChangesCommand}" Width="200" />
+
+        <!-- View Git Diff -->
+        <Button Content="View Diff" Command="{x:Bind ViewModel.GetDiffCommand}" Width="200" />
+        <TextBlock Text="Git Diff Output:" FontWeight="Bold" />
+        <TextBox Width="400" Height="100" Text="{x:Bind ViewModel.DiffOutput, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap"/>
+
+        <!-- Create Git Tag -->
+        <Button Content="Create Tag" Command="{x:Bind ViewModel.CreateTagCommand}" Width="200" />
+
+        <!-- View Commit History -->
+        <Button Content="View Commit History" Command="{x:Bind ViewModel.GetCommitHistoryCommand}" Width="200" />
+        <TextBlock Text="Commit History:" FontWeight="Bold" />
+        <TextBox Width="400" Height="100" Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap"/>
+        
+        <!-- Set Repository Path -->
+        <TextBlock Text="Repository Path:" />
+        <TextBox Width="400" Text="{x:Bind ViewModel.RepositoryPath, Mode=TwoWay}" />
+        <Button Content="Set Repository" Command="{x:Bind ViewModel.SelectRepositoryCommand}" Width="200" />
 
     </StackPanel>
 </Window>

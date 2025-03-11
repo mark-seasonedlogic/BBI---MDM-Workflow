@@ -1,8 +1,13 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Windows.Storage.Pickers;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Services;
 using BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels.Helpers;
+using NLog;
 
 namespace BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels
 {
@@ -12,9 +17,12 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels
     /// </summary>
     public class MainViewModel : INotifyPropertyChanged
     {
-        private readonly GitRepositoryManager _gitManager;
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private GitRepositoryManager _gitManager;
+        private string _repositoryPath;
         private string _branchName;
         private string _statusMessage;
+        private string _diffOutput;
 
         /// <summary>
         /// Event triggered when a property value changes.
@@ -26,11 +34,31 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels
         /// </summary>
         public MainViewModel()
         {
-            _gitManager = new GitRepositoryManager(System.IO.Path.Combine(
+            RepositoryPath = System.IO.Path.Combine(
                 System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments),
-                "IntuneConfigRepo"));
+                "IntuneConfigRepo");
+
+            _gitManager = new GitRepositoryManager(RepositoryPath);
 
             CreateBranchCommand = new RelayCommand(CreateBranch);
+            CommitChangesCommand = new RelayCommand(() => CommitChanges("Default commit message"));
+            GetDiffCommand = new RelayCommand(GetDiff);
+            CreateTagCommand = new RelayCommand(() => CreateTag("v1.0.0", "Initial tag"));
+            GetCommitHistoryCommand = new RelayCommand(GetCommitHistory);
+            SelectRepositoryCommand = new RelayCommand(SelectRepository);
+        }
+
+        /// <summary>
+        /// Gets or sets the repository path.
+        /// </summary>
+        public string RepositoryPath
+        {
+            get => _repositoryPath;
+            set
+            {
+                _repositoryPath = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -60,31 +88,123 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels
         }
 
         /// <summary>
-        /// Command for creating a new Git branch.
+        /// Gets or sets the diff output for display.
         /// </summary>
-        public ICommand CreateBranchCommand { get; }
-
-        /// <summary>
-        /// Creates a new Git branch using the entered branch name.
-        /// Updates the status message to provide feedback to the user.
-        /// </summary>
-        private void CreateBranch()
+        public string DiffOutput
         {
-            if (!string.IsNullOrWhiteSpace(BranchName))
+            get => _diffOutput;
+            set
             {
-                _gitManager.CreateBranch(BranchName);
-                StatusMessage = $"Branch '{BranchName}' created successfully!";
-            }
-            else
-            {
-                StatusMessage = "Branch name cannot be empty!";
+                _diffOutput = value;
+                OnPropertyChanged();
             }
         }
 
-        /// <summary>
-        /// Raises the PropertyChanged event to notify UI of property updates.
-        /// </summary>
-        /// <param name="name">The name of the property that changed.</param>
+        public ICommand CreateBranchCommand { get; }
+        public ICommand CommitChangesCommand { get; }
+        public ICommand GetDiffCommand { get; }
+        public ICommand CreateTagCommand { get; }
+        public ICommand GetCommitHistoryCommand { get; }
+        public ICommand SelectRepositoryCommand { get; }
+
+        private void CreateBranch()
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(BranchName))
+                {
+                    _gitManager.CreateBranch(BranchName);
+                    StatusMessage = $"Branch '{BranchName}' created successfully!";
+                    logger.Info(StatusMessage);
+                }
+                else
+                {
+                    StatusMessage = "Branch name cannot be empty!";
+                    logger.Warn(StatusMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error creating branch");
+            }
+        }
+
+        private void CommitChanges(string message)
+        {
+            try
+            {
+                _gitManager.CommitChanges(message);
+                StatusMessage = "Changes committed successfully.";
+                logger.Info(StatusMessage);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error committing changes");
+            }
+        }
+
+        private void GetDiff()
+        {
+            try
+            {
+                DiffOutput = _gitManager.GetDiff();
+                logger.Info("Git diff retrieved successfully.");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error retrieving Git diff");
+            }
+        }
+
+        private void CreateTag(string tagName, string message)
+        {
+            try
+            {
+                _gitManager.CreateTag(tagName, message);
+                StatusMessage = $"Tag '{tagName}' created successfully.";
+                logger.Info(StatusMessage);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error creating tag");
+            }
+        }
+
+        private void GetCommitHistory()
+        {
+            try
+            {
+                var history = _gitManager.GetCommitHistory();
+                StatusMessage = string.Join("\n", history);
+                logger.Info("Commit history retrieved successfully.");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error retrieving commit history");
+            }
+        }
+
+        private async void SelectRepository()
+        {
+            var picker = new FolderPicker();
+            picker.SuggestedStartLocation = PickerLocationId.Desktop;
+            picker.FileTypeFilter.Add("*");
+
+            // Retrieve the window handle and associate it with the picker
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
+
+            var folder = await picker.PickSingleFolderAsync();
+
+            if (folder != null)
+            {
+                RepositoryPath = folder.Path;
+                _gitManager = new GitRepositoryManager(RepositoryPath);
+                StatusMessage = $"Repository set to: {RepositoryPath}";
+                logger.Info(StatusMessage);
+            }
+        }
+
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

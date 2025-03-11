@@ -8,7 +8,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
     public sealed partial class MainWindow : Window
     {
         public MainViewModel ViewModel { get; }
-
+ 
         public MainWindow()
         {
             this.InitializeComponent();

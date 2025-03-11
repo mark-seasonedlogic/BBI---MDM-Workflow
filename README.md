@@ -1,4 +1,4 @@
-# BBI - MDM Workflow
+﻿# BBI - MDM Workflow
 Change Log:
 
 V1.1.0:
@@ -28,3 +28,11 @@ Open/Closed	The system can support new Git actions (e.g., commits, diffs) by ext
 Liskov Substitution	The RelayCommand can be replaced or extended with more advanced command-handling logic if needed.
 Interface Segregation	MVVM architecture ensures that UI classes do not depend on Git operations directly.
 Dependency Inversion	MainViewModel depends on an abstraction (GitRepositoryManager), making it testable and easily replaceable.
+
+V1.2.0:
+Added Features
+-CommitChanges(string message) → Stages all files and commits changes.
+-GetDiff() → Returns a string showing the difference between the last commit and working directory.
+-CreateTag(string tagName, string message) → Tags the latest commit.
+-GetCommitHistory() → Retrieves the last 10 commit messages.
+
