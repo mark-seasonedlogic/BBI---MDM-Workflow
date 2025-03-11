@@ -1,213 +1,119 @@
-﻿using System;
+﻿using BBIHardwareSupport.MDM.IntuneConfigManager.Services;
+using BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels.Helpers;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Windows.Storage.Pickers;
-using BBIHardwareSupport.MDM.IntuneConfigManager.Services;
-using BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels.Helpers;
-using NLog;
 
-namespace BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels
+public class MainViewModel : INotifyPropertyChanged
 {
-    /// <summary>
-    /// ViewModel for the main application window. Manages UI-bound properties and commands.
-    /// Implements INotifyPropertyChanged to support data binding.
-    /// </summary>
-    public class MainViewModel : INotifyPropertyChanged
+    private readonly GraphAuthHelper _graphAuthHelper;
+    private string _groupId;
+    private ObservableCollection<string> _artifacts;
+    private string _branchName;
+    private string _repositoryPath;
+    private string _diffOutput;
+    private string _statusMessage;
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    public MainViewModel()
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private GitRepositoryManager _gitManager;
-        private string _repositoryPath;
-        private string _branchName;
-        private string _statusMessage;
-        private string _diffOutput;
+        _graphAuthHelper = new GraphAuthHelper();
+        _artifacts = new ObservableCollection<string>();
 
-        /// <summary>
-        /// Event triggered when a property value changes.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        GetDeviceConfigurationsCommand = new RelayCommand(async () => await GetDeviceConfigurations());
+        GetAppsCommand = new RelayCommand(async () => await GetApps());
+        CreateBranchCommand = new RelayCommand(() => CreateBranch());
+        CommitChangesCommand = new RelayCommand(() => CommitChanges());
+        GetDiffCommand = new RelayCommand(() => GetDiff());
+        CreateTagCommand = new RelayCommand(() => CreateTag());
+        GetCommitHistoryCommand = new RelayCommand(() => GetCommitHistory());
+        SelectRepositoryCommand = new RelayCommand(() => SelectRepository());
+        GetUserProfileCommand = new RelayCommand(async () => await GetUserProfile());
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MainViewModel"/> class.
-        /// </summary>
-        public MainViewModel()
+    public string BranchName
+    {
+        get => _branchName;
+        set { _branchName = value; OnPropertyChanged(); }
+    }
+
+    public string RepositoryPath
+    {
+        get => _repositoryPath;
+        set { _repositoryPath = value; OnPropertyChanged(); }
+    }
+
+    public string DiffOutput
+    {
+        get => _diffOutput;
+        set { _diffOutput = value; OnPropertyChanged(); }
+    }
+
+    public string StatusMessage
+    {
+        get => _statusMessage;
+        set { _statusMessage = value; OnPropertyChanged(); }
+    }
+
+    public string GroupId
+    {
+        get => _groupId;
+        set { _groupId = value; OnPropertyChanged(); }
+    }
+
+    public ObservableCollection<string> Artifacts
+    {
+        get => _artifacts;
+        set { _artifacts = value; OnPropertyChanged(); }
+    }
+
+    public ICommand GetDeviceConfigurationsCommand { get; }
+    public ICommand GetAppsCommand { get; }
+    public ICommand CreateBranchCommand { get; }
+    public ICommand CommitChangesCommand { get; }
+    public ICommand GetDiffCommand { get; }
+    public ICommand CreateTagCommand { get; }
+    public ICommand GetCommitHistoryCommand { get; }
+    public ICommand SelectRepositoryCommand { get; }
+    public ICommand GetUserProfileCommand { get; }
+
+    private async Task GetDeviceConfigurations()
+    {
+        if (string.IsNullOrWhiteSpace(GroupId)) return;
+
+        var configurations = await _graphAuthHelper.GetDeviceConfigurationsForGroupAsync(GroupId);
+        Artifacts.Clear();
+        foreach (var config in configurations)
         {
-            RepositoryPath = System.IO.Path.Combine(
-                System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments),
-                "IntuneConfigRepo");
-
-            _gitManager = new GitRepositoryManager(RepositoryPath);
-
-            CreateBranchCommand = new RelayCommand(CreateBranch);
-            CommitChangesCommand = new RelayCommand(() => CommitChanges("Default commit message"));
-            GetDiffCommand = new RelayCommand(GetDiff);
-            CreateTagCommand = new RelayCommand(() => CreateTag("v1.0.0", "Initial tag"));
-            GetCommitHistoryCommand = new RelayCommand(GetCommitHistory);
-            SelectRepositoryCommand = new RelayCommand(SelectRepository);
+            Artifacts.Add($"Device Configuration: {config}");
         }
+    }
 
-        /// <summary>
-        /// Gets or sets the repository path.
-        /// </summary>
-        public string RepositoryPath
+    private async Task GetApps()
+    {
+        if (string.IsNullOrWhiteSpace(GroupId)) return;
+
+        var apps = await _graphAuthHelper.GetAppsForGroupAsync(GroupId);
+        Artifacts.Clear();
+        foreach (var app in apps)
         {
-            get => _repositoryPath;
-            set
-            {
-                _repositoryPath = value;
-                OnPropertyChanged();
-            }
+            Artifacts.Add($"App: {app}");
         }
+    }
 
-        /// <summary>
-        /// Gets or sets the branch name input from the user.
-        /// </summary>
-        public string BranchName
-        {
-            get => _branchName;
-            set
-            {
-                _branchName = value;
-                OnPropertyChanged();
-            }
-        }
+    private void CreateBranch() { /* Implement logic */ }
+    private void CommitChanges() { /* Implement logic */ }
+    private void GetDiff() { /* Implement logic */ }
+    private void CreateTag() { /* Implement logic */ }
+    private void GetCommitHistory() { /* Implement logic */ }
+    private void SelectRepository() { /* Implement logic */ }
+    private async Task GetUserProfile() { /* Implement logic */ }
 
-        /// <summary>
-        /// Gets or sets the status message to provide feedback to the user.
-        /// </summary>
-        public string StatusMessage
-        {
-            get => _statusMessage;
-            set
-            {
-                _statusMessage = value;
-                OnPropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the diff output for display.
-        /// </summary>
-        public string DiffOutput
-        {
-            get => _diffOutput;
-            set
-            {
-                _diffOutput = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ICommand CreateBranchCommand { get; }
-        public ICommand CommitChangesCommand { get; }
-        public ICommand GetDiffCommand { get; }
-        public ICommand CreateTagCommand { get; }
-        public ICommand GetCommitHistoryCommand { get; }
-        public ICommand SelectRepositoryCommand { get; }
-
-        private void CreateBranch()
-        {
-            try
-            {
-                if (!string.IsNullOrWhiteSpace(BranchName))
-                {
-                    _gitManager.CreateBranch(BranchName);
-                    StatusMessage = $"Branch '{BranchName}' created successfully!";
-                    logger.Info(StatusMessage);
-                }
-                else
-                {
-                    StatusMessage = "Branch name cannot be empty!";
-                    logger.Warn(StatusMessage);
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Error creating branch");
-            }
-        }
-
-        private void CommitChanges(string message)
-        {
-            try
-            {
-                _gitManager.CommitChanges(message);
-                StatusMessage = "Changes committed successfully.";
-                logger.Info(StatusMessage);
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Error committing changes");
-            }
-        }
-
-        private void GetDiff()
-        {
-            try
-            {
-                DiffOutput = _gitManager.GetDiff();
-                logger.Info("Git diff retrieved successfully.");
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Error retrieving Git diff");
-            }
-        }
-
-        private void CreateTag(string tagName, string message)
-        {
-            try
-            {
-                _gitManager.CreateTag(tagName, message);
-                StatusMessage = $"Tag '{tagName}' created successfully.";
-                logger.Info(StatusMessage);
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Error creating tag");
-            }
-        }
-
-        private void GetCommitHistory()
-        {
-            try
-            {
-                var history = _gitManager.GetCommitHistory();
-                StatusMessage = string.Join("\n", history);
-                logger.Info("Commit history retrieved successfully.");
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Error retrieving commit history");
-            }
-        }
-
-        private async void SelectRepository()
-        {
-            var picker = new FolderPicker();
-            picker.SuggestedStartLocation = PickerLocationId.Desktop;
-            picker.FileTypeFilter.Add("*");
-
-            // Retrieve the window handle and associate it with the picker
-            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
-            WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-
-            var folder = await picker.PickSingleFolderAsync();
-
-            if (folder != null)
-            {
-                RepositoryPath = folder.Path;
-                _gitManager = new GitRepositoryManager(RepositoryPath);
-                StatusMessage = $"Repository set to: {RepositoryPath}";
-                logger.Info(StatusMessage);
-            }
-        }
-
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
+    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

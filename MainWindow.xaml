@@ -6,36 +6,68 @@
     xmlns:local="using:BBIHardwareSupport.MDM.IntuneConfigManager"
     Title="BBI - MDM Workflow">
 
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Padding="30" Spacing="15">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <TextBlock Text="Git Repository Manager" FontSize="24" FontWeight="Bold" />
+            <StackPanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="30" Spacing="15">
+                <!-- Header -->
+                <TextBlock Text="Git Repository Manager" FontSize="24" FontWeight="Bold" />
 
-        <!-- Branch Name Input -->
-        <TextBlock Text="Enter Branch Name:" />
-        <TextBox Width="300" Text="{x:Bind ViewModel.BranchName, Mode=TwoWay}" PlaceholderText="feature/new-branch" />
-        <Button Content="Create Branch" Command="{x:Bind ViewModel.CreateBranchCommand}" Width="200" />
+                <!-- Branch Name Input -->
+                <TextBlock Text="Enter Branch Name:" />
+                <TextBox Width="300" Text="{x:Bind ViewModel.BranchName, Mode=TwoWay}" PlaceholderText="feature/new-branch" />
+                <Button Content="Create Branch" Command="{x:Bind ViewModel.CreateBranchCommand}" Width="200" />
 
-        <!-- Commit Changes -->
-        <Button Content="Commit Changes" Command="{x:Bind ViewModel.CommitChangesCommand}" Width="200" />
+                <!-- Commit Changes -->
+                <Button Content="Commit Changes" Command="{x:Bind ViewModel.CommitChangesCommand}" Width="200" />
 
-        <!-- View Git Diff -->
-        <Button Content="View Diff" Command="{x:Bind ViewModel.GetDiffCommand}" Width="200" />
-        <TextBlock Text="Git Diff Output:" FontWeight="Bold" />
-        <TextBox Width="400" Height="100" Text="{x:Bind ViewModel.DiffOutput, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap"/>
+                <!-- View Git Diff -->
+                <Button Content="View Diff" Command="{x:Bind ViewModel.GetDiffCommand}" Width="200" />
+                <TextBlock Text="Git Diff Output:" FontWeight="Bold" />
+                <TextBox Width="400" Height="100" Text="{x:Bind ViewModel.DiffOutput, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap"/>
 
-        <!-- Create Git Tag -->
-        <Button Content="Create Tag" Command="{x:Bind ViewModel.CreateTagCommand}" Width="200" />
+                <!-- Create Git Tag -->
+                <Button Content="Create Tag" Command="{x:Bind ViewModel.CreateTagCommand}" Width="200" />
 
-        <!-- View Commit History -->
-        <Button Content="View Commit History" Command="{x:Bind ViewModel.GetCommitHistoryCommand}" Width="200" />
-        <TextBlock Text="Commit History:" FontWeight="Bold" />
-        <TextBox Width="400" Height="100" Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap"/>
-        
-        <!-- Set Repository Path -->
-        <TextBlock Text="Repository Path:" />
-        <TextBox Width="400" Text="{x:Bind ViewModel.RepositoryPath, Mode=TwoWay}" />
-        <Button Content="Set Repository" Command="{x:Bind ViewModel.SelectRepositoryCommand}" Width="200" />
+                <!-- View Commit History -->
+                <Button Content="View Commit History" Command="{x:Bind ViewModel.GetCommitHistoryCommand}" Width="200" />
+                <TextBlock Text="Commit History:" FontWeight="Bold" />
+                <TextBox Width="400" Height="100" Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap"/>
 
-    </StackPanel>
+                <!-- Set Repository Path -->
+                <TextBlock Text="Repository Path:" />
+                <TextBox Width="400" Text="{x:Bind ViewModel.RepositoryPath, Mode=TwoWay}" />
+                <Button Content="Set Repository" Command="{x:Bind ViewModel.SelectRepositoryCommand}" Width="200" />
+
+                <!-- Get User Profile (Connect to MSGraph) -->
+                <Button Content="Get User Profile" Command="{x:Bind ViewModel.GetUserProfileCommand}" Width="200" />
+                <TextBlock Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" Padding="30" Spacing="15">
+                <TextBlock Text="Intune Artifact Manager" FontSize="24" FontWeight="Bold" />
+
+                <TextBlock Text="Enter Group ID:" />
+                <TextBox Width="300" Text="{x:Bind ViewModel.GroupId, Mode=TwoWay}" PlaceholderText="Enter Group ID"/>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                    <Button Content="Get Device Configurations" Command="{x:Bind ViewModel.GetDeviceConfigurationsCommand}" Width="200" Margin="5"/>
+                    <Button Content="Get Apps" Command="{x:Bind ViewModel.GetAppsCommand}" Width="200" Margin="5"/>
+                </StackPanel>
+
+                <TextBlock Text="Retrieved Artifacts:" FontWeight="Bold" Margin="10"/>
+                <ListView ItemsSource="{x:Bind ViewModel.Artifacts}" Width="400" Height="200">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
 </Window>
