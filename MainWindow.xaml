@@ -1,15 +1,24 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Window
     x:Class="BBIHardwareSupport.MDM.IntuneConfigManager.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:BBIHardwareSupport.MDM.IntuneConfigManager"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
     Title="BBI - MDM Workflow">
 
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Button x:Name="myButton" Click="myButton_Click">Click Me</Button>
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Padding="30" Spacing="15">
+
+        <!-- Header -->
+        <TextBlock Text="Git Branch Manager" FontSize="24" FontWeight="Bold" />
+
+        <!-- Branch Name Input -->
+        <TextBlock Text="Enter Branch Name:" />
+        <TextBox Width="300" Text="{x:Bind ViewModel.BranchName, Mode=TwoWay}" PlaceholderText="feature/new-branch" />
+
+        <!-- Create Branch Button -->
+        <Button Content="Create Branch" Command="{x:Bind ViewModel.CreateBranchCommand}" Width="200" />
+
+        <!-- Status Message -->
+        <TextBlock Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}" Foreground="DarkGreen" FontSize="14" />
+
     </StackPanel>
 </Window>

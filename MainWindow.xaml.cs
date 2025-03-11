@@ -1,53 +1,23 @@
 using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using LibGit2Sharp;
-using System.IO;
-using NLog;
+using BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels;
 
 namespace BBIHardwareSupport.MDM.IntuneConfigManager
 {
     public sealed partial class MainWindow : Window
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private string repoPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "IntuneConfigRepo");
+        public MainViewModel ViewModel { get; }
 
         public MainWindow()
         {
             this.InitializeComponent();
-            InitializeRepo();
-        }
-
-        private void InitializeRepo()
-        {
-            if (!Directory.Exists(repoPath))
+            ViewModel = new MainViewModel();
+            // Set DataContext on the root container
+            if (Content is FrameworkElement rootElement)
             {
-                Directory.CreateDirectory(repoPath);
-                Repository.Init(repoPath);
-                logger.Info("Initialized new Git repository.");
+                rootElement.DataContext = ViewModel;
             }
-            else if (!Repository.IsValid(repoPath))
-            {
-                Repository.Init(repoPath);
-                logger.Info("Reinitialized Git repository.");
-            }
-            else
-            {
-                logger.Info("Git repository already exists.");
-            }
-        }
-
-        private void CreateBranch(string branchName)
-        {
-            using (var repo = new Repository(repoPath))
-            {
-                repo.CreateBranch(branchName);
-                logger.Info($"Created new branch: {branchName}");
-            }
-        }
-        private void myButton_Click(object sender, RoutedEventArgs e)
-        {
-            logger.Info("Button Clicked");
         }
     }
 }
