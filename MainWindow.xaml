@@ -59,6 +59,15 @@
                     <Button Content="Get Apps" Command="{x:Bind ViewModel.GetAppsCommand}" Width="200" Margin="5"/>
                 </StackPanel>
 
+                <!-- New Button for Fetching Intune Policies -->
+                <Button Content="Get Intune Policies" Command="{x:Bind ViewModel.GetIntunePoliciesCommand}" Width="200" Margin="10"/>
+
+                <!-- New Button for Fetching Intune Policies in JSON -->
+                <Button Content="Get Intune Policies (JSON)" Command="{x:Bind ViewModel.GetIntunePoliciesJsonCommand}" Width="250" Margin="10"/>
+
+                <!--   New Button for Fetching All Intune Policies in JSON -->
+                <Button Content="Get All Intune Policies (JSON)" Command="{x:Bind ViewModel.GetAllIntunePoliciesJsonCommand}" Width="300" Margin="10"/>
+
                 <TextBlock Text="Retrieved Artifacts:" FontWeight="Bold" Margin="10"/>
                 <ListView ItemsSource="{x:Bind ViewModel.Artifacts}" Width="400" Height="200">
                     <ListView.ItemTemplate>

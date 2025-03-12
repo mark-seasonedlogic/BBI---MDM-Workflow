@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
+using NLog;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -27,7 +28,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
     /// </summary>
     public partial class App : Application
     {
-
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public static Window MainWindow { get; private set; }
 
         /// <summary>
@@ -37,6 +38,9 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
         public App()
         {
             this.InitializeComponent();
+            LogManager.LoadConfiguration("NLog.config");
+
+            Logger.Info("Application started!");
         }
 
         /// <summary>

@@ -7,6 +7,9 @@ using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
 using System.Collections.Generic;
 using System.Threading;
+using System.Xml;
+using Newtonsoft.Json;
+using NLog;
 
 namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
 {
@@ -63,6 +66,236 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
             return graphClient;
         }
 
+
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        public async Task<string> GetDeviceCompliancePoliciesJsonAsync()
+        {
+            var graphClient = GetAuthenticatedClient();
+
+            try
+            {
+                var compliancePolicies = await graphClient.DeviceManagement.DeviceCompliancePolicies.GetAsync();
+                var allPolicies = new List<object>();
+
+                while (compliancePolicies?.Value != null)
+                {
+                    allPolicies.AddRange(compliancePolicies.Value);
+
+                    if (!string.IsNullOrEmpty(compliancePolicies.OdataNextLink))
+                    {
+                        compliancePolicies = await graphClient.DeviceManagement.DeviceCompliancePolicies
+                            .WithUrl(compliancePolicies.OdataNextLink)
+                            .GetAsync();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                string jsonOutput = JsonConvert.SerializeObject(allPolicies, Newtonsoft.Json.Formatting.Indented);
+                Logger.Debug($"📌 Compliance Policies (JSON):\n{jsonOutput}");
+                return jsonOutput;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"❌ Error retrieving compliance policies: {ex.Message}");
+                return $"Error: {ex.Message}";
+            }
+        }
+
+        public async Task<string> GetDeviceConfigurationProfilesJsonAsync()
+        {
+            var graphClient = GetAuthenticatedClient();
+
+            try
+            {
+                var deviceConfigurations = await graphClient.DeviceManagement.DeviceConfigurations.GetAsync();
+                var allConfigurations = new List<object>();
+
+                while (deviceConfigurations?.Value != null)
+                {
+                    allConfigurations.AddRange(deviceConfigurations.Value);
+
+                    if (!string.IsNullOrEmpty(deviceConfigurations.OdataNextLink))
+                    {
+                        deviceConfigurations = await graphClient.DeviceManagement.DeviceConfigurations
+                            .WithUrl(deviceConfigurations.OdataNextLink)
+                            .GetAsync();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                string jsonOutput = JsonConvert.SerializeObject(allConfigurations, Newtonsoft.Json.Formatting.Indented);
+                Logger.Debug($"⚙️ Device Configuration Profiles (JSON):\n{jsonOutput}");
+                return jsonOutput;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"❌ Error retrieving device configuration profiles: {ex.Message}");
+                return $"Error: {ex.Message}";
+            }
+        }
+
+        public async Task<string> GetAppProtectionPoliciesJsonAsync()
+        {
+            var graphClient = GetAuthenticatedClient();
+
+            try
+            {
+                var appProtectionPolicies = await graphClient.DeviceAppManagement.TargetedManagedAppConfigurations.GetAsync();
+                var allPolicies = new List<object>();
+
+                while (appProtectionPolicies?.Value != null)
+                {
+                    allPolicies.AddRange(appProtectionPolicies.Value);
+
+                    if (!string.IsNullOrEmpty(appProtectionPolicies.OdataNextLink))
+                    {
+                        appProtectionPolicies = await graphClient.DeviceAppManagement.TargetedManagedAppConfigurations
+                            .WithUrl(appProtectionPolicies.OdataNextLink)
+                            .GetAsync();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                string jsonOutput = JsonConvert.SerializeObject(allPolicies, Newtonsoft.Json.Formatting.Indented);
+                Logger.Debug($"🛡️ App Protection Policies (JSON):\n{jsonOutput}");
+                return jsonOutput;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"❌ Error retrieving app protection policies: {ex.Message}");
+                return $"Error: {ex.Message}";
+            }
+        }
+
+        public async Task<string> GetEndpointSecurityPoliciesJsonAsync()
+        {
+            var graphClient = GetAuthenticatedClient();
+
+            try
+            {
+                // Endpoint Security policies are stored under DeviceConfigurations with specific categories
+                var securityPolicies = await graphClient.DeviceManagement.DeviceConfigurations
+                    .GetAsync(requestConfiguration =>
+                    {
+                        requestConfiguration.QueryParameters.Filter = "contains(displayName, 'Endpoint Security')";
+                    });
+
+                var allPolicies = new List<object>();
+
+                while (securityPolicies?.Value != null)
+                {
+                    allPolicies.AddRange(securityPolicies.Value);
+
+                    if (!string.IsNullOrEmpty(securityPolicies.OdataNextLink))
+                    {
+                        securityPolicies = await graphClient.DeviceManagement.DeviceConfigurations
+                            .WithUrl(securityPolicies.OdataNextLink)
+                            .GetAsync();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                string jsonOutput = JsonConvert.SerializeObject(allPolicies, Newtonsoft.Json.Formatting.Indented);
+                Logger.Debug($"🔐 Endpoint Security Policies (JSON):\n{jsonOutput}");
+                return jsonOutput;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"❌ Error retrieving endpoint security policies: {ex.Message}");
+                return $"Error: {ex.Message}";
+            }
+        }
+
+        public async Task<List<string>> GetDeviceCompliancePoliciesAsync()
+        {
+            var graphClient = GetAuthenticatedClient();
+            var policies = new List<string>();
+
+            try
+            {
+                var compliancePolicies = await graphClient.DeviceManagement.DeviceCompliancePolicies.GetAsync();
+
+                while (compliancePolicies?.Value != null)
+                {
+                    foreach (var policy in compliancePolicies.Value)
+                    {
+                        policies.Add($"Compliance Policy: {policy.DisplayName} (ID: {policy.Id})");
+                    }
+
+                    // Handle pagination
+                    if (!string.IsNullOrEmpty(compliancePolicies.OdataNextLink))
+                    {
+                        compliancePolicies = await graphClient.DeviceManagement.DeviceCompliancePolicies
+                            .WithUrl(compliancePolicies.OdataNextLink)
+                            .GetAsync();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving compliance policies: {ex.Message}");
+            }
+
+            return policies;
+        }
+
+ 
+
+        /// <summary>
+        /// Retrieves all device configuration profiles, including restriction policies.
+        /// </summary>
+        public async Task<List<string>> GetDeviceConfigurationProfilesAsync()
+        {
+            var graphClient = GetAuthenticatedClient();
+            var configurations = new List<string>();
+
+            try
+            {
+                var deviceConfigurations = await graphClient.DeviceManagement.DeviceConfigurations.GetAsync();
+
+                while (deviceConfigurations?.Value != null)
+                {
+                    foreach (var config in deviceConfigurations.Value)
+                    {
+                        configurations.Add($"Device Configuration: {config.DisplayName} (ID: {config.Id})");
+                    }
+
+                    if (!string.IsNullOrEmpty(deviceConfigurations.OdataNextLink))
+                    {
+                        deviceConfigurations = await graphClient.DeviceManagement.DeviceConfigurations
+                            .WithUrl(deviceConfigurations.OdataNextLink)
+                            .GetAsync();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving device configuration profiles: {ex.Message}");
+            }
+
+            return configurations;
+        }
         /// <summary>
         /// Retrieves all device configuration profiles assigned to a group.
         /// </summary>
@@ -73,21 +306,19 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
 
             try
             {
-                // Get all device configurations
                 var deviceConfigurations = await graphClient.DeviceManagement.DeviceConfigurations.GetAsync();
 
-                if (deviceConfigurations?.Value != null)
+                // Loop through paginated results
+                while (deviceConfigurations != null && deviceConfigurations.Value != null)
                 {
                     foreach (var config in deviceConfigurations.Value)
                     {
-                        // Fetch assignments for each configuration
                         var assignments = await graphClient.DeviceManagement.DeviceConfigurations[config.Id].Assignments.GetAsync();
 
                         if (assignments?.Value != null)
                         {
                             foreach (var assignment in assignments.Value)
                             {
-                                // Check if the assignment targets the specified group
                                 if (assignment.Target is Microsoft.Graph.Models.GroupAssignmentTarget groupTarget &&
                                     groupTarget.GroupId == groupId)
                                 {
@@ -95,6 +326,18 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
                                 }
                             }
                         }
+                    }
+
+                    // Check for more pages
+                    if (!string.IsNullOrEmpty(deviceConfigurations.OdataNextLink))
+                    {
+                        deviceConfigurations = await graphClient.DeviceManagement.DeviceConfigurations
+                            .WithUrl(deviceConfigurations.OdataNextLink)
+                            .GetAsync();
+                    }
+                    else
+                    {
+                        break;
                     }
                 }
             }
@@ -104,7 +347,6 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
             }
             return configurations;
         }
-
         /// <summary>
         /// Retrieves all applications assigned to a group.
         /// </summary>
