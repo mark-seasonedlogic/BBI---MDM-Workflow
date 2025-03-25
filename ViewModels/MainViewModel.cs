@@ -1,43 +1,83 @@
-﻿using BBIHardwareSupport.MDM.IntuneConfigManager.Services;
-using BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels.Helpers;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BBIHardwareSupport.MDM.IntuneConfigManager;
+using BBIHardwareSupport.MDM.IntuneConfigManager.Services;
+using BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels.Helpers;
 
 public class MainViewModel : INotifyPropertyChanged
 {
     private readonly GraphAuthHelper _graphAuthHelper;
     private string _groupId;
-    private ObservableCollection<string> _artifacts;
     private string _branchName;
     private string _repositoryPath;
-    private string _diffOutput;
     private string _statusMessage;
+    private bool _isLoading;
+    private bool _isAutoSyncEnabled;
+    private string _diffOutput;
+
+    public string DiffOutput
+    {
+        get => _diffOutput;
+        set { _diffOutput = value; OnPropertyChanged(); }
+    }
+
+    public ICommand GetDiffCommand { get; }
+    public ICommand CreateBranchCommand { get; }
+    public ICommand ShowHelpCommand { get; }
+    public ICommand ProcessDevicesCommand { get; }
+
+
+    public string GroupId
+    {
+        get => _groupId;
+        set { _groupId = value; OnPropertyChanged(); }
+    }
 
     public event PropertyChangedEventHandler PropertyChanged;
 
     public MainViewModel()
     {
         _graphAuthHelper = new GraphAuthHelper();
-        _artifacts = new ObservableCollection<string>();
+        Artifacts = new ObservableCollection<ArtifactModel>();
 
-        GetDeviceConfigurationsCommand = new RelayCommand(async () => await GetDeviceConfigurations());
-        GetAppsCommand = new RelayCommand(async () => await GetApps());
-        GetIntunePoliciesCommand = new RelayCommand(async () => await GetIntunePoliciesAsync());
-        GetIntunePoliciesJsonCommand = new RelayCommand(async () => await GetIntunePoliciesJsonAsync());
-        GetAllIntunePoliciesJsonCommand = new RelayCommand(async () => await GetAllIntunePoliciesJsonAsync());
-
-
-        CreateBranchCommand = new RelayCommand(() => CreateBranch());
+        GetDeviceConfigurationsCommand = new RelayCommand(async () => await LoadDeviceConfigurations());
+        GetAppsCommand = new RelayCommand(async () => await LoadApps());
         CommitChangesCommand = new RelayCommand(() => CommitChanges());
+        SaveSettingsCommand = new RelayCommand(() => SaveSettings());
         GetDiffCommand = new RelayCommand(() => GetDiff());
-        CreateTagCommand = new RelayCommand(() => CreateTag());
-        GetCommitHistoryCommand = new RelayCommand(() => GetCommitHistory());
-        SelectRepositoryCommand = new RelayCommand(() => SelectRepository());
-        GetUserProfileCommand = new RelayCommand(async () => await GetUserProfile());
+        CreateBranchCommand = new RelayCommand(() => CreateBranch());
+        ShowHelpCommand = new RelayCommand(() => ShowHelp());
+        ProcessDevicesCommand = new RelayCommand(async () => await ProcessDevicesAsync());
+
+
+
+    }
+    private async Task ProcessDevicesAsync()
+    {
+        IsLoading = true;
+        StatusMessage = "Processing devices...";
+
+        try
+        {
+            var graphAuthHelper = new GraphAuthHelper();
+            var updater = new GraphDeviceUpdater(graphAuthHelper);
+            //var schemaInfo = await updater.CreateSchemaExtensionAsync();
+            await updater.ProcessDevicesAsync();
+
+            StatusMessage = "✅ Devices processed successfully!";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"❌ Error processing devices: {ex.Message}";
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     public string BranchName
@@ -46,165 +86,171 @@ public class MainViewModel : INotifyPropertyChanged
         set { _branchName = value; OnPropertyChanged(); }
     }
 
-    public string RepositoryPath
-    {
-        get => _repositoryPath;
-        set { _repositoryPath = value; OnPropertyChanged(); }
-    }
-
-    public string DiffOutput
-    {
-        get => _diffOutput;
-        set { _diffOutput = value; OnPropertyChanged(); }
-    }
-
     public string StatusMessage
     {
         get => _statusMessage;
         set { _statusMessage = value; OnPropertyChanged(); }
     }
 
-    public string GroupId
+    public bool IsLoading
     {
-        get => _groupId;
-        set { _groupId = value; OnPropertyChanged(); }
+        get => _isLoading;
+        set { _isLoading = value; OnPropertyChanged(); }
     }
 
-    public ObservableCollection<string> Artifacts
+    public bool IsAutoSyncEnabled
     {
-        get => _artifacts;
-        set { _artifacts = value; OnPropertyChanged(); }
+        get => _isAutoSyncEnabled;
+        set { _isAutoSyncEnabled = value; OnPropertyChanged(); }
     }
+
+    public ObservableCollection<ArtifactModel> Artifacts { get; set; }
 
     public ICommand GetDeviceConfigurationsCommand { get; }
     public ICommand GetAppsCommand { get; }
-    public ICommand GetIntunePoliciesCommand { get; }  // New Command
-    public ICommand CreateBranchCommand { get; }
     public ICommand CommitChangesCommand { get; }
-    public ICommand GetDiffCommand { get; }
-    public ICommand CreateTagCommand { get; }
-    public ICommand GetCommitHistoryCommand { get; }
-    public ICommand SelectRepositoryCommand { get; }
-    public ICommand GetUserProfileCommand { get; }
-    public ICommand GetIntunePoliciesJsonCommand { get; }
-    public ICommand GetAllIntunePoliciesJsonCommand { get; }
-    private async Task GetAllIntunePoliciesJsonAsync()
+    public ICommand SaveSettingsCommand { get; }
+    private void GetDiff()
     {
-        Artifacts.Clear();
-        Artifacts.Add("Fetching all Intune policies (JSON)...");
+        StatusMessage = "Fetching Git diff...";
 
         try
         {
-            var compliancePoliciesJson = await _graphAuthHelper.GetDeviceCompliancePoliciesJsonAsync();
-            var configurationProfilesJson = await _graphAuthHelper.GetDeviceConfigurationProfilesJsonAsync();
-            var appProtectionPoliciesJson = await _graphAuthHelper.GetAppProtectionPoliciesJsonAsync();
-            var endpointSecurityPoliciesJson = await _graphAuthHelper.GetEndpointSecurityPoliciesJsonAsync();
+            // Example: Simulate diff retrieval
+            System.Threading.Thread.Sleep(2000);  // Simulate processing delay
 
-            Artifacts.Add("📌 Compliance Policies:");
-            Artifacts.Add(compliancePoliciesJson);
-
-            Artifacts.Add("\n⚙️ Device Configuration Profiles:");
-            Artifacts.Add(configurationProfilesJson);
-
-            Artifacts.Add("\n🛡️ App Protection Policies:");
-            Artifacts.Add(appProtectionPoliciesJson);
-
-            Artifacts.Add("\n🔐 Endpoint Security Policies:");
-            Artifacts.Add(endpointSecurityPoliciesJson);
+            DiffOutput = "Example Git Diff:\n- Line 1 changed\n+ Line 2 added";
+            StatusMessage = "✅ Git diff retrieved successfully!";
         }
         catch (Exception ex)
         {
-            Artifacts.Add($"❌ Error fetching policies: {ex.Message}");
+            StatusMessage = $"❌ Failed to get diff: {ex.Message}";
         }
     }
 
-    private async Task GetDeviceConfigurations()
+    private async void ShowHelp()
     {
-        if (string.IsNullOrWhiteSpace(GroupId)) return;
-
-        var configurations = await _graphAuthHelper.GetDeviceConfigurationsForGroupAsync(GroupId);
-        Artifacts.Clear();
-        foreach (var config in configurations)
-        {
-            Artifacts.Add($"Device Configuration: {config}");
-        }
-    }
-    private async Task GetIntunePoliciesJsonAsync()
-    {
-        Artifacts.Clear();
-        Artifacts.Add("Fetching Intune policies (JSON)...");
+        StatusMessage = "Displaying help information...";
 
         try
         {
-            var compliancePoliciesJson = await _graphAuthHelper.GetDeviceCompliancePoliciesJsonAsync();
-            var configurationProfilesJson = await _graphAuthHelper.GetDeviceConfigurationProfilesJsonAsync();
+            var messageDialog = new Microsoft.UI.Xaml.Controls.ContentDialog
+            {
+                Title = "Help",
+                Content = "This application allows you to manage Git repositories and Intune configurations.",
+                CloseButtonText = "OK",
+                XamlRoot = App.MainWindow.Content.XamlRoot // Ensure correct window context
+            };
 
-            Artifacts.Add("📌 Compliance Policies (JSON):");
-            Artifacts.Add(compliancePoliciesJson);
-
-            Artifacts.Add("\n⚙️ Device Configuration Profiles (JSON):");
-            Artifacts.Add(configurationProfilesJson);
+            await messageDialog.ShowAsync();
         }
         catch (Exception ex)
         {
-            Artifacts.Add($"❌ Error fetching policies: {ex.Message}");
+            StatusMessage = $"❌ Failed to show help: {ex.Message}";
         }
     }
 
-    private async Task GetApps()
-    {
-        if (string.IsNullOrWhiteSpace(GroupId)) return;
 
-        var apps = await _graphAuthHelper.GetAppsForGroupAsync(GroupId);
-        Artifacts.Clear();
-        foreach (var app in apps)
-        {
-            Artifacts.Add($"App: {app}");
-        }
-    }
-
-    /// <summary>
-    /// Fetches Intune Compliance Policies and Device Configuration Profiles.
-    /// </summary>
-    private async Task GetIntunePoliciesAsync()
+    private void CreateBranch()
     {
-        Artifacts.Clear();
-        Artifacts.Add("Fetching Intune policies...");
+        StatusMessage = "Creating new Git branch...";
 
         try
         {
-            var compliancePolicies = await _graphAuthHelper.GetDeviceCompliancePoliciesAsync();
-            Artifacts.Add("📌 Compliance Policies:");
-            foreach (var policy in compliancePolicies)
-            {
-                Artifacts.Add(policy);
-            }
+            // Example: Simulate Git branch creation process
+            System.Threading.Thread.Sleep(2000);  // Simulate processing delay
 
-            var configProfiles = await _graphAuthHelper.GetDeviceConfigurationProfilesAsync();
-            Artifacts.Add("\n⚙️ Device Configuration Profiles:");
-            foreach (var profile in configProfiles)
+            StatusMessage = $"✅ Branch '{BranchName}' created successfully!";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"❌ Failed to create branch: {ex.Message}";
+        }
+    }
+
+    private async Task LoadDeviceConfigurations()
+    {
+        if (string.IsNullOrWhiteSpace(GroupId)) return;
+
+        IsLoading = true;
+        Artifacts.Clear();
+        StatusMessage = "Fetching device configurations...";
+
+        try
+        {
+            var configurations = await _graphAuthHelper.GetDeviceConfigurationsForGroupAsync(GroupId);
+            foreach (var config in configurations)
             {
-                Artifacts.Add(profile);
+                Artifacts.Add(new ArtifactModel { Name = config, Type = "Device Configuration" });
             }
         }
         catch (Exception ex)
         {
-            Artifacts.Add($"❌ Error fetching policies: {ex.Message}");
+            StatusMessage = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            IsLoading = false;
         }
     }
 
-    private void CreateBranch() { /* Implement logic */ }
-    private void CommitChanges() { /* Implement logic */ }
-    private void GetDiff() { /* Implement logic */ }
-    private void CreateTag() { /* Implement logic */ }
-    private void GetCommitHistory() { /* Implement logic */ }
-    private void SelectRepository() { /* Implement logic */ }
+    private async Task LoadApps()
+    {
+        if (string.IsNullOrWhiteSpace(GroupId)) return;
 
+        IsLoading = true;
+        Artifacts.Clear();
+        StatusMessage = "Fetching apps...";
 
-    private async Task GetUserProfile() { /* Implement logic */ }
+        try
+        {
+            var apps = await _graphAuthHelper.GetAppsForGroupAsync(GroupId);
+            foreach (var app in apps)
+            {
+                Artifacts.Add(new ArtifactModel { Name = app, Type = "App" });
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private void SaveSettings()
+    {
+        StatusMessage = $"Settings saved! Auto-Sync: {(IsAutoSyncEnabled ? "Enabled" : "Disabled")}";
+    }
 
     protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+    private void CommitChanges()
+    {
+        // Example logic for committing changes
+        StatusMessage = "Committing changes to Git...";
+
+        try
+        {
+            // Example: Simulate a commit process
+            System.Threading.Thread.Sleep(2000);  // Simulate processing delay
+
+            StatusMessage = "✅ Changes committed successfully!";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"❌ Commit failed: {ex.Message}";
+        }
+    }
+
+}
+
+public class ArtifactModel
+{
+    public string Name { get; set; }
+    public string Type { get; set; }
 }

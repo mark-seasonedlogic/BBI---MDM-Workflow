@@ -4,52 +4,64 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     xmlns:local="using:BBIHardwareSupport.MDM.IntuneConfigManager"
+    xmlns:datagrid="using:CommunityToolkit.WinUI.UI.Controls"
     Title="BBI - MDM Workflow">
 
     <StackPanel Padding="30" Spacing="15" Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}">
         <!-- Header -->
         <TextBlock Text="MDM Intune Manager" FontSize="28" FontWeight="Bold" Foreground="DeepSkyBlue"/>
 
-        <controls:Expander Header="Git Repository Manager" IsExpanded="True">
-            <StackPanel Spacing="10">
-                <TextBlock Text="Branch Name:" FontWeight="Bold"/>
-                <TextBox Width="300" Text="{x:Bind ViewModel.BranchName, Mode=TwoWay}" PlaceholderText="feature/new-branch"/>
-                <Button Content="Create Branch" Command="{x:Bind ViewModel.CreateBranchCommand}" Width="200" CornerRadius="10"/>
+        <!-- Navigation View -->
+        <controls:NavigationView x:Name="NavView" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed"
+                                 SelectionChanged="NavView_SelectionChanged">
+            <controls:NavigationView.MenuItems>
+                <controls:NavigationViewItem Content="Git Manager" Icon="Save" Tag="GitManager"/>
+                <controls:NavigationViewItem Content="Intune Artifacts" Icon="Library" Tag="IntuneArtifacts"/>
+            </controls:NavigationView.MenuItems>
 
-                <Button Content="Commit Changes" Command="{x:Bind ViewModel.CommitChangesCommand}" Width="200" CornerRadius="10"/>
-                <Button Content="View Diff" Command="{x:Bind ViewModel.GetDiffCommand}" Width="200" CornerRadius="10"/>
+            <Frame x:Name="ContentFrame"/>
+        </controls:NavigationView>
 
-                <TextBlock Text="Repository Path:" FontWeight="Bold"/>
-                <TextBox Width="400" Text="{x:Bind ViewModel.RepositoryPath, Mode=TwoWay}"/>
-                <Button Content="Set Repository" Command="{x:Bind ViewModel.SelectRepositoryCommand}" Width="200" CornerRadius="10"/>
-            </StackPanel>
-        </controls:Expander>
+        <!-- Command Bar -->
+        <CommandBar>
+            <AppBarButton Icon="Save" Label="Save" Command="{x:Bind ViewModel.CommitChangesCommand}"/>
+            <AppBarButton Icon="Refresh" Label="Refresh" Command="{x:Bind ViewModel.GetDeviceConfigurationsCommand}"/>
+            <AppBarButton Icon="Help" Label="Help" Click="ShowHelp"/>
+        </CommandBar>
 
-        <controls:Expander Header="Intune Artifact Manager" IsExpanded="True">
-            <StackPanel Spacing="10">
-                <TextBlock Text="Enter Group ID:" FontWeight="Bold"/>
-                <TextBox Width="300" Text="{x:Bind ViewModel.GroupId, Mode=TwoWay}" PlaceholderText="Enter Group ID"/>
+        <!-- Tab View for Multiple Sections 
+        <controls:TabView>
+            <controls:TabViewItem Header="Git Manager">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Branch Name:" FontWeight="Bold"/>
+                    <TextBox Width="300" Text="{x:Bind ViewModel.BranchName, Mode=TwoWay}" PlaceholderText="feature/new-branch"/>
+                    <Button Content="Create Branch" Command="{x:Bind ViewModel.CreateBranchCommand}" Width="200"/>
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                    <Button Content="Get Device Configurations" Command="{x:Bind ViewModel.GetDeviceConfigurationsCommand}" Width="200" Margin="5" CornerRadius="10"/>
-                    <Button Content="Get Apps" Command="{x:Bind ViewModel.GetAppsCommand}" Width="200" Margin="5" CornerRadius="10"/>
+                    <Button Content="Commit Changes" Command="{x:Bind ViewModel.CommitChangesCommand}" Width="200"/>
+                    <Button Content="View Diff" Command="{x:Bind ViewModel.GetDiffCommand}" Width="200"/>
                 </StackPanel>
+            </controls:TabViewItem>
 
-                <Button Content="Get All Intune Policies (JSON)" Command="{x:Bind ViewModel.GetAllIntunePoliciesJsonCommand}" Width="300" CornerRadius="10" Background="DeepSkyBlue" Foreground="White"/>
-            </StackPanel>
-        </controls:Expander>
+            <controls:TabViewItem Header="Intune Artifacts">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Enter Group ID:" FontWeight="Bold"/>
+                    <TextBox Width="300" Text="{x:Bind ViewModel.GroupId, Mode=TwoWay}" PlaceholderText="Enter Group ID"/>
 
-        <!-- Status Message -->
-        <controls:InfoBar Title="Status" Message="{x:Bind ViewModel.StatusMessage, Mode=OneWay}" IsOpen="True"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Get Device Configurations" Command="{x:Bind ViewModel.GetDeviceConfigurationsCommand}" Width="200"/>
+                        <Button Content="Get Apps" Command="{x:Bind ViewModel.GetAppsCommand}" Width="200"/>
+                    </StackPanel>
+                </StackPanel>
+            </controls:TabViewItem>
+        </controls:TabView> -->
 
-        <!-- Artifacts List -->
-        <TextBlock Text="Retrieved Artifacts:" FontWeight="Bold" Margin="10"/>
-        <ListView ItemsSource="{x:Bind ViewModel.Artifacts}" Width="600" Height="200">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding}" FontSize="14"/>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <!-- Status and Loading -->
+        <StackPanel Orientation="Horizontal">
+            <ProgressRing IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}" Width="40" Height="40"/>
+            <TextBlock Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}" Margin="10"/>
+        </StackPanel>
+
+        <!-- Data Grid for Artifacts -->
+        <datagrid:DataGrid ItemsSource="{x:Bind ViewModel.Artifacts}" AutoGenerateColumns="True" Width="600" Height="300"/>
     </StackPanel>
 </Window>

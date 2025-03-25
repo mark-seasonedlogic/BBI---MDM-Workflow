@@ -1,0 +1,24 @@
+<Page
+    x:Class="BBIHardwareSupport.MDM.IntuneConfigManager.Views.IntuneArtifactsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BBIHardwareSupport.MDM.IntuneConfigManager.Views"
+    xmlns:datagrid="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls">
+
+    <StackPanel Padding="30" Spacing="15">
+        <TextBlock Text="Intune Artifact Manager" FontSize="22" FontWeight="Bold"/>
+
+        <TextBlock Text="Enter Group ID:" FontWeight="Bold"/>
+        <TextBox Width="300" Text="{x:Bind ViewModel.GroupId, Mode=TwoWay}" PlaceholderText="Enter Group ID"/>
+
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <Button Content="Get Device Configurations" Command="{x:Bind ViewModel.GetDeviceConfigurationsCommand}" Width="200"/>
+            <Button Content="Get Apps" Command="{x:Bind ViewModel.GetAppsCommand}" Width="200"/>
+            <Button Content="Process Devices" Command="{x:Bind ViewModel.ProcessDevicesCommand}" Width="200" Background="DarkSlateBlue" Foreground="White"/>
+
+        </StackPanel>
+
+        <datagrid:DataGrid ItemsSource="{x:Bind ViewModel.Artifacts}" AutoGenerateColumns="True" Width="600" Height="300"/>
+    </StackPanel>
+</Page>
