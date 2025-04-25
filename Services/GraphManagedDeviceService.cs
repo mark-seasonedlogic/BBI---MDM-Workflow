@@ -1,4 +1,5 @@
 ﻿using Microsoft.Graph.Models;
+using Microsoft.Graph.Privacy.SubjectRightsRequests.Item.Notes;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -60,18 +61,25 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
              var response = await client.PatchAsync(url, content);
              response.EnsureSuccessStatusCode();
             */
-
+            //OBS9999CIM01
+            var devId = "https://intune.microsoft.com/#view/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/~/overview/mdmDeviceId/9c760af7-5091-40ff-b3f3-bd8f91c56555";
             using var client = new HttpClient();
-            var url = $"https://graph.microsoft.com/v1.0/devices/a5db2112-92be-482a-bb4f-7206b74e1ff6";
+            var url = $"https://graph.microsoft.com/v1.0/deviceManagement/managedDevices/{devId}";
 
             var payload = new
+            /*{
+                 extensionAttributes = new
+                 {
+                     extensionAttribute1 = "1_9921"
+                 }
+             };
+            */
             {
-                extensionAttributes = new
+                notes = new
                 {
-                    extensionAttribute1 = "1_9921"
+                    notes = "OBS9921POS - MD110"
                 }
             };
-
 
             var json = System.Text.Json.JsonSerializer.Serialize(payload);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
