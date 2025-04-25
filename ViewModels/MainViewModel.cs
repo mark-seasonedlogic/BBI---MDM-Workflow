@@ -7,6 +7,7 @@ using System.Windows.Input;
 using BBIHardwareSupport.MDM.IntuneConfigManager;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Services;
 using BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels.Helpers;
+using Microsoft.Graph.Models;
 
 public class MainViewModel : INotifyPropertyChanged
 {
@@ -18,18 +19,59 @@ public class MainViewModel : INotifyPropertyChanged
     private bool _isLoading;
     private bool _isAutoSyncEnabled;
     private string _diffOutput;
+    private readonly IGraphAuthService _authService;
+    private readonly IGraphIntuneDeviceService _managedDeviceService;
+    private readonly IGraphADDeviceService _enrolledDeviceService;
 
     public string DiffOutput
     {
         get => _diffOutput;
         set { _diffOutput = value; OnPropertyChanged(); }
     }
+    public MainViewModel(IGraphAuthService authService, IGraphIntuneDeviceService managedDeviceService, IGraphADDeviceService enrolledDeviceService)
+    {
+        _authService = authService;
+        _managedDeviceService = managedDeviceService;
+        _enrolledDeviceService = enrolledDeviceService;
+        LoadDevicesCommand = new RelayCommand(async () => await LoadDevicesAsync());
+        GetDeviceConfigurationsCommand = new RelayCommand(async () => await LoadDeviceConfigurations());
+        GetAppsCommand = new RelayCommand(async () => await LoadApps());
+        CommitChangesCommand = new RelayCommand(() => CommitChanges());
+        SaveSettingsCommand = new RelayCommand(() => SaveSettings());
+        GetDiffCommand = new RelayCommand(() => GetDiff());
+        CreateBranchCommand = new RelayCommand(() => CreateBranch());
+        ShowHelpCommand = new RelayCommand(() => ShowHelp());
+        ProcessDevicesCommand = new RelayCommand(async () => await ProcessDevicesAsync());
+        UpdateUserNameCommand = new RelayCommand(async () => await UpdateDeviceUserNameAsync("deviceId"));
+    }
+    private async Task UpdateDeviceUserNameAsync(string deviceId)
+    {
+        var newUserName = "1_9921"; // Could be dynamic
+        var token = await _authService.GetAccessTokenAsync();
+        await _managedDeviceService.UpdateDeviceUserNameAsync(deviceId, newUserName, token);
+    }
+    public ICommand LoadDevicesCommand { get; }
 
     public ICommand GetDiffCommand { get; }
     public ICommand CreateBranchCommand { get; }
     public ICommand ShowHelpCommand { get; }
     public ICommand ProcessDevicesCommand { get; }
+    public ObservableCollection<ArtifactModel> Artifacts { get; set; }
 
+    public ICommand GetDeviceConfigurationsCommand { get; }
+    public ICommand GetAppsCommand { get; }
+    public ICommand CommitChangesCommand { get; }
+    public ICommand SaveSettingsCommand { get; }
+    public ICommand UpdateUserNameCommand { get; }
+
+    private async Task LoadDevicesAsync()
+    {
+        var token = await _authService.GetAccessTokenAsync();
+        var managedDevices = await _managedDeviceService.GetDevicesAsync(token);
+        Devices = new ObservableCollection<ManagedDevice>(managedDevices);
+    }
+
+    public ObservableCollection<ManagedDevice> Devices { get; private set; } = new();
 
     public string GroupId
     {
@@ -39,23 +81,7 @@ public class MainViewModel : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    public MainViewModel()
-    {
-        _graphAuthHelper = new GraphAuthHelper();
-        Artifacts = new ObservableCollection<ArtifactModel>();
-
-        GetDeviceConfigurationsCommand = new RelayCommand(async () => await LoadDeviceConfigurations());
-        GetAppsCommand = new RelayCommand(async () => await LoadApps());
-        CommitChangesCommand = new RelayCommand(() => CommitChanges());
-        SaveSettingsCommand = new RelayCommand(() => SaveSettings());
-        GetDiffCommand = new RelayCommand(() => GetDiff());
-        CreateBranchCommand = new RelayCommand(() => CreateBranch());
-        ShowHelpCommand = new RelayCommand(() => ShowHelp());
-        ProcessDevicesCommand = new RelayCommand(async () => await ProcessDevicesAsync());
-
-
-
-    }
+    
     private async Task ProcessDevicesAsync()
     {
         IsLoading = true;
@@ -104,12 +130,7 @@ public class MainViewModel : INotifyPropertyChanged
         set { _isAutoSyncEnabled = value; OnPropertyChanged(); }
     }
 
-    public ObservableCollection<ArtifactModel> Artifacts { get; set; }
 
-    public ICommand GetDeviceConfigurationsCommand { get; }
-    public ICommand GetAppsCommand { get; }
-    public ICommand CommitChangesCommand { get; }
-    public ICommand SaveSettingsCommand { get; }
     private void GetDiff()
     {
         StatusMessage = "Fetching Git diff...";

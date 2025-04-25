@@ -4,6 +4,7 @@ using CommunityToolkit.WinUI.UI.Controls;
 using BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Views;
 using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BBIHardwareSupport.MDM.IntuneConfigManager
 {
@@ -14,7 +15,10 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
         public MainWindow()
         {
             this.InitializeComponent();
-            ViewModel = new MainViewModel();
+
+            // Use the DI container to resolve MainViewModel
+            ViewModel = App.Services.GetRequiredService<MainViewModel>();
+
             if (Content is FrameworkElement rootElement)
             {
                 rootElement.DataContext = ViewModel;
@@ -23,9 +27,10 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
             // Set initial page
             ContentFrame.Navigate(typeof(GitManagerPage));
         }
+
         private async void ShowHelp(object sender, RoutedEventArgs e)
         {
-            var messageDialog = new Microsoft.UI.Xaml.Controls.ContentDialog
+            var messageDialog = new ContentDialog
             {
                 Title = "Help",
                 Content = "This application allows you to manage Git repositories and Intune configurations.",

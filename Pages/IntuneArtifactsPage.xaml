@@ -15,7 +15,7 @@
         <StackPanel Orientation="Horizontal" Spacing="10">
             <Button Content="Get Device Configurations" Command="{x:Bind ViewModel.GetDeviceConfigurationsCommand}" Width="200"/>
             <Button Content="Get Apps" Command="{x:Bind ViewModel.GetAppsCommand}" Width="200"/>
-            <Button Content="Process Devices" Command="{x:Bind ViewModel.ProcessDevicesCommand}" Width="200" Background="DarkSlateBlue" Foreground="White"/>
+            <Button Content="Update UserName" Command="{x:Bind ViewModel.UpdateUserNameCommand}" CommandParameter="{Binding Id}" Width="200" Background="DarkSlateBlue" Foreground="White"/>
 
         </StackPanel>
 

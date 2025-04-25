@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 using BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BBIHardwareSupport.MDM.IntuneConfigManager.Views
 {
@@ -10,7 +11,9 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Views
         public GitManagerPage()
         {
             this.InitializeComponent();
-            ViewModel = new MainViewModel();
+
+            // Get ViewModel from the DI container
+            ViewModel = App.Services.GetRequiredService<MainViewModel>();
             DataContext = ViewModel;
         }
     }

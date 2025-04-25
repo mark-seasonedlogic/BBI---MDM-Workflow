@@ -16,6 +16,10 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
 using NLog;
+using BBIHardwareSupport.MDM.IntuneConfigManager.Services;
+using Microsoft.Extensions.DependencyInjection;
+
+using BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -30,6 +34,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public static Window MainWindow { get; private set; }
+        public static IServiceProvider Services { get; private set; } = null!;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -39,10 +44,21 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
         {
             this.InitializeComponent();
             LogManager.LoadConfiguration("NLog.config");
-
+            Services = ConfigureServices();
             Logger.Info("Application started!");
         }
+        private static IServiceProvider ConfigureServices()
+        {
+            var services = new ServiceCollection();
 
+            // Register services and view models
+            services.AddSingleton<IGraphAuthService, GraphAuthService>();
+            services.AddSingleton<IGraphADDeviceService, GraphEnrolledDeviceService>();
+            services.AddSingleton<IGraphIntuneDeviceService, GraphManagedDeviceService>();
+            services.AddSingleton<MainViewModel>();
+
+            return services.BuildServiceProvider();
+        }
         /// <summary>
         /// Invoked when the application is launched.
         /// </summary>
