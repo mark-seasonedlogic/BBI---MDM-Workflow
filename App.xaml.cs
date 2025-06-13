@@ -20,6 +20,11 @@ using BBIHardwareSupport.MDM.IntuneConfigManager.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 using BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels;
+using BBIHardwareSupport.MDM.IntuneConfigManager.Interfaces;
+using Windows.Devices.WiFiDirect.Services;
+using BBIHardwareSupport.MDM.IntuneConfigManager.Views;
+using BBIHardwareSupport.MDM.IntuneConfigManager.Helpers;
+using BBIHardwareSupport.MDM.IntuneConfigManager.Pages;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -55,7 +60,27 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
             services.AddSingleton<IGraphAuthService, GraphAuthService>();
             services.AddSingleton<IGraphADDeviceService, GraphEnrolledDeviceService>();
             services.AddSingleton<IGraphIntuneDeviceService, GraphManagedDeviceService>();
+            services.AddSingleton<IGraphADGroupService, GraphGroupService>();
+            services.AddSingleton<IGraphDeviceUpdater, GraphDeviceUpdater>();
             services.AddSingleton<MainViewModel>();
+            services.AddSingleton<IntuneGroupsPageViewModel>();
+            services.AddSingleton<GitManagerViewModel>();
+            services.AddScoped<OemConfigManagerViewModel>();
+            services.AddScoped<OemConfigurationManagerPage>();
+            services.AddScoped<IGraphIntuneConfigurationService, GraphIntuneConfigurationService>();
+            services.AddScoped<IGraphIntuneManagedAppService, GraphIntuneManagedAppService>();
+
+            services.AddHttpClient();
+            services.AddScoped<IAppConfigTemplateHelper, AppConfigTemplateHelper>();
+            services.AddScoped<ISchemaExtensionRegistrar, SchemaExtensionRegistrarService>();
+            services.AddTransient<SchemaAdminViewModel>();
+            services.AddTransient<SchemaExtensionAdminPage>();
+            services.AddTransient<IntuneGroupsPage>();
+
+
+
+
+
 
             return services.BuildServiceProvider();
         }

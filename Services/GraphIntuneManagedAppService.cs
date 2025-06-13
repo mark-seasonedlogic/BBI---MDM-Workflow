@@ -1,0 +1,66 @@
+﻿using BBIHardwareSupport.MDM.IntuneConfigManager.Interfaces;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
+{
+    class GraphIntuneManagedAppService : IGraphIntuneManagedAppService
+    {
+        private readonly HttpClient _httpClient;
+        private readonly IGraphAuthService _authService;
+        private readonly ILogger<GraphIntuneManagedAppService> _logger;
+
+        public GraphIntuneManagedAppService(HttpClient httpClient, IGraphAuthService authService, ILogger<GraphIntuneManagedAppService> logger)
+        {
+            _httpClient = httpClient;
+            _authService = authService;
+            _logger = logger;
+        }
+
+        public async Task<JObject?> GetManagedAppByIdAsync(string appId)
+        {
+            var requestUrl = $"https://graph.microsoft.com/beta/deviceAppManagement/mobileApps/{appId}";
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await _authService.GetAccessTokenAsync());
+
+            var response = await _httpClient.SendAsync(request);
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogError("Failed to retrieve managed app by ID: {StatusCode} - {Content}", response.StatusCode, json);
+                return null;
+            }
+
+            return JObject.Parse(json);
+        }
+
+        public async Task<JObject?> GetManagedAppByNameAsync(string appName)
+        {
+            var requestUrl = $"https://graph.microsoft.com/beta/deviceAppManagement/mobileApps?$filter=displayName eq '{appName}' and isOf('microsoft.graph.iosVppApp')";
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+            
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await _authService.GetAccessTokenAsync());
+
+            var response = await _httpClient.SendAsync(request);
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var apps = JObject.Parse(json)["value"]?.ToObject<List<JObject>>();
+            return apps?.FirstOrDefault(a =>
+                string.Equals(a["displayName"]?.ToString(), appName, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(a["publisher"]?.ToString(), appName, StringComparison.OrdinalIgnoreCase)
+            );
+        }
+
+    }
+}

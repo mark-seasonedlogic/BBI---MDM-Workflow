@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="BBIHardwareSupport.MDM.IntuneConfigManager.Views.WS1AndroidBatteryPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BBIHardwareSupport.MDM.IntuneConfigManager.Views"
+    xmlns:charts="using:LiveChartsCore.SkiaSharpView.WinUI"
+    xmlns:viewmodels="using:BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels">
+
+  <Page.DataContext>
+    <viewmodels:WS1BatteryDrainViewModel />
+  </Page.DataContext>
+
+  <StackPanel Padding="20" Spacing="20">
+    <TextBlock Text="Battery Drain by Restaurant" FontSize="24" FontWeight="Bold"/>
+    <charts:CartesianChart
+        x:Name="BatteryChart"
+        Series="{Binding ViewModel.Series}"
+        XAxes="{Binding ViewModel.XAxes}"
+        YAxes="{Binding ViewModel.YAxes}"
+        Height="400"/>
+    <StackPanel Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                Margin="0,20,0,0"
+                Spacing="12">
+      <Button Content="⟨ Previous" Click="PreviousPage_Click"
+              IsEnabled="{Binding CanGoPrevious, Mode=OneWay}" />
+
+      <TextBlock Text="{Binding CurrentPage, Mode=OneWay}"
+                 VerticalAlignment="Center"
+                 FontWeight="SemiBold" />
+
+      <TextBlock Text=" / "
+                 VerticalAlignment="Center"
+                 FontWeight="SemiBold" />
+
+      <TextBlock Text="{Binding TotalPages, Mode=OneWay}"
+                 VerticalAlignment="Center"
+                 FontWeight="SemiBold" />
+
+      <Button Content="Next ⟩" Click="NextPage_Click"
+              IsEnabled="{Binding CanGoNext, Mode=OneWay}" />
+    </StackPanel>
+
+  </StackPanel>
+
+</Page>

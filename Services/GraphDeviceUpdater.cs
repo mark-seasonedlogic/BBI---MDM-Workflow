@@ -12,8 +12,10 @@ using NLog.LayoutRenderers;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
 using System.Threading;
+using BBIHardwareSupport.MDM.IntuneConfigManager.Interfaces;
+using System.Text.RegularExpressions;
 
-public class GraphDeviceUpdater
+public class GraphDeviceUpdater : IGraphDeviceUpdater
 {
     private readonly GraphAuthHelper _graphAuthHelper;
     private readonly GraphServiceClient _graphClient;
@@ -213,6 +215,64 @@ public class GraphDeviceUpdater
         catch (Exception ex)
         {
             await ShowMessageAsync($"Error: {ex.Message}");
+        }
+    }
+    public async Task RenameDeviceBasedOnConventionAsync(
+    string managedDeviceId,
+    string concept,
+    string restaurantNumber,
+    string deviceFunction,
+    string deviceNumber)
+    {
+
+        
+        try
+        {
+            var device = await _graphClient.DeviceManagement.ManagedDevices[managedDeviceId].GetAsync(q => {
+                q.QueryParameters.Select = new[] { "id", "serialNumber", "operatingSystem", "model" };
+            });
+            //Ensure we are working qwith a device that is owned by BBI before continuing:
+            if (string.IsNullOrWhiteSpace(device.DeviceName))
+            {
+                logger.Warn($"Device name is null or empty for device ID {managedDeviceId}. Skipping rename.");
+                return;
+            }
+
+            var namePrefixPattern = @"^BBI-[A-Z]{3}\d{4}[A-Z]{3}\d{3}";
+
+            if (!Regex.IsMatch(device.DeviceName, namePrefixPattern))
+            {
+                logger.Warn($"Device name '{device.DeviceName}' does not match expected format. Skipping rename.");
+                return;
+            }
+
+            if (device == null)
+            {
+                logger.Warn($"No device found with ID {managedDeviceId}");
+                return;
+            }
+
+            string deviceType = device.OperatingSystem?.ToLower() switch
+            {
+                "ios" => "iPad",
+                "android" => "Android",
+                _ => "Unknown"
+            };
+
+            string newName = $"{concept}{restaurantNumber}{deviceFunction}{deviceNumber} {deviceType} {device.OperatingSystem} {device.SerialNumber}";
+
+            await _graphClient.DeviceManagement.ManagedDevices[managedDeviceId]
+                .PatchAsync(new ManagedDevice
+                {
+                    DeviceName = newName
+                });
+
+            logger.Info($"✅ Renamed device {managedDeviceId} to '{newName}'");
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, $"❌ Failed to rename device {managedDeviceId}");
+            throw;
         }
     }
 

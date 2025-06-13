@@ -16,15 +16,26 @@
                                  SelectionChanged="NavView_SelectionChanged">
             <controls:NavigationView.MenuItems>
                 <controls:NavigationViewItem Content="Git Manager" Icon="Save" Tag="GitManager"/>
-                <controls:NavigationViewItem Content="Intune Artifacts" Icon="Library" Tag="IntuneArtifacts"/>
+                <controls:NavigationViewItem Content="Intune Artifacts" Icon="Library" Tag="IntuneArtifactsRootPage">
+                    <controls:NavigationViewItem.MenuItems>
+                        <controls:NavigationViewItem Content="Device Configurations" Tag="DeviceConfigurationsPage"/>
+                        <controls:NavigationViewItem Content="Intune Groups" Tag="IntuneGroupsPage"/>
+                        <controls:NavigationViewItem Content="Apps" Tag="AppsPage"/>
+                        <controls:NavigationViewItem Content="Compliance Policies" Tag="CompliancePoliciesPage"/>
+                        <controls:NavigationViewItem Content="Entra Groups" Tag="EntraGroupsPage"/>
+                        <controls:NavigationViewItem Content="Update UserName" Tag="UpdateUserNamePage"/>
+                        <controls:NavigationViewItem Content="OEMConfig Profiles" Tag="OemConfigurationManagerPage"/>
+                        <controls:NavigationViewItem Content="WS1 Device Battery Drain" Tag="WS1AndroidBatteryPage"/>
+                        <controls:NavigationViewItem Content="Schema Extension Admin" Tag="SchemaExtensionAdminPage" Icon="Admin"/>
+                    </controls:NavigationViewItem.MenuItems>
+                </controls:NavigationViewItem>
             </controls:NavigationView.MenuItems>
-
             <Frame x:Name="ContentFrame"/>
         </controls:NavigationView>
 
         <!-- Command Bar -->
         <CommandBar>
-            <AppBarButton Icon="Save" Label="Save" Command="{x:Bind ViewModel.CommitChangesCommand}"/>
+            <AppBarButton Icon="Save" Label="Save"/>
             <AppBarButton Icon="Refresh" Label="Refresh" Command="{x:Bind ViewModel.GetDeviceConfigurationsCommand}"/>
             <AppBarButton Icon="Help" Label="Help" Click="ShowHelp"/>
         </CommandBar>

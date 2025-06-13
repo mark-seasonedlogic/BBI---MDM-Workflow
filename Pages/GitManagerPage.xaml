@@ -6,11 +6,11 @@
     xmlns:controls="using:Microsoft.UI.Xaml.Controls">
 
     <StackPanel Padding="30" Spacing="15">
-        <TextBlock Text="Git Repository Manager" FontSize="22" FontWeight="Bold"/>
+        <TextBlock Text="Intune Repository Manager" FontSize="22" FontWeight="Bold"/>
 
-        <TextBlock Text="Branch Name:" FontWeight="Bold"/>
-        <TextBox Width="300" Text="{x:Bind ViewModel.BranchName, Mode=TwoWay}" PlaceholderText="feature/new-branch"/>
-        <Button Content="Create Branch" Command="{x:Bind ViewModel.CreateBranchCommand}" Width="200"/>
+        <TextBlock Text="Release Name:" FontWeight="Bold"/>
+        <TextBox Width="300" Text="{x:Bind ViewModel.RepositoryRootPath, Mode=TwoWay}" PlaceholderText="feature/new-branch"/>
+        <Button Content="Create Branch" Click="CreateBranchButton_Click" Width="200"/>
 
         <Button Content="Commit Changes" Command="{x:Bind ViewModel.CommitChangesCommand}" Width="200"/>
         <Button Content="View Diff" Command="{x:Bind ViewModel.GetDiffCommand}" Width="200"/>

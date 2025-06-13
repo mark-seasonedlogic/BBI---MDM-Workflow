@@ -5,11 +5,15 @@ using BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Views;
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using BBIHardwareSupport.MDM.IntuneConfigManager.Views;
+using BBIHardwareSupport.MDM.IntuneConfigManager.Pages;
 
 namespace BBIHardwareSupport.MDM.IntuneConfigManager
 {
     public sealed partial class MainWindow : Window
     {
+        private readonly IServiceProvider _serviceProvider;
+
         public MainViewModel ViewModel { get; }
 
         public MainWindow()
@@ -23,7 +27,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
             {
                 rootElement.DataContext = ViewModel;
             }
-
+            _serviceProvider = App.Services;
             // Set initial page
             ContentFrame.Navigate(typeof(GitManagerPage));
         }
@@ -56,6 +60,22 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
                     case "Settings":
                         ContentFrame.Navigate(typeof(SettingsPage));
                         break;
+                    case "WS1AndroidBatteryPage":
+                        ContentFrame.Navigate(typeof(WS1AndroidBatteryPage));
+                        break;
+                    case "IntuneGroupsPage":
+                        var groupPage = _serviceProvider.GetRequiredService<IntuneGroupsPage>();
+                        ContentFrame.Content = groupPage;
+                        break;
+                    case "DeviceConfigurationsPage":
+                        var page = _serviceProvider.GetRequiredService<OemConfigurationManagerPage>();
+                        ContentFrame.Content = page;
+                        break;
+                    case "SchemaExtensionAdminPage":
+                        var adminPage = _serviceProvider.GetRequiredService <SchemaExtensionAdminPage>();
+                        ContentFrame.Content = adminPage;
+                        break;
+
                 }
             }
         }
