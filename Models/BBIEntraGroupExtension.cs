@@ -13,8 +13,14 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Models
         public string? RestaurantNumber { get; set; }
         public string? RestaurantName { get; set; }
         public string? RegionId { get; set; } // Optional/future
-        public const string ExtensionId = "bbiEntraGroupExtension";
+        public const string ExtensionId = "com.bbi.entra.group.metadata";
         public static string Prefix => $"extension_{ExtensionId}_";
+        public  enum ConceptPrefix
+        {
+            OBS = 1,
+            BFG = 6,
+            CIG = 7
+        }
     }
 
 }

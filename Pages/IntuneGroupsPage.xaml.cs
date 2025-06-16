@@ -29,6 +29,14 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Views
         {
             this.InitializeComponent();
             this.DataContext = viewModel;
+
+            this.Loaded += async (s, e) =>
+            {
+                if (this.DataContext is IntuneGroupsPageViewModel vm)
+                {
+                    await vm.OnLoadedAsync();
+                }
+            };
         }
     }
 }

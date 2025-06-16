@@ -45,6 +45,77 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
                         setting["appConfigKeyValue"]?.ToString() == storeIdentifier))
                 .ToList();
         }
+        public async Task<JObject?> CloneManagedAppConfigurationAsync(JObject originalConfig, string newDisplayName, Dictionary<string, object> tokenReplacements = null)
+        {
+            var configArray = (JArray)originalConfig["value"];
+            var sourceConfig = (JObject?)configArray?.FirstOrDefault();
+            
+            //perform replacements if provided
+            if (tokenReplacements != null)
+            {
+                foreach (var kvp in tokenReplacements)
+                {
+                    string token = $"{{{{{kvp.Key}}}}}";
+                    string value = kvp.Value?.ToString() ?? "";
+
+                    // Replace in top-level string fields (like Description)
+                    foreach (var prop in sourceConfig.Properties().Where(p => p.Value.Type == JTokenType.String))
+                    {
+                        string original = prop.Value.ToString();
+                        if (original.Contains(token))
+                            prop.Value = original.Replace(token, value);
+                    }
+
+                    // Replace in settings
+                    if (sourceConfig["settings"] is JArray settingsArray)
+                    {
+                        foreach (var setting in settingsArray.OfType<JObject>())
+                        {
+                            foreach (var settingProp in setting.Properties().Where(p => p.Value.Type == JTokenType.String))
+                            {
+                                string original = settingProp.Value.ToString();
+                                if (original.Contains(token))
+                                    settingProp.Value = original.Replace(token, value);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (sourceConfig == null)
+            {
+                _logger.LogError("No source configuration found to clone.");
+                return null;
+            }
+            // Clone base structure
+            var clonedConfig = new JObject
+            {
+                ["@odata.type"] = sourceConfig["@odata.type"] ?? "#microsoft.graph.iosMobileAppConfiguration",
+                ["displayName"] = newDisplayName,
+                ["description"] = "Cloned from " + (sourceConfig["displayName"] ?? "unknown"),
+                ["targetedMobileApps"] = sourceConfig["targetedMobileApps"],
+                ["roleScopeTagIds"] = sourceConfig["roleScopeTagIds"] ?? new JArray("0"),
+                ["settings"] = sourceConfig["settings"]
+            };
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://graph.microsoft.com/beta/deviceAppManagement/mobileAppConfigurations")
+            {
+                Content = new StringContent(clonedConfig.ToString(), Encoding.UTF8, "application/json")
+            };
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await _authService.GetAccessTokenAsync());
+
+            var response = await _httpClient.SendAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                //replace tokens if provided
+
+                return JObject.Parse(json);
+            }
+
+            _logger.LogError($"Clone failed: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
+            return null;
+        }
 
         public async Task<JObject?> GetConfigurationByAppIdAsync(string appId)
         {
@@ -95,7 +166,37 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
             );
         }
 
+        public async Task<List<JObject>> FindManagedAppConfigurationsByTargetedAppAsync(
+    string targetedAppId,
+    string? platformTypeHint = null,
+    string? odataAppType = null)
+        {
+            var allConfigs = await GetAllConfigurationsAsync();
 
+            var matchingConfigs = allConfigs.Where(cfg =>
+                cfg["targetedMobileApps"] is JArray apps &&
+                apps.Any(app => app?.ToString().Equals(targetedAppId, StringComparison.OrdinalIgnoreCase) == true) &&
+                (string.IsNullOrWhiteSpace(platformTypeHint) ||
+                 cfg["@odata.type"]?.ToString()?.Contains(platformTypeHint, StringComparison.OrdinalIgnoreCase) == true) &&
+                (string.IsNullOrWhiteSpace(odataAppType) ||
+                 cfg["@odata.type"]?.ToString()?.Equals(odataAppType, StringComparison.OrdinalIgnoreCase) == true)
+            ).ToList();
+
+            return matchingConfigs;
+        }
+
+
+
+        public async Task<JObject?> GetManagedAppConfigurationByIdAsync(string configId)
+        {
+            var requestUrl = $"https://graph.microsoft.com/beta/deviceAppManagement/mobileAppConfigurations?$filter=id eq '{configId}'";
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await _authService.GetAccessTokenAsync());
+
+            var response = await _httpClient.SendAsync(request);
+            var json = await response.Content.ReadAsStringAsync();
+            return response.IsSuccessStatusCode ? JObject.Parse(json) : null;
+        }
     }
 
 }

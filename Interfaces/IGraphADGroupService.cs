@@ -19,6 +19,8 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Interfaces
         Task AddOrUpdateOpenExtensionAsync(string groupId, string extensionId, IDictionary<string, object> extensionData);
         Task<OpenTypeExtension?> GetGroupExtensionMetadataAsync(string groupId, string extensionName);
         Task<Group> FindGroupByDisplayNameAsync(string displayName);
+        Task<Group> FindOrCreateDynamicGroupAsync(string groupName, string groupDisplay, string groupRule);
+
 
 
     }

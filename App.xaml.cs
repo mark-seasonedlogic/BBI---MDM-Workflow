@@ -69,6 +69,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
             services.AddScoped<OemConfigurationManagerPage>();
             services.AddScoped<IGraphIntuneConfigurationService, GraphIntuneConfigurationService>();
             services.AddScoped<IGraphIntuneManagedAppService, GraphIntuneManagedAppService>();
+            services.AddScoped<IGraphDeviceCategoryService, GraphDeviceCategoryService>();
 
             services.AddHttpClient();
             services.AddScoped<IAppConfigTemplateHelper, AppConfigTemplateHelper>();

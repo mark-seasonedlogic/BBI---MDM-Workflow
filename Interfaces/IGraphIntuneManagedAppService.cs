@@ -11,6 +11,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Interfaces
     {
         Task<JObject?> GetManagedAppByIdAsync(string appId);
         Task<JObject?> GetManagedAppByNameAsync(string appName);
+        Task<JObject?> AssignAppToGroupAsync(string appId, string groupId);
     }
 
 }

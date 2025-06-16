@@ -14,6 +14,9 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Interfaces
         Task<List<JObject>> GetOemConfigurationsAsync();
         Task<JObject> FindManagedAppConfigurationByTargetedAppAsync(string applicationName, string? platformTypeHint = null);
         Task<JObject?> GetConfigurationByAppIdAsync(string appId);
+        Task<JObject?> GetManagedAppConfigurationByIdAsync(string appId);
+        Task<JObject?> CloneManagedAppConfigurationAsync(JObject originalConfig, string newDisplayName, Dictionary<string, object> tokenReplacements = null);
+        Task<List<JObject>> FindManagedAppConfigurationsByTargetedAppAsync(string targetedAppId, string? platformTypeHint = null, string? odataAppType = null);
     }
 
 }

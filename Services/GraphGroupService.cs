@@ -1,4 +1,5 @@
-﻿using BBIHardwareSupport.MDM.IntuneConfigManager.Interfaces;
+﻿using Azure.Core;
+using BBIHardwareSupport.MDM.IntuneConfigManager.Interfaces;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
@@ -40,36 +41,37 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
 
         public async Task<string> CreateDynamicGroupAsync(string displayName, string description, string membershipRule, List<string> ownerIds)
         {
-            using var client = new System.Net.Http.HttpClient();
             if (string.IsNullOrWhiteSpace(displayName)) throw new ArgumentException("DisplayName must not be empty.");
             if (string.IsNullOrWhiteSpace(membershipRule)) throw new ArgumentException("Membership rule must not be empty.");
             if (ownerIds == null || ownerIds.Count == 0) throw new ArgumentException("At least one owner must be specified.");
 
+            var token = await _authService.GetAccessTokenAsync();
+
+            using var request = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Post, "https://graph.microsoft.com/v1.0/groups");
+
             // Build owners @odata.bind list
-            var ownersODataBind = new List<string>();
-            foreach (var ownerId in ownerIds)
-            {
-                ownersODataBind.Add($"https://graph.microsoft.com/v1.0/users/{ownerId}");
-            }
+            var ownersODataBind = ownerIds
+                .Select(ownerId => $"https://graph.microsoft.com/v1.0/users/{ownerId}")
+                .ToList();
 
-            // Create the dynamic group payload
             var groupPayload = new Dictionary<string, object>
-{
-    { "description", description },
-    { "displayName", displayName },
-    { "mailEnabled", false },
-    { "mailNickname", GenerateMailNickname(displayName) },
-    { "securityEnabled", true },
-    { "groupTypes", new[] { "DynamicMembership" } },
-    { "membershipRule", membershipRule },
-    { "membershipRuleProcessingState", "On" },
-    { "owners@odata.bind", ownersODataBind }
-};
+    {
+        { "description", description },
+        { "displayName", displayName },
+        { "mailEnabled", false },
+        { "mailNickname", GenerateMailNickname(displayName) },
+        { "securityEnabled", true },
+        { "groupTypes", new[] { "DynamicMembership" } },
+        { "membershipRule", membershipRule },
+        { "membershipRuleProcessingState", "On" },
+        { "owners@odata.bind", ownersODataBind }
+    };
 
-            var content = new StringContent(JsonConvert.SerializeObject(groupPayload), Encoding.UTF8, "application/json");
+            string json = JsonConvert.SerializeObject(groupPayload);
+            request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await client.PostAsync("https://graph.microsoft.com/v1.0/groups", content);
-
+            var response = await _httpClient.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
@@ -78,8 +80,6 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
 
             var responseContent = await response.Content.ReadAsStringAsync();
             var createdGroup = JsonConvert.DeserializeObject<dynamic>(responseContent);
-
-            // Return the ID of the created group
             return createdGroup.id;
         }
 
@@ -102,7 +102,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
             return obj?.Value ?? new List<Group>();
         }
 
-        
+
 
         private class GroupListWrapper
         {
@@ -251,9 +251,26 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
             return result?.Value?.FirstOrDefault();
         }
 
+        public async Task<Group> FindOrCreateDynamicGroupAsync(string groupName, string groupDisplay, string groupRule)
+        {
+            Group resultGroup = null;
+            var client = await _authService.GetAuthenticatedGraphClientAsync();
+            var result = await client.Groups
+                .GetAsync(config =>
+                {
+                    config.QueryParameters.Filter = $"displayName eq '{groupDisplay}'";
+                });
+            if(result?.Value?.FirstOrDefault() != null && result.Value.Any())
+            {
+                resultGroup = result.Value.First();
+            }
+            else
+            {
+                //Group not found.  It should be created
+            }
+                return resultGroup;
 
-
-
+        }
     }
 
 }

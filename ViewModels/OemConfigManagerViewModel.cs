@@ -57,7 +57,42 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels
             }
         }
 
+        [RelayCommand]
+        public async Task TestCloneOemConfigAsync()
+        {
+            var inputName = await UiDialogHelper.PromptForTextAsync("Enter Source Configuration ID:");
+            if (string.IsNullOrWhiteSpace(inputName))
+                return;
+            // Step 1: Search all configs that target this app ID
+            var config = await _configService.GetManagedAppConfigurationByIdAsync(inputName);
+            if (config != null)
+            {
+                await UiDialogHelper.ShowMessageAsync(
+                    $"✅ Config found for ID: {config["id"]}:\n\nConfig Name: {config["displayname"]}"
+                );
+            }
+            else
+            {
+                await UiDialogHelper.ShowMessageAsync(
+                    $"❌ No configuration found for ID '{inputName}')."
+                );
+                return;
+            }
+            // Step 2: Clone the configuration
+            var newConfig = await _configService.CloneManagedAppConfigurationAsync(config,"BBI - Olo Expo Master");
+            if (newConfig == null)
+            {
+                await UiDialogHelper.ShowMessageAsync("❌ Unable to clone configuration!");
+                return;
+            }
+            else
+            {
+                await UiDialogHelper.ShowMessageAsync("✅ Successfully cloned: {config[\"displayname\"]}\n\nNew Config ID: {config[\"id\"]}\nNew Config Name: {config[\"displayname\"]}");
+                return;
+            }
 
+ 
+        }
 
         public OemConfigManagerViewModel(
             IGraphIntuneConfigurationService configService,

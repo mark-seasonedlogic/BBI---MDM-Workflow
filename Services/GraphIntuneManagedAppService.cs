@@ -1,5 +1,6 @@
 ﻿using BBIHardwareSupport.MDM.IntuneConfigManager.Interfaces;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,44 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
             _authService = authService;
             _logger = logger;
         }
+
+        public async Task<JObject?> AssignAppToGroupAsync(string appId, string groupId)
+        {
+            var assignUrl = $"https://graph.microsoft.com/v1.0/deviceAppManagement/mobileApps/{appId}/assign";
+
+            var assignmentPayload = new
+            {
+                mobileAppAssignments = new[]
+                {
+            new
+            {
+                target = new Dictionary<string, object>
+                {
+                    { "@odata.type", "#microsoft.graph.groupAssignmentTarget" },
+                    { "groupId", groupId }
+                },
+                intent = "required"
+            }
+        }
+            };
+
+            var json = JsonConvert.SerializeObject(assignmentPayload);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var token = await _authService.GetAccessTokenAsync();
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await _httpClient.PostAsync(assignUrl, content);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new ApplicationException($"Failed to assign app. Status: {response.StatusCode}. Details: {responseContent}");
+            }
+
+            return JObject.Parse(responseContent);
+        }
+
 
         public async Task<JObject?> GetManagedAppByIdAsync(string appId)
         {

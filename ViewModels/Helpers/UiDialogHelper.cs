@@ -52,18 +52,40 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Helpers
             var result = await dialog.ShowAsync();
             return result == ContentDialogResult.Primary ? inputBox.Text : null;
         }
-
-        public static async Task ShowMessageAsync(string message)
+        public static async Task ShowMessageAsync(string message, string title = "Information")
         {
+            var textBox = new TextBox
+            {
+
+                IsReadOnly = true,
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.Wrap,
+                //VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                //HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                MinHeight = 200,
+                MaxHeight = 400
+            };
+            textBox.Text = message;
+            var scrollViewer = new ScrollViewer
+            {
+                Content = textBox,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+                MaxHeight = 400
+            };
+
             var dialog = new ContentDialog
             {
-                Title = "Info",
-                Content = new TextBlock { Text = message, TextWrapping = TextWrapping.Wrap },
-                CloseButtonText = "OK",
-                XamlRoot = App.MainWindow.Content.XamlRoot
+                Title = title,
+                Content = scrollViewer,
+                PrimaryButtonText = "Close",
+                XamlRoot = App.MainWindow.Content.XamlRoot // or your view's XamlRoot
             };
 
             await dialog.ShowAsync();
         }
+
+
+
     }
 }
