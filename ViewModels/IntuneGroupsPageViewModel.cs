@@ -167,10 +167,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels
             var group = await _groupService.FindGroupByDisplayNameAsync(groupDisplay);
             if (group == null)
             {
-                List<string> owners = new List<string>
-        {
-            "2c1c9531-75bd-4cf1-897d-e1869dc5deec"
-        };
+                List<string> owners = new List<string> {"2c1c9531-75bd-4cf1-897d-e1869dc5deec"};
                 groupId = await _groupService.CreateDynamicGroupAsync(groupDisplay, groupDisplay, groupRule, owners);
                 if (String.IsNullOrEmpty(groupId))
                 {
@@ -179,7 +176,13 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels
                 }
             }
 
-            // 2. Assign OpenExtension metadata
+            // 2. Assign OpenExtension metadata if it doesn't exist
+            var existingExtension = await _groupService.GetOpenExtensionAsync(group.Id, "com.bbi.entra.group.metadata");
+            if(existingExtension != null && existingExtension.ContainsKey("RestaurantCdId") && existingExtension["RestaurantCdId"].ToString() == $"{cdId}_{number}")
+            {
+                await UiDialogHelper.ShowMessageAsync($"✅ Group {groupDisplay} already has the correct metadata.");
+                return;
+            }
             Dictionary<string, object> metadata = new Dictionary<string, object>
     {
         { "BrandAbbreviation", brand },

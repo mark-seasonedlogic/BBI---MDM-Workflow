@@ -28,10 +28,10 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
         private readonly string _endpoint;
         private readonly System.Net.Http.HttpClient _httpClient;
         private readonly IGraphAuthService _authService;
-        private readonly ILogger<GraphIntuneConfigurationService> _logger;
+        private readonly ILogger<GraphGroupService> _logger;
 
 
-        public GraphGroupService(System.Net.Http.HttpClient httpClient, IGraphAuthService authService, ILogger<GraphIntuneConfigurationService> logger, string endpoint = "https://graph.microsoft.com/v1.0/group")
+        public GraphGroupService(System.Net.Http.HttpClient httpClient, IGraphAuthService authService, ILogger<GraphGroupService> logger, string endpoint = "https://graph.microsoft.com/v1.0/group")
         {
             _endpoint = endpoint;
             _httpClient = httpClient;
@@ -41,10 +41,23 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
 
         public async Task<string> CreateDynamicGroupAsync(string displayName, string description, string membershipRule, List<string> ownerIds)
         {
-            if (string.IsNullOrWhiteSpace(displayName)) throw new ArgumentException("DisplayName must not be empty.");
-            if (string.IsNullOrWhiteSpace(membershipRule)) throw new ArgumentException("Membership rule must not be empty.");
-            if (ownerIds == null || ownerIds.Count == 0) throw new ArgumentException("At least one owner must be specified.");
-
+            _logger.LogDebug("Creating dynamic group with displayName: {DisplayName}, description: {Description}, membershipRule: {MembershipRule}, ownerIds: {OwnerIds}", displayName, description, membershipRule, string.Join(", ", ownerIds));
+            if (string.IsNullOrWhiteSpace(displayName))
+            {
+                _logger.LogError("DisplayName cannot be empty when creating a dynamic group.");
+                throw new ArgumentException("DisplayName must not be empty.");
+            }
+            if (string.IsNullOrWhiteSpace(membershipRule))
+            {
+                _logger.LogError("MembershipRule cannot be empty when creating a dynamic group.");
+                throw new ArgumentException("Membership rule must not be empty.");
+            }
+            if (ownerIds == null || ownerIds.Count == 0)
+            {
+                _logger.LogError("At least one owner must be specified when creating a dynamic group.");
+                throw new ArgumentException("At least one owner must be specified.");
+            }
+            _logger.LogDebug("Fetching API access token for group creation.");
             var token = await _authService.GetAccessTokenAsync();
 
             using var request = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Post, "https://graph.microsoft.com/v1.0/groups");
@@ -66,15 +79,17 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
         { "membershipRuleProcessingState", "On" },
         { "owners@odata.bind", ownersODataBind }
     };
+            _logger.LogDebug("Group payload: {GroupPayload}", JsonConvert.SerializeObject(groupPayload, Formatting.Indented));
 
             string json = JsonConvert.SerializeObject(groupPayload);
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
+            _logger.LogInformation("Sending request to create dynamic group: {RequestUri}", request.RequestUri);
             var response = await _httpClient.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Failed to create group. Status: {StatusCode}, Details: {ErrorContent}", response.StatusCode, errorContent);
                 throw new ApplicationException($"Failed to create group. Status: {response.StatusCode}. Details: {errorContent}");
             }
 
@@ -110,6 +125,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
         }
         public async Task<BBIEntraGroupExtension?> GetBbiGroupExtensionAsync(string groupId)
         {
+            _logger.LogInformation("Fetching BBI group extension for group ID: {GroupId}", groupId);
             var token = await _authService.GetAccessTokenAsync();
 
             var selectFields = string.Join(",", new[]
@@ -128,8 +144,11 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
             var response = await _httpClient.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
-            if (!response.IsSuccessStatusCode) return null;
-
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogError("Failed to fetch BBI group extension. Status: {StatusCode}, Details: {ErrorContent}", response.StatusCode, json);
+                return null;
+            }
             var jObj = JObject.Parse(json);
             return new BBIEntraGroupExtension
             {
@@ -142,49 +161,67 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
         }
         public async Task<bool> SetBbiGroupExtensionAsync(string groupId, BBIEntraGroupExtension extension)
         {
-            var token = await _authService.GetAccessTokenAsync();
-            var body = new JObject();
-
-            void Set(string name, string? value)
+            _logger.LogInformation("Setting BBI group extension for group ID: {GroupId}", groupId);
+            try
             {
-                if (!string.IsNullOrWhiteSpace(value))
-                    body[$"{BBIEntraGroupExtension.Prefix}{name}"] = value;
+                var token = await _authService.GetAccessTokenAsync();
+                var body = new JObject();
+
+                void Set(string name, string? value)
+                {
+                    if (!string.IsNullOrWhiteSpace(value))
+                        body[$"{BBIEntraGroupExtension.Prefix}{name}"] = value;
+                }
+
+                Set("restaurantCdId", extension.RestaurantCdId);
+                Set("brandAbbreviation", extension.BrandAbbreviation);
+                Set("restaurantNumber", extension.RestaurantNumber);
+                Set("restaurantName", extension.RestaurantName);
+                Set("regionId", extension.RegionId);
+                _logger.LogDebug("Setting BBI group extension with body: {Body}", body.ToString(Formatting.Indented));
+                var request = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Patch, $"https://graph.microsoft.com/v1.0/groups/{groupId}")
+                {
+                    Headers = { Authorization = new AuthenticationHeaderValue("Bearer", token) },
+                    Content = new StringContent(body.ToString(), Encoding.UTF8, "application/json")
+                };
+
+                var response = await _httpClient.SendAsync(request);
+                return response.IsSuccessStatusCode;
             }
-
-            Set("restaurantCdId", extension.RestaurantCdId);
-            Set("brandAbbreviation", extension.BrandAbbreviation);
-            Set("restaurantNumber", extension.RestaurantNumber);
-            Set("restaurantName", extension.RestaurantName);
-            Set("regionId", extension.RegionId);
-
-            var request = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Patch, $"https://graph.microsoft.com/v1.0/groups/{groupId}")
+            catch (Exception ex)
             {
-                Headers = { Authorization = new AuthenticationHeaderValue("Bearer", token) },
-                Content = new StringContent(body.ToString(), Encoding.UTF8, "application/json")
-            };
-
-            var response = await _httpClient.SendAsync(request);
-            return response.IsSuccessStatusCode;
+                _logger.LogError(ex, "Error setting BBI group extension for group ID: {GroupId}.  Exception:\n{ExceptionMessage}\nStack Trace:\n{StackTrace}", groupId, ex.Message, ex.StackTrace);
+                return false;
+            }
         }
         public async Task AddOrUpdateGroupOpenExtensionAsync(string groupId, IDictionary<string, object> extensionData)
         {
-            var client = await _authService.GetAuthenticatedGraphClientAsync();
-
-            var extension = new OpenTypeExtension
-            {
-                ExtensionName = "com.bbi.entra.group.metadata",
-                AdditionalData = extensionData
-            };
-
+            _logger.LogInformation("Adding or updating open extension for group ID: {GroupId}", groupId);
             try
             {
-                await client.Groups[groupId].Extensions.PostAsync(extension);
+                var client = await _authService.GetAuthenticatedGraphClientAsync();
+
+                var extension = new OpenTypeExtension
+                {
+                    ExtensionName = "com.bbi.entra.group.metadata",
+                    AdditionalData = extensionData
+                };
+
+                try
+                {
+                    await client.Groups[groupId].Extensions.PostAsync(extension);
+                }
+                catch (ServiceException ex) when ((int)ex.ResponseStatusCode == (int)System.Net.HttpStatusCode.Conflict)
+                {
+                    // If already exists, do PATCH
+                    await client.Groups[groupId].Extensions["com.bbi.entra.group.metadata"]
+                        .PatchAsync(extension);
+                }
             }
-            catch (ServiceException ex) when ((int)ex.ResponseStatusCode == (int)System.Net.HttpStatusCode.Conflict)
+            catch (Exception ex)
             {
-                // If already exists, do PATCH
-                await client.Groups[groupId].Extensions["com.bbi.entra.group.metadata"]
-                    .PatchAsync(extension);
+                _logger.LogError(ex, "Error adding or updating open extension for group ID: {GroupId}. Exception:\n{ExceptionMessage}\nStack Trace:\n{StackTrace}", groupId, ex.Message, ex.StackTrace);
+                throw;
             }
         }
         public async Task<IDictionary<string, object>?> GetGroupOpenExtensionAsync(string groupId)
