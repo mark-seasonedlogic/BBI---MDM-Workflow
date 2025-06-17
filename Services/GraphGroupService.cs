@@ -242,9 +242,17 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
         }
         public async Task<IDictionary<string, object>> GetOpenExtensionAsync(string groupId, string extensionId)
         {
+            Extension extension = null;
             var client = await _authService.GetAuthenticatedGraphClientAsync();
-            var extension = await client.Groups[groupId].Extensions[extensionId].GetAsync();
-            return extension.AdditionalData;
+            try
+            {
+                extension = await client.Groups[groupId].Extensions[extensionId].GetAsync();
+            }
+            catch (Exception ex) when (ex.Message == "Extension with given id not found.")
+            {
+                _logger.LogDebug("Extension '{ExtensionId}' not found on group '{GroupId}'", extensionId, groupId);
+            }
+            return extension?.AdditionalData;
         }
         public async Task AddOrUpdateOpenExtensionAsync(string groupId, string extensionId, IDictionary<string, object> extensionData)
         {

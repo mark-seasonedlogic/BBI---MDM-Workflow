@@ -11,6 +11,7 @@ using BBIHardwareSupport.MDM.IntuneConfigManager.Models;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using Windows.Services.Maps;
 using static BBIHardwareSupport.MDM.IntuneConfigManager.Models.BBIEntraGroupExtension;
@@ -23,13 +24,15 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels
         private readonly IGraphIntuneManagedAppService _appService;
         private readonly IGraphIntuneConfigurationService _configService;
         private readonly IGraphDeviceCategoryService _deviceCategoryService;
+        private readonly ILogger<IntuneGroupsPageViewModel> _logger;
 
-        public IntuneGroupsPageViewModel(IGraphADGroupService groupService, IGraphIntuneManagedAppService appService, IGraphIntuneConfigurationService configService,IGraphDeviceCategoryService deviceCategoryService)
+        public IntuneGroupsPageViewModel(IGraphADGroupService groupService, IGraphIntuneManagedAppService appService, IGraphIntuneConfigurationService configService,IGraphDeviceCategoryService deviceCategoryService, ILogger<IntuneGroupsPageViewModel> logger)
         {
             _groupService = groupService;
             _appService = appService;
             _configService = configService;
             _deviceCategoryService = deviceCategoryService;
+            _logger = logger;
 
 
 
@@ -44,7 +47,13 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels
                 ImagePath = "ms-appx:///Assets/Device_Enrolled.png",
                 ExecuteCommand = new AsyncRelayCommand(SimulateEnrollmentAsync)
             });
-
+            SimulationItems.Add(new SimulationItem
+            {
+                Title = "Inspect Group Custom Metadata",
+                Description = "Display Custom Metadata for an Intune Group.",
+                ImagePath = "ms-appx:///Assets/Group_Metadata.png",
+                ExecuteCommand = new RelayCommand(() => Debug.WriteLine("Group Metadata"))
+            });
             SimulationItems.Add(new SimulationItem
             {
                 Title = "Simulate Rename Event",
@@ -127,130 +136,156 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// Handles a simulated enrollment scenario for a device.
+        /// </summary>
         private async Task SimulateEnrollmentWorkflowAsync(string deviceName)
         {
-            string brand = deviceName[..3];
-            string number = deviceName.Substring(3, 4);
-            string function = deviceName[7..];
+            try
+            {
+                _logger.LogInformation("Starting simulated enrollment workflow for device: {DeviceName}", deviceName);
 
-            int cdId = 0;
-            if (Enum.TryParse<ConceptPrefix>(brand, out var result))
-            {
-                cdId = (int)result;
-            }
-            else
-            {
-                return;
-            }
-
-            // Ensure device category exists (only for CIM devices)
-            if (function.ToUpperInvariant() == "CIM")
-            {
-                var deviceCategory = await _deviceCategoryService.GetDeviceCategoryByNameAsync($"BBI - iOS {function}");
-                if (deviceCategory == null)
+                // 1. Parse device name
+                if (deviceName.Length < 8)
                 {
-                    deviceCategory = await _deviceCategoryService.CreateDeviceCategoryAsync($"BBI - iOS {function}", $"iOS devices for {function} function");
-                    if (deviceCategory == null)
+                    _logger.LogWarning("Device name too short to parse required components: {DeviceName}", deviceName);
+                    await UiDialogHelper.ShowMessageAsync("Invalid device name format.");
+                    return;
+                }
+
+                string brand = deviceName[..3];
+                string number = deviceName.Substring(3, 4);
+                string function = deviceName[7..];
+
+                if (!Enum.TryParse<ConceptPrefix>(brand, out var conceptPrefix))
+                {
+                    _logger.LogError("Unrecognized brand abbreviation: {Brand}", brand);
+                    await UiDialogHelper.ShowMessageAsync("Unrecognized brand code.");
+                    return;
+                }
+
+                int cdId = (int)conceptPrefix;
+                string groupRule = string.Empty;
+
+                // 2. Ensure device category (only needed for CIM)
+                if (function.Equals("CIM", StringComparison.OrdinalIgnoreCase))
+                {
+                    string categoryName = $"BBI - iOS {function}";
+                    var category = await _deviceCategoryService.GetDeviceCategoryByNameAsync(categoryName);
+                    if (category == null)
                     {
-                        await UiDialogHelper.ShowMessageAsync($"❌ Unable to create device category BBI - iOS {function}.");
+                        category = await _deviceCategoryService.CreateDeviceCategoryAsync(categoryName, $"iOS devices for {function} function");
+                        if (category == null)
+                        {
+                            _logger.LogError("Failed to create device category: {CategoryName}", categoryName);
+                            await UiDialogHelper.ShowMessageAsync($"❌ Unable to create device category {categoryName}.");
+                            return;
+                        }
+                    }
+
+                    groupRule = $"(device.displayName -startsWith \"{brand}{number}\") and (device.deviceCategory -eq \"{categoryName}\")";
+                }
+
+                // 3. Ensure group exists and metadata is correct
+                string groupDisplay = $"{brand} {number} - {function}";
+                var group = await _groupService.FindGroupByDisplayNameAsync(groupDisplay);
+                string groupId = group?.Id ?? string.Empty;
+
+                if (group == null)
+                {
+                    List<string> owners = new() { "2c1c9531-75bd-4cf1-897d-e1869dc5deec" }; // Mark Young ADM
+                    groupId = await _groupService.CreateDynamicGroupAsync(groupDisplay, groupDisplay, groupRule, owners);
+                    if (string.IsNullOrEmpty(groupId))
+                    {
+                        _logger.LogError("Failed to create dynamic group for {Display}", groupDisplay);
+                        await UiDialogHelper.ShowMessageAsync($"❌ Failed to create the group {groupDisplay}");
                         return;
                     }
                 }
-            }
 
-            string groupName = $"{brand}{number}";
-            string groupDisplay = $"{brand} {number} - {function}";
-            string groupRule = $"(device.displayName -startsWith \"{brand}{number}\") and (device.deviceCategory -eq \"BBI - iOS {function}\")";
-            string groupId = string.Empty;
+                Dictionary<string, object> metadata = new()
+        {
+            { "BrandAbbreviation", brand },
+            { "RestaurantNumber", number },
+            { "RestaurantCdId", $"{cdId}_{number}" }
+        };
 
-            // 1. Ensure group exists (or create it)
-            var group = await _groupService.FindGroupByDisplayNameAsync(groupDisplay);
-            if (group == null)
-            {
-                List<string> owners = new List<string> {"2c1c9531-75bd-4cf1-897d-e1869dc5deec"};
-                groupId = await _groupService.CreateDynamicGroupAsync(groupDisplay, groupDisplay, groupRule, owners);
-                if (String.IsNullOrEmpty(groupId))
+                var currentMetadata = await _groupService.GetOpenExtensionAsync(groupId, "com.bbi.entra.group.metadata");
+                bool needsUpdate = currentMetadata == null || !metadata.All(kv => currentMetadata.TryGetValue(kv.Key, out var v) && v?.ToString() == kv.Value?.ToString());
+
+                if (needsUpdate)
                 {
-                    await UiDialogHelper.ShowMessageAsync($"❌ Failed to create the group {groupDisplay}");
-                    return;
+                    await _groupService.AddOrUpdateGroupOpenExtensionAsync(groupId, metadata);
+                    _logger.LogInformation("Group metadata updated for group {GroupId}", groupId);
                 }
-            }
+                else
+                {
+                    _logger.LogInformation("Group metadata already up-to-date for group {GroupId}", groupId);
+                }
 
-            // 2. Assign OpenExtension metadata if it doesn't exist
-            var existingExtension = await _groupService.GetOpenExtensionAsync(group.Id, "com.bbi.entra.group.metadata");
-            if(existingExtension != null && existingExtension.ContainsKey("RestaurantCdId") && existingExtension["RestaurantCdId"].ToString() == $"{cdId}_{number}")
-            {
-                await UiDialogHelper.ShowMessageAsync($"✅ Group {groupDisplay} already has the correct metadata.");
-                return;
-            }
-            Dictionary<string, object> metadata = new Dictionary<string, object>
-    {
-        { "BrandAbbreviation", brand },
-        { "RestaurantNumber", number },
-        { "RestaurantCdId", String.Format("{0}_{1}", cdId, number) }
-    };
-            await _groupService.AddOrUpdateGroupOpenExtensionAsync(groupId, new Dictionary<string, object>
-    {
-        { "BrandAbbreviation", brand },
-        { "RestaurantNumber", number },
-        { "RestaurantCdId", String.Format("{0}_{1}", cdId, number) }
-    });
+                // 4. Assign app if device is CIM
+                if (!function.Equals("CIM", StringComparison.OrdinalIgnoreCase)) return;
 
-            // 3. If CIM device, handle app config
-            if (function.ToUpperInvariant() == "CIM")
-            {
                 var app = await _appService.GetManagedAppByNameAsync("Olo Expo");
                 if (app == null)
                 {
+                    _logger.LogError("Olo Expo app not found.");
                     await UiDialogHelper.ShowMessageAsync("❌ Olo Expo iOS app not found.");
                     return;
                 }
+                _logger.LogInformation("Found Olo Expo app: {AppName} ({AppId}).  Assigning {AppName} to group {GroupId}", app["displayName"], app["id"], app["displayName"], groupId);
 
-                string storeIdentifierValue = $"{(int)Enum.Parse(typeof(ConceptPrefix), brand)}_{number}";
+                var assignment = await _appService.AssignAppToGroupAsync(app["id"]?.ToString(), groupId);
+                
+                string appId = app["id"]?.ToString();
+                string storeIdentifierValue = $"{cdId}_{number}";
+                var configs = await _configService.FindManagedAppConfigurationsByTargetedAppAsync(appId);
 
-                var configs = await _configService.FindManagedAppConfigurationsByTargetedAppAsync(app["id"]?.ToString());
+                var match = configs.FirstOrDefault(cfg => cfg["settings"] is JArray settings &&
+                    settings.Any(s =>
+                        s?["appConfigKey"]?.ToString() == "storeIdentifierValues" &&
+                        s?["appConfigKeyValue"]?.ToString() == storeIdentifierValue));
 
-                // Search for an existing config with correct storeIdentifierValue
-                var matchingConfig = configs.FirstOrDefault(cfg =>
+                if (match != null)
                 {
-                    var settingsArray = cfg["settings"] as JArray;
-                    return settingsArray?.Any(setting =>
-                        setting?["appConfigKey"]?.ToString() == "storeIdentifierValues" &&
-                        setting?["appConfigKeyValue"]?.ToString() == storeIdentifierValue) == true;
-                });
-
-                if (matchingConfig != null)
-                {
-                    await UiDialogHelper.ShowMessageAsync($"✅ Matching config already exists: {matchingConfig["displayName"]}");
+                    _logger.LogInformation("Matching app config already exists: {ConfigName}", match["displayName"]);
+                    await UiDialogHelper.ShowMessageAsync($"✅ Matching config already exists: {match["displayName"]}");
                     return;
                 }
 
-                // Clone the appropriate master config based on brand
-                string masterConfigId = brand switch
+                string masterId = brand switch
                 {
                     "BFG" => "2e635840-1408-4b00-a66a-5194229d8c28",
                     "CIG" => "645e588a-425c-448d-be84-43bb19fa882f",
                     "OBS" => "8e8d9201-fe77-42db-aa03-3c889ca27a1a",
-                    _ => throw new InvalidOperationException("Unknown brand.")
+                    _ => throw new InvalidOperationException("Unknown brand abbreviation.")
                 };
-
-                var masterConfig = await _configService.GetManagedAppConfigurationByIdAsync(masterConfigId);
-                if (masterConfig == null)
+                _logger.LogDebug("Retrieving master app configuration for brand {Brand} with ID {MasterId}", brand, masterId);
+                var master = await _configService.GetManagedAppConfigurationByIdAsync(masterId);
+                if (master == null)
                 {
+                    _logger.LogError("Failed to retrieve master app configuration for brand {Brand}", brand);
                     await UiDialogHelper.ShowMessageAsync("❌ Failed to retrieve master configuration.");
                     return;
                 }
+                _logger.LogDebug("Master configuration retrieved: {ConfigName}", master["displayName"]);
+                _logger.LogInformation("Cloning master configuration for brand {Brand} with number {Number}", brand, number);
 
-                var clonedConfig = await _configService.CloneManagedAppConfigurationAsync(masterConfig, $"BBI - OLO Expo - {brand}{number}", metadata);
-                if (clonedConfig == null)
+                var cloned = await _configService.CloneManagedAppConfigurationAsync(master, $"BBI - OLO Expo - {brand}{number}", metadata);
+                if (cloned == null)
                 {
+                    _logger.LogError("Failed to clone configuration from master for {Brand} {Number}", brand, number);
                     await UiDialogHelper.ShowMessageAsync("❌ Failed to clone configuration.");
                     return;
                 }
 
-                
-
-                await UiDialogHelper.ShowMessageAsync($"✅ New config cloned and updated: {clonedConfig["displayName"]}");
+                _logger.LogInformation("Successfully cloned and applied new configuration: {ConfigName}", cloned["displayName"]);
+                await UiDialogHelper.ShowMessageAsync($"✅ New config cloned and updated: {cloned["displayName"]}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unhandled exception during simulated enrollment workflow.");
+                await UiDialogHelper.ShowMessageAsync("❌ An unexpected error occurred during the workflow.");
             }
         }
 

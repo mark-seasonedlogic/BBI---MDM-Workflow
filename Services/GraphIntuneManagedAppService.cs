@@ -27,12 +27,15 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
 
         public async Task<JObject?> AssignAppToGroupAsync(string appId, string groupId)
         {
-            var assignUrl = $"https://graph.microsoft.com/v1.0/deviceAppManagement/mobileApps/{appId}/assign";
-
-            var assignmentPayload = new
+            string responseContent = string.Empty;
+            try
             {
-                mobileAppAssignments = new[]
+                var assignUrl = $"https://graph.microsoft.com/v1.0/deviceAppManagement/mobileApps/{appId}/assign";
+
+                var assignmentPayload = new
                 {
+                    mobileAppAssignments = new[]
+                    {
             new
             {
                 target = new Dictionary<string, object>
@@ -43,22 +46,27 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
                 intent = "required"
             }
         }
-            };
+                };
 
-            var json = JsonConvert.SerializeObject(assignmentPayload);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var json = JsonConvert.SerializeObject(assignmentPayload);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var token = await _authService.GetAccessTokenAsync();
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var token = await _authService.GetAccessTokenAsync();
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await _httpClient.PostAsync(assignUrl, content);
-            var responseContent = await response.Content.ReadAsStringAsync();
+                var response = await _httpClient.PostAsync(assignUrl, content);
+                responseContent = await response.Content.ReadAsStringAsync();
 
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new ApplicationException($"Failed to assign app. Status: {response.StatusCode}. Details: {responseContent}");
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Assign operation succeeded with no content.");
+                    return JObject.Parse("{\"Success\":true}"); // or return true, etc.
+                }
             }
-
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error assigning app {AppId} to group {GroupId}.\nException Message:\n{ExceptionMessage}\nStack Trace: {StackTrace}", appId, groupId, ex.Message, ex.StackTrace);
+            }
             return JObject.Parse(responseContent);
         }
 

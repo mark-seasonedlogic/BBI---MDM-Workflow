@@ -25,6 +25,8 @@ using Windows.Devices.WiFiDirect.Services;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Views;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Helpers;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Pages;
+using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -55,6 +57,14 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
         private static IServiceProvider ConfigureServices()
         {
             var services = new ServiceCollection();
+
+            // Register NLog as a logging provider
+            services.AddLogging(builder =>
+            {
+                builder.ClearProviders();         // Remove default providers
+                builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace); // Adjust as needed
+                builder.AddNLog();                // Plug in NLog
+            });
 
             // Register services and view models
             services.AddSingleton<IGraphAuthService, GraphAuthService>();

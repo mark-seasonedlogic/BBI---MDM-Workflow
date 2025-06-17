@@ -47,9 +47,10 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
         }
         public async Task<JObject?> CloneManagedAppConfigurationAsync(JObject originalConfig, string newDisplayName, Dictionary<string, object> tokenReplacements = null)
         {
+            _logger.LogInformation("Cloning configuration: {ConfigId} to new display name: {NewDisplayName}", originalConfig["id"], newDisplayName);
             var configArray = (JArray)originalConfig["value"];
             var sourceConfig = (JObject?)configArray?.FirstOrDefault();
-            
+            _logger.LogDebug("Applying token replacement to source configuration: {SourceConfig}", sourceConfig?.ToString());
             //perform replacements if provided
             if (tokenReplacements != null)
             {
@@ -63,7 +64,10 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
                     {
                         string original = prop.Value.ToString();
                         if (original.Contains(token))
+                        {
+                            _logger.LogDebug("Replacing token '{Token}' with value '{Value}' in property '{PropertyName}'", token, value, prop.Name);
                             prop.Value = original.Replace(token, value);
+                        }
                     }
 
                     // Replace in settings
@@ -75,7 +79,10 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
                             {
                                 string original = settingProp.Value.ToString();
                                 if (original.Contains(token))
+                                {
+                                    _logger.LogDebug("Replacing token '{Token}' with value '{Value}' in setting '{SettingName}'", token, value, settingProp.Name);
                                     settingProp.Value = original.Replace(token, value);
+                                }
                             }
                         }
                     }
@@ -97,19 +104,19 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
                 ["roleScopeTagIds"] = sourceConfig["roleScopeTagIds"] ?? new JArray("0"),
                 ["settings"] = sourceConfig["settings"]
             };
-
+            _logger.LogDebug("Cloned configuration structure: {ClonedConfig}", clonedConfig.ToString());
             var request = new HttpRequestMessage(HttpMethod.Post, "https://graph.microsoft.com/beta/deviceAppManagement/mobileAppConfigurations")
             {
                 Content = new StringContent(clonedConfig.ToString(), Encoding.UTF8, "application/json")
             };
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await _authService.GetAccessTokenAsync());
-
+            _logger.LogInformation("Sending request to clone configuration: {RequestUrl}", request.RequestUri);
             var response = await _httpClient.SendAsync(request);
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
                 //replace tokens if provided
-
+                _logger.LogInformation("Clone successful with status code: {StatusCode}\n{json}", response.StatusCode, json.ToString());
                 return JObject.Parse(json);
             }
 
