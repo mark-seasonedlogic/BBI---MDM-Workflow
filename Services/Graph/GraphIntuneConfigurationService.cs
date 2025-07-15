@@ -1,4 +1,5 @@
 ﻿using BBIHardwareSupport.MDM.IntuneConfigManager.Interfaces;
+using BBIHardwareSupport.MDM.Services.Authentication;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;
@@ -157,7 +158,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
         {
             var allConfigs = await GetAllConfigurationsAsync();
             return allConfigs
-                .Where(cfg => cfg["@odata.type"]?.ToString()?.Contains("androidForWork") == true)
+                //.Where(cfg => cfg["@odata.type"]?.ToString()?.Contains("androidForWork") == true)
                 .ToList();
         }
 

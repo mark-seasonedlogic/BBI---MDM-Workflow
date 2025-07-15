@@ -1,0 +1,92 @@
+<Page
+    x:Class="BBIHardwareSupport.MDM.IntuneConfigManager.Pages.WorkspaceOnePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:BBIHardwareSupport.MDM.WorkspaceOne.Models"
+    xmlns:uimodels="using:BBIHardwareSupport.MDM.IntuneConfigManager.Models"
+    xmlns:local="using:BBIHardwareSupport.MDM.IntuneConfigManager.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <!-- Move templates to Page scope -->
+        <DataTemplate x:Key="DeviceTemplate" x:DataType="models:WorkspaceOneDevice">
+            <StackPanel>
+                <TextBlock Text="{x:Bind DeviceFriendlyName}" FontWeight="Bold"/>
+                <TextBlock Text="{x:Bind SerialNumber}" FontSize="12"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="SmartGroupTemplate" x:DataType="models:WorkspaceOneSmartGroup">
+            <StackPanel>
+                <TextBlock Text="{x:Bind Name}" FontWeight="Bold"/>
+                <TextBlock Text="{x:Bind Platform}" />
+                <TextBlock Text="{x:Bind MembershipCriteriaSummary}" FontSize="12" TextWrapping="Wrap"/>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="ProductTemplate" x:DataType="models:WorkspaceOneProduct">
+            <StackPanel>
+                <TextBlock Text="{x:Bind Name}" />
+                <TextBlock Text="{x:Bind Description}" />
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="ProfileTemplate" x:DataType="models:WorkspaceOneProfileSummary">
+            <StackPanel>
+                <TextBlock Text="{x:Bind ProfileName}" />
+                <TextBlock Text="{x:Bind ProfileType}" />
+            </StackPanel>
+        </DataTemplate>
+
+
+        <local:WorkspaceOneTemplateSelector
+            x:Key="WorkspaceOneTemplateSelector"
+            DeviceTemplate="{StaticResource DeviceTemplate}"
+            SmartGroupTemplate="{StaticResource SmartGroupTemplate}" 
+            ProductTemplate="{StaticResource ProductTemplate}"
+            ProfileTemplate="{StaticResource ProfileTemplate}"/>
+    </Page.Resources>
+
+    <Grid RowDefinitions="Auto,Auto,*" Padding="12">
+
+        <!-- Row 0: Tile Buttons -->
+        <StackPanel Grid.Row="0">
+            <GridView ItemsSource="{Binding UITileItems}" IsItemClickEnabled="False" SelectionMode="None">
+                <GridView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="3"/>
+                    </ItemsPanelTemplate>
+                </GridView.ItemsPanel>
+
+                <GridView.ItemTemplate>
+                    <DataTemplate x:DataType="uimodels:UITileItem">
+                        <Button Command="{x:Bind ExecuteCommand}" Margin="8" BorderThickness="0">
+                            <Border Background="#FFF" CornerRadius="12" Padding="16" BorderBrush="#DDD" BorderThickness="1">
+                                <StackPanel HorizontalAlignment="Center" Width="220">
+                                    <Image Source="{x:Bind ImagePath}" Width="48" Height="48" Margin="0,0,0,12"/>
+                                    <TextBlock Text="{x:Bind Title}" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
+                                    <TextBlock Text="{x:Bind Description}" TextWrapping="Wrap" TextAlignment="Center" Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </Button>
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+            </GridView>
+        </StackPanel>
+
+        <!-- Row 1: Progress + Status -->
+        <StackPanel Grid.Row="1" Margin="0,12,0,8">
+            <ProgressRing IsActive="{x:Bind _viewModel.IsLoading}" Width="32" Height="32"/>
+            <TextBlock Text="{x:Bind _viewModel.DeviceTestResult}" />
+        </StackPanel>
+
+        <!-- Row 2: Dynamic ListView -->
+        <ListView Grid.Row="2"
+                  ItemsSource="{x:Bind _viewModel.DisplayedItems, Mode=OneWay}"
+                  MaxHeight="400"
+                  x:Name="WorkspaceOneDeviceListView"
+                  ItemTemplateSelector="{StaticResource WorkspaceOneTemplateSelector}"
+                  RightTapped="WorkspaceOneDeviceListView_RightTapped" />
+    </Grid>
+</Page>

@@ -3,7 +3,7 @@ using Microsoft.Graph.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
+namespace BBIHardwareSupport.MDM.Services.Authentication
 {
     public interface IGraphAuthService
     {

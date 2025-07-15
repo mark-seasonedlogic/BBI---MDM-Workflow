@@ -15,10 +15,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="JsonViewerWindow.xaml" />
     <None Remove="Pages\GitManagerPage.xaml" />
     <None Remove="Pages\OemConfigurationManagerPage.xaml" />
     <None Remove="Pages\SchemaExtensionAdminPage.xaml" />
     <None Remove="Pages\SettingsPage.xaml" />
+    <None Remove="Pages\WorkspaceOneLoginDialog.xaml" />
+    <None Remove="Pages\WorkspaceOnePage.xaml" />
+    <None Remove="Pages\WS1ApplicationsPage.xaml" />
+    <None Remove="Pages\WS1CompliancePoliciesPage.xaml" />
+    <None Remove="Pages\WS1DeviceManagementPage.xaml" />
+    <None Remove="Pages\WS1ProfilesPage.xaml" />
+    <None Remove="Pages\WS1SmartGroupsPage.xaml" />
     <None Remove="ViewModels\IntuneGroupsPage.xaml" />
   </ItemGroup>
 
@@ -53,9 +61,33 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="JsonViewerWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="Pages\WS1CompliancePoliciesPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\WS1ApplicationsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\WS1ProfilesPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\WS1SmartGroupsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\WS1DeviceManagementPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\WorkspaceOneLoginDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\WorkspaceOnePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Pages\SchemaExtensionAdminPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -74,6 +106,10 @@
     <Page Update="Pages\GitManagerPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Documentation\WorkspaceOneArtifacts\" />
   </ItemGroup>
 
   <!-- Remove MSIX-related settings -->

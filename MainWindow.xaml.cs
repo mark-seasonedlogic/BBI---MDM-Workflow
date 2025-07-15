@@ -75,6 +75,31 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
                         var adminPage = _serviceProvider.GetRequiredService <SchemaExtensionAdminPage>();
                         ContentFrame.Content = adminPage;
                         break;
+                    case "WorkspaceOnePage":
+                        var ws1Page = _serviceProvider.GetRequiredService<WorkspaceOnePage>();
+                        ContentFrame.Content = ws1Page;
+                        break;
+                    case "WS1DeviceManagementPage":
+                        var ws1DevicePage = _serviceProvider.GetRequiredService<WS1DeviceManagementPage>();
+                        ContentFrame.Content = ws1DevicePage;
+                        break;
+                    case "WS1SmartGroupsPage":
+                        var ws1SmartGroupsPage = _serviceProvider.GetRequiredService<WS1SmartGroupsPage>();
+                        ContentFrame.Content = ws1SmartGroupsPage;
+                        break;
+                    case "WS1ProfilesPage":
+                        var ws1ProfilesPage = _serviceProvider.GetRequiredService<WS1ProfilesPage>();
+                        ContentFrame.Content = ws1ProfilesPage;
+                        break;
+                    case "WS1ApplicationsPage":
+                        var ws1AppsPage = _serviceProvider.GetRequiredService<WS1ApplicationsPage>();
+                        ContentFrame.Content = ws1AppsPage;
+                        break;
+                    case "WS1CompliancePoliciesPage":
+                        var ws1CompliancePoliciesPage = _serviceProvider.GetRequiredService<WS1CompliancePoliciesPage>();
+                        ContentFrame.Content = ws1CompliancePoliciesPage;
+                        break;
+
 
                 }
             }

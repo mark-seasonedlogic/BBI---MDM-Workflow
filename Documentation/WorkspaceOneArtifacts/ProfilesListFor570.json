@@ -1,0 +1,1502 @@
+{
+  "ProfileList": [
+    {
+      "ProfileId": 491,
+      "ProfileName": "Accessibility Setting - POS Monitor",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 643,
+          "Name": "Test Astrapia Monitoring - Lab9921"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "ecb85483-6413-4e96-bdc7-6744f16b33f7",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 445,
+      "ProfileName": "AND-APP_PERM_SupportPLUS",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 562,
+          "Name": "AND-APP_PERM_SUPPORTPLUS"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "2e4ad955-6bc4-4d5a-be74-533208ec818f",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 424,
+      "ProfileName": "AND-APP-CONTROL-DENY",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 261,
+          "Name": "All OUTBACK Android POS tablets"
+        },
+        {
+          "Id": 284,
+          "Name": "All CARRABBAS Android POS tablets"
+        },
+        {
+          "Id": 285,
+          "Name": "All BONEFISH Android POS tablets"
+        },
+        {
+          "Id": 306,
+          "Name": "All FLEMINGS Android POS tablets"
+        },
+        {
+          "Id": 488,
+          "Name": "AND-APP-CONTROL-DENY-TEST-10-25-23"
+        },
+        {
+          "Id": 520,
+          "Name": "App Deny - Battery Opt - Launcher - 11-12-2023"
+        },
+        {
+          "Id": 522,
+          "Name": "App Deny - Battery - Launcher - 18 -12 - 2023"
+        },
+        {
+          "Id": 567,
+          "Name": "ALL LAB9921 Android POS Tablets"
+        },
+        {
+          "Id": 570,
+          "Name": "All OUTBACK 1016 Android POS tablets"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "0a90e9c2-4c8b-4f7e-be82-b456afd59ab6",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 431,
+      "ProfileName": "AND-BOMGAR_APP-PERM",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 310,
+          "Name": "Bomgar - ANDROID"
+        },
+        {
+          "Id": 567,
+          "Name": "ALL LAB9921 Android POS Tablets"
+        }
+      ],
+      "ExcludedSmartGroups": [
+        {
+          "Id": 552,
+          "Name": "AND-BOMGAR-PERM-TEST"
+        }
+      ],
+      "ProfileType": "Device",
+      "ProfileUuid": "4f7c7335-b19f-4ff4-9a3d-9b5a609d198b",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 440,
+      "ProfileName": "AND-BOMGAR-PERM-TEST",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 552,
+          "Name": "AND-BOMGAR-PERM-TEST"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "8e56b46d-35da-4528-bd81-5ce59d040c5f",
+      "Context": "AndroidForWork"
+    },
+    {
+	  "_comment": "The resourceType internal name for this is 'CustomSettings'",
+      "ProfileId": 457,
+      "ProfileName": "AND-CUSTOM_SETTINGS_BAT_OPT_POSI",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 261,
+          "Name": "All OUTBACK Android POS tablets"
+        },
+        {
+          "Id": 284,
+          "Name": "All CARRABBAS Android POS tablets"
+        },
+        {
+          "Id": 285,
+          "Name": "All BONEFISH Android POS tablets"
+        },
+        {
+          "Id": 593,
+          "Name": "AND-CUSTOM_SETTINGS_BAT_OPT_POSI"
+        },
+        {
+          "Id": 608,
+          "Name": "APP Optimization POSI - 05/22/24"
+        },
+        {
+          "Id": 613,
+          "Name": "APP Optimization POSI - 05/30/24"
+        },
+        {
+          "Id": 621,
+          "Name": "APP Optimization POSI - 06/04/24"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "7a3882d6-6227-401f-bfdd-86a0395a004c",
+      "Context": "AndroidForWork"
+    },
+    {
+
+	  "_comment": "The resourceType internal Name for this is 'CustomSettings'",
+      "ProfileId": 420,
+      "ProfileName": "AND-CUSTOM_SETTINGS_BATTERY",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 261,
+          "Name": "All OUTBACK Android POS tablets"
+        },
+        {
+          "Id": 284,
+          "Name": "All CARRABBAS Android POS tablets"
+        },
+        {
+          "Id": 285,
+          "Name": "All BONEFISH Android POS tablets"
+        },
+        {
+          "Id": 306,
+          "Name": "All FLEMINGS Android POS tablets"
+        },
+        {
+          "Id": 487,
+          "Name": "AND-CUSTOM_SETTINGS_BATTERY"
+        },
+        {
+          "Id": 491,
+          "Name": "AND-CUSTOM-SETTINGS-BATTERY-TEST-10-25-23"
+        },
+        {
+          "Id": 520,
+          "Name": "App Deny - Battery Opt - Launcher - 11-12-2023"
+        },
+        {
+          "Id": 522,
+          "Name": "App Deny - Battery - Launcher - 18 -12 - 2023"
+        },
+        {
+          "Id": 567,
+          "Name": "ALL LAB9921 Android POS Tablets"
+        },
+        {
+          "Id": 570,
+          "Name": "All OUTBACK 1016 Android POS tablets"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "88ccb025-8e03-4d7b-9548-768502ff0cc2",
+      "Context": "AndroidForWork"
+    },
+    {
+		
+	  "_comment": "The resourceType internal Name for this is 'CustomSettings'",
+      "ProfileId": 437,
+      "ProfileName": "AND-CUSTOM_SETTINGS_HUB",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 537,
+          "Name": "AND-CUSTOM_SETTINGS_HUB"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "00ea2e2d-6405-442e-bfa4-43f3cb91b078",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 481,
+      "ProfileName": "AND-CUSTOM_SETTINGS_READ_PHONE_STATE",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 670,
+          "Name": "AND-CUSTOM_SETTINGS_READ_PHONE_STATE"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "db155868-6948-4419-beee-4f6a9822c2cd",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 471,
+      "ProfileName": "AND-CUSTOM-SETTINGS_BOMGAR",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 567,
+          "Name": "ALL LAB9921 Android POS Tablets"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "29a1cae0-5f15-46e4-8179-4a8ba86b0c73",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 463,
+      "ProfileName": "AND-CUSTOM-SETTINGS_SENSOR",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 624,
+          "Name": "AND-CUSTOM-SETTINGS_SENSOR"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "399c923b-246f-4b0d-b903-8a978e34c2f6",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 458,
+      "ProfileName": "AND-CUSTOM-SETTINGS-NOTIFICATIONS",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 602,
+          "Name": "AND-CUSTOM-SETTINGS-NOTIFICATIONS"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "3b5aa093-7f71-42bc-bd7c-adca21db8b57",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 459,
+      "ProfileName": "AND-CUST-SETTINGS-HUB-KSP",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 604,
+          "Name": "AND-CUST-SETTINGS-HUB-KSP"
+        },
+        {
+          "Id": 646,
+          "Name": "07-09-24 - Android Profile - Roaming Settings"
+        },
+        {
+          "Id": 649,
+          "Name": "07-16-24 - Android Profile - Roaming Settings"
+        },
+        {
+          "Id": 655,
+          "Name": "07-22-24 - Android Profile"
+        },
+        {
+          "Id": 656,
+          "Name": "07-23-24 - Android Profile - Roaming Settings"
+        },
+        {
+          "Id": 658,
+          "Name": "NRO - OBS0811POS"
+        },
+        {
+          "Id": 661,
+          "Name": "07-30-24 Roaming Settings - Android Profile Update"
+        },
+        {
+          "Id": 669,
+          "Name": "NRO - OBS3671POS - OBS1422"
+        },
+        {
+          "Id": 674,
+          "Name": "08-12-24 Android Profile Update - Knox Plugin 4.0"
+        },
+        {
+          "Id": 675,
+          "Name": "08-12-24 - Android Profile - Knox Plugin 4.0 PM"
+        },
+        {
+          "Id": 685,
+          "Name": "08-22-24 Android Profile Update - KSP Roaming Settings"
+        },
+        {
+          "Id": 687,
+          "Name": "08-26-24 Android Profile Update - KSP Roaming Settings"
+        },
+        {
+          "Id": 688,
+          "Name": "08-28-24 Android Profile Update - KSP Roaming Settings"
+        },
+        {
+          "Id": 697,
+          "Name": "09-03-24 Android Profile Update - KSP Roaming Settings"
+        },
+        {
+          "Id": 699,
+          "Name": "09-04-24 Android Profile Update - KSP Roaming Settings"
+        },
+        {
+          "Id": 707,
+          "Name": "09-09-24 Android Profile Update - KSP Roaming Settings"
+        },
+        {
+          "Id": 710,
+          "Name": "09-11-24 Android Profile Update - KSP Roaming Settings"
+        },
+        {
+          "Id": 753,
+          "Name": "SentinelOne - MD116 - Test"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "15a35e4d-eff1-49d5-96f0-90e3ac7ebff5",
+      "Context": "AndroidForWork"
+    },
+    {
+	  "_comment": "The resourceType internal name for this is 'Kiosk'",
+      "ProfileId": 364,
+      "ProfileName": "AND-KIOSK-BOMGAR",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 310,
+          "Name": "Bomgar - ANDROID"
+        }
+      ],
+      "ExcludedSmartGroups": [
+        {
+          "Id": 625,
+          "Name": "AND-KIOSK-BOMGAR-UNLOCK"
+        },
+        {
+          "Id": 643,
+          "Name": "Test Astrapia Monitoring - Lab9921"
+        },
+        {
+          "Id": 653,
+          "Name": "AND-KIOSK-BOMGAR-LAYOUT"
+        }
+      ],
+      "ProfileType": "Device",
+      "ProfileUuid": "59eb19ec-9039-4827-8206-ea6a531afc16",
+      "Context": "AndroidForWork"
+    },
+    {
+	  "_comment": "The resourceType internal name for this is 'Kiosk'",
+      "ProfileId": 475,
+      "ProfileName": "AND-KIOSK-BOMGAR-LAYOUT",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 653,
+          "Name": "AND-KIOSK-BOMGAR-LAYOUT"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "ee68b8fd-79fa-45b9-bd10-bbfb081b1e26",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 464,
+      "ProfileName": "AND-KIOSK-BOMGAR-UNLOCK",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 625,
+          "Name": "AND-KIOSK-BOMGAR-UNLOCK"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "f12b87bf-b5a2-4744-b6ae-81d80a85658b",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 429,
+      "ProfileName": "AND-KIOSK-SPARKFLYBURGER",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 213,
+          "Name": "CARL TEST - ONLY"
+        },
+        {
+          "Id": 261,
+          "Name": "All OUTBACK Android POS tablets"
+        },
+        {
+          "Id": 284,
+          "Name": "All CARRABBAS Android POS tablets"
+        },
+        {
+          "Id": 285,
+          "Name": "All BONEFISH Android POS tablets"
+        },
+        {
+          "Id": 306,
+          "Name": "All FLEMINGS Android POS tablets"
+        },
+        {
+          "Id": 494,
+          "Name": "SPARKFLYBURGER - 10-25-23"
+        },
+        {
+          "Id": 520,
+          "Name": "App Deny - Battery Opt - Launcher - 11-12-2023"
+        },
+        {
+          "Id": 522,
+          "Name": "App Deny - Battery - Launcher - 18 -12 - 2023"
+        },
+        {
+          "Id": 570,
+          "Name": "All OUTBACK 1016 Android POS tablets"
+        }
+      ],
+      "ExcludedSmartGroups": [
+        {
+          "Id": 310,
+          "Name": "Bomgar - ANDROID"
+        },
+        {
+          "Id": 567,
+          "Name": "ALL LAB9921 Android POS Tablets"
+        },
+        {
+          "Id": 654,
+          "Name": "07-17-24 - POSI 2.7.1 App Deployment - KIOSK-SPARKFLYBURGER-LAYOUT - POSITERM.ini 2.7.1"
+        },
+        {
+          "Id": 771,
+          "Name": "Astrapria Monitor TEST 12-18-24"
+        },
+        {
+          "Id": 786,
+          "Name": "Astrapia Monitor TEST - 01-14-25"
+        }
+      ],
+      "ProfileType": "Device",
+      "ProfileUuid": "01e0b108-4331-456c-a564-2047aeb692dc",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 466,
+      "ProfileName": "AND-KIOSK-SPARKFLYBURGER-ASTRAPIA",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 641,
+          "Name": "Lab 9921 - Individual Devices"
+        },
+        {
+          "Id": 712,
+          "Name": "Astropia Test Android Device"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "ad056c68-b6da-416e-a645-28ad2584d051",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 476,
+      "ProfileName": "AND-KIOSK-SPARKFLYBURGER-LAYOUT",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 654,
+          "Name": "07-17-24 - POSI 2.7.1 App Deployment - KIOSK-SPARKFLYBURGER-LAYOUT - POSITERM.ini 2.7.1"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "0317f0a2-4a67-457e-bcf9-ee0eb999eb9a",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 422,
+      "ProfileName": "AND-KIOSK-SPARKFLY-LOCK-LANDSCAPE",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 487,
+          "Name": "AND-CUSTOM_SETTINGS_BATTERY"
+        }
+      ],
+      "ExcludedSmartGroups": [
+        {
+          "Id": 310,
+          "Name": "Bomgar - ANDROID"
+        }
+      ],
+      "ProfileType": "Device",
+      "ProfileUuid": "7bc73caa-5960-48cc-ae35-ec79d020a1bb",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 493,
+      "ProfileName": "AND-LOST-STOLEN",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 774,
+          "Name": "ANDROID-LOST-STOLEN"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "2caab374-4e8b-4b43-a24c-2cfcdb8433bb",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 465,
+      "ProfileName": "AND-PERM-LAUNCHER",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "f69911db-7785-4913-8f46-d92e88d0b389",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 383,
+      "ProfileName": "AND-Public App Auto Update",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 261,
+          "Name": "All OUTBACK Android POS tablets"
+        },
+        {
+          "Id": 284,
+          "Name": "All CARRABBAS Android POS tablets"
+        },
+        {
+          "Id": 285,
+          "Name": "All BONEFISH Android POS tablets"
+        },
+        {
+          "Id": 306,
+          "Name": "All FLEMINGS Android POS tablets"
+        },
+        {
+          "Id": 567,
+          "Name": "ALL LAB9921 Android POS Tablets"
+        },
+        {
+          "Id": 570,
+          "Name": "All OUTBACK 1016 Android POS tablets"
+        }
+      ],
+      "ExcludedSmartGroups": [
+        {
+          "Id": 539,
+          "Name": "APP AUTO UPDATE BLOCK - EXCEPTION"
+        },
+        {
+          "Id": 575,
+          "Name": "AND-Public App Auto Update-2"
+        }
+      ],
+      "ProfileType": "Device",
+      "ProfileUuid": "088324ba-c5ef-42a4-931d-a80c7d84e7fc",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 449,
+      "ProfileName": "AND-Public App Auto Update-2",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 575,
+          "Name": "AND-Public App Auto Update-2"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "a3683770-ed8f-4766-a923-03abad7730e9",
+      "Context": "AndroidForWork"
+    },
+    {
+	  "_comment": "The resourceType internal name for this is 'Restrictions'",
+      "ProfileId": 334,
+      "ProfileName": "AND-RESTRICTION",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 261,
+          "Name": "All OUTBACK Android POS tablets"
+        },
+        {
+          "Id": 284,
+          "Name": "All CARRABBAS Android POS tablets"
+        },
+        {
+          "Id": 285,
+          "Name": "All BONEFISH Android POS tablets"
+        },
+        {
+          "Id": 306,
+          "Name": "All FLEMINGS Android POS tablets"
+        }
+      ],
+      "ExcludedSmartGroups": [
+        {
+          "Id": 310,
+          "Name": "Bomgar - ANDROID"
+        },
+        {
+          "Id": 485,
+          "Name": "AMD-RESTRICTIONS-MAG"
+        },
+        {
+          "Id": 565,
+          "Name": "AND-RESTRICTIONS-USB"
+        },
+        {
+          "Id": 567,
+          "Name": "ALL LAB9921 Android POS Tablets"
+        },
+        {
+          "Id": 570,
+          "Name": "All OUTBACK 1016 Android POS tablets"
+        },
+        {
+          "Id": 719,
+          "Name": "Astrapia Dev Android POS Device"
+        },
+        {
+          "Id": 771,
+          "Name": "Astrapria Monitor TEST 12-18-24"
+        }
+      ],
+      "ProfileType": "Device",
+      "ProfileUuid": "1d25429a-a0bc-41f7-be48-93acddfbc70a",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 434,
+      "ProfileName": "AND-RESTRICTION-BOMGAR",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 310,
+          "Name": "Bomgar - ANDROID"
+        },
+        {
+          "Id": 567,
+          "Name": "ALL LAB9921 Android POS Tablets"
+        },
+        {
+          "Id": 643,
+          "Name": "Test Astrapia Monitoring - Lab9921"
+        }
+      ],
+      "ExcludedSmartGroups": [
+        {
+          "Id": 565,
+          "Name": "AND-RESTRICTIONS-USB"
+        },
+        {
+          "Id": 771,
+          "Name": "Astrapria Monitor TEST 12-18-24"
+        }
+      ],
+      "ProfileType": "Device",
+      "ProfileUuid": "85b2ffbe-0a8c-4db1-b5c3-1f82eaa209c2",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 416,
+      "ProfileName": "AND-RESTRICTION-MAG",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 485,
+          "Name": "AMD-RESTRICTIONS-MAG"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "c0a94b62-d610-440a-92c1-55eabe0fa59d",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 446,
+      "ProfileName": "AND-RESTRICTION-USB",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 565,
+          "Name": "AND-RESTRICTIONS-USB"
+        },
+        {
+          "Id": 570,
+          "Name": "All OUTBACK 1016 Android POS tablets"
+        },
+        {
+          "Id": 658,
+          "Name": "NRO - OBS0811POS"
+        },
+        {
+          "Id": 693,
+          "Name": "08-28-24 - OBS1099 - POSI 2.7.1 and POSITERM.ini 2.7.1"
+        },
+        {
+          "Id": 706,
+          "Name": "OBS1523 - Logging Enabled"
+        },
+        {
+          "Id": 712,
+          "Name": "Astropia Test Android Device"
+        },
+        {
+          "Id": 753,
+          "Name": "SentinelOne - MD116 - Test"
+        },
+        {
+          "Id": 772,
+          "Name": "OBS1056 Logging"
+        },
+        {
+          "Id": 827,
+          "Name": "Developer Mode - OBS1523"
+        }
+      ],
+      "ExcludedSmartGroups": [
+        {
+          "Id": 641,
+          "Name": "Lab 9921 - Individual Devices"
+        }
+      ],
+      "ProfileType": "Device",
+      "ProfileUuid": "bfdf070f-1cdc-41e0-995f-183664a85d75",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 336,
+      "ProfileName": "AND-SentinelOneMobile - Silent Install",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 261,
+          "Name": "All OUTBACK Android POS tablets"
+        },
+        {
+          "Id": 284,
+          "Name": "All CARRABBAS Android POS tablets"
+        },
+        {
+          "Id": 285,
+          "Name": "All BONEFISH Android POS tablets"
+        },
+        {
+          "Id": 306,
+          "Name": "All FLEMINGS Android POS tablets"
+        },
+        {
+          "Id": 567,
+          "Name": "ALL LAB9921 Android POS Tablets"
+        },
+        {
+          "Id": 570,
+          "Name": "All OUTBACK 1016 Android POS tablets"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "50ec13aa-35a4-4912-8b20-84fe3a9ede40",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 335,
+      "ProfileName": "AND-SkipCOSU",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 261,
+          "Name": "All OUTBACK Android POS tablets"
+        },
+        {
+          "Id": 284,
+          "Name": "All CARRABBAS Android POS tablets"
+        },
+        {
+          "Id": 285,
+          "Name": "All BONEFISH Android POS tablets"
+        },
+        {
+          "Id": 306,
+          "Name": "All FLEMINGS Android POS tablets"
+        },
+        {
+          "Id": 567,
+          "Name": "ALL LAB9921 Android POS Tablets"
+        },
+        {
+          "Id": 570,
+          "Name": "All OUTBACK 1016 Android POS tablets"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "55a083bf-0fc5-440b-872e-8356797eee1c",
+      "Context": "AndroidForWork"
+    },
+    {
+      "_comment": "When retrieving this profile from 'mdm/profiles/488' we get an error: 'Invalid Payload Key'",
+	  "ProfileId": 488,
+      "ProfileName": "AND-TIMEZONE-ARIZONA",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 766,
+          "Name": "AND-TIMEZONE-ARIZONA-FIXED"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "f657f886-4600-4741-a7d6-d1af5a1fa4a6",
+      "Context": "AndroidForWork"
+    },
+    {
+	  "_comment": "When retrieving this profile from 'mdm/profiles/353' we get an error: 'Invalid Payload Key'",
+      "ProfileId": 353,
+      "ProfileName": "AND-TIMEZONE-CENTRAL",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "8e98016f-9923-4479-801a-0f9749279f64",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 375,
+      "ProfileName": "AND-TIMEZONE-CENTRAL (TEST)",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 381,
+          "Name": "AND-TIMEZONE-CENTRAL - (TEST)"
+        },
+        {
+          "Id": 397,
+          "Name": "AND-TIMEZONE-CENTRAL-06-13-23-NEW"
+        },
+        {
+          "Id": 410,
+          "Name": "AND-TIMEZONE-CENTRAL-FIXED"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "6f96622d-e6b6-4d19-9c78-53f2a4177499",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 352,
+      "ProfileName": "AND-TIMEZONE-EASTERN",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "3bd337f3-945d-42e3-8960-0afe301f6aad",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 374,
+      "ProfileName": "AND-TIMEZONE-EASTERN (TEST)",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 379,
+          "Name": "AND-TIMEZONE-EASTERN - (TEST)"
+        },
+        {
+          "Id": 385,
+          "Name": "AND-TIMEZONE-EASTERN-05-30-23-NEW"
+        },
+        {
+          "Id": 386,
+          "Name": "AND-TIMEZONE-EASTERN-05-31-23-NEW"
+        },
+        {
+          "Id": 390,
+          "Name": "AND-TIMEZONE-EASTERN-06-06-23-NEW"
+        },
+        {
+          "Id": 391,
+          "Name": "AND-TIMEZONE-EASTERN-06-07-23-NEW"
+        },
+        {
+          "Id": 395,
+          "Name": "AND-TIMEZONE-EASTERN-06-08-23-NEW"
+        },
+        {
+          "Id": 396,
+          "Name": "AND-TIMEZONE-EASTERN-06-12-23-NEW"
+        },
+        {
+          "Id": 411,
+          "Name": "AND-TIMEZONE-EASTERN-FIXED"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "f942356c-7d8e-4b2d-8390-f2b9e09d7c2d",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 371,
+      "ProfileName": "AND-TIMEZONE-HAWAII",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "41122614-341c-4248-aee5-8f94c238910b",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 377,
+      "ProfileName": "AND-TIMEZONE-HAWAII-TEST",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 398,
+          "Name": "AND-TIMEZONE-HAWAII-06-13-23-NEW"
+        },
+        {
+          "Id": 407,
+          "Name": "AND-TIMEZONE-HAWAII-FIXED"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "181dcb63-35a7-4644-bff4-752c9f220d3d",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 354,
+      "ProfileName": "AND-TIMEZONE-MOUNTAIN",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "0fcde8e9-1bd5-47f4-a10e-e5da5c8623d8",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 378,
+      "ProfileName": "AND-TIMEZONE-MOUNTAIN-TEST",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 399,
+          "Name": "AND-TIMEZONE-MOUNTAIN-06-07-23-NEW"
+        },
+        {
+          "Id": 408,
+          "Name": "AND-TIMEZONE-MOUNTAIN-FIXED"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "44d64941-346b-4458-b992-93eba7e6a298",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 355,
+      "ProfileName": "AND-TIMEZONE-PACIFIC",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "2085926b-2997-4fb6-beb2-8981777a8ada",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 379,
+      "ProfileName": "AND-TIMEZONE-PACIFIC-TEST",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 400,
+          "Name": "AND-TIMEZONE-PACIFIC-06-07-23-NEW"
+        },
+        {
+          "Id": 409,
+          "Name": "AND-TIMEZONE-PACIFIC-FIXED"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "f485ab83-7264-430c-a219-57b5fd600f78",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 382,
+      "ProfileName": "AND-UPDATE-FREEZE",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 215,
+          "Name": "CARL"
+        },
+        {
+          "Id": 261,
+          "Name": "All OUTBACK Android POS tablets"
+        },
+        {
+          "Id": 284,
+          "Name": "All CARRABBAS Android POS tablets"
+        },
+        {
+          "Id": 285,
+          "Name": "All BONEFISH Android POS tablets"
+        },
+        {
+          "Id": 306,
+          "Name": "All FLEMINGS Android POS tablets"
+        },
+        {
+          "Id": 567,
+          "Name": "ALL LAB9921 Android POS Tablets"
+        },
+        {
+          "Id": 570,
+          "Name": "All OUTBACK 1016 Android POS tablets"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "665870d6-ce82-4adb-b7d9-dc2b04f8a4df",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 332,
+      "ProfileName": "AND-WIFI Profile",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [],
+      "ExcludedSmartGroups": [
+        {
+          "Id": 287,
+          "Name": "AND-WIFI-OBS-POS TEST"
+        },
+        {
+          "Id": 290,
+          "Name": "AND-WIFI-POS-5 REMOVAL"
+        }
+      ],
+      "ProfileType": "Device",
+      "ProfileUuid": "f24dc743-31a9-4da1-819c-86501533fe0e",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 340,
+      "ProfileName": "AND-WIFI Profile-BFG",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 285,
+          "Name": "All BONEFISH Android POS tablets"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "2dea0bea-5913-49fe-ad60-470a22097d6d",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 339,
+      "ProfileName": "AND-WIFI Profile-CIG",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 284,
+          "Name": "All CARRABBAS Android POS tablets"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "3f02093c-ce33-4d49-bd60-c26c02b966d4",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 360,
+      "ProfileName": "AND-WIFI Profile-FLM",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 306,
+          "Name": "All FLEMINGS Android POS tablets"
+        }
+      ],
+      "ExcludedSmartGroups": [
+        {
+          "Id": 293,
+          "Name": "AND-POS-5-EXCLUSION_EXISTING_DEVICES"
+        }
+      ],
+      "ProfileType": "Device",
+      "ProfileUuid": "82578745-9cab-4c4d-9ca3-ceb67580264d",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 351,
+      "ProfileName": "AND-WIFI Profile-OBS",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 261,
+          "Name": "All OUTBACK Android POS tablets"
+        },
+        {
+          "Id": 287,
+          "Name": "AND-WIFI-OBS-POS TEST"
+        }
+      ],
+      "ExcludedSmartGroups": [
+        {
+          "Id": 293,
+          "Name": "AND-POS-5-EXCLUSION_EXISTING_DEVICES"
+        },
+        {
+          "Id": 389,
+          "Name": "AND-WIFI-OBS-LAB"
+        }
+      ],
+      "ProfileType": "Device",
+      "ProfileUuid": "1bb706fa-c6e7-417d-98ac-1bf7725ffcb1",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 376,
+      "ProfileName": "AND-WIFI Profile-OBS-LAB",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "52f44550-35cd-4554-ab5e-dc8d2683f3f6",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 349,
+      "ProfileName": "AND-WIFI Profile-OBS-POS",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 287,
+          "Name": "AND-WIFI-OBS-POS TEST"
+        },
+        {
+          "Id": 570,
+          "Name": "All OUTBACK 1016 Android POS tablets"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "88678fac-d7ca-42e8-9a08-aada4d762498",
+      "Context": "AndroidForWork"
+    },
+    {
+      "ProfileId": 454,
+      "ProfileName": "AND-WRITE-SYSTEMS-PERM",
+      "ManagedBy": "Bloomin Brands",
+      "OrganizationGroupId": 570,
+      "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+      "ProfileStatus": "Active",
+      "Platform": "Android",
+      "AssignmentType": "Auto",
+      "AssignmentSmartGroups": [
+        {
+          "Id": 576,
+          "Name": "CARL - ANDROID TEST - Write Settings Permission - Auto - Rotation"
+        },
+        {
+          "Id": 614,
+          "Name": "AND-WRITE-SYSTEMS-PERM - TEST"
+        },
+        {
+          "Id": 668,
+          "Name": "Lab 9921 - 114"
+        }
+      ],
+      "ExcludedSmartGroups": [],
+      "ProfileType": "Device",
+      "ProfileUuid": "45d7ddc4-a784-4b17-865f-298a0ab4b147",
+      "Context": "AndroidForWork"
+    }
+  ],
+  "AdditionalInfo": {
+    "Links": [
+      {
+        "Rel": "self",
+        "Href": "http://as863.awmdm.com/API/mdm/profiles/search?include_androidmanagementapi=true&page=0&pagesize=500"
+      }
+    ]
+  },
+  "TotalResults": 230
+}

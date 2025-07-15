@@ -8,15 +8,15 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <StackPanel>
-    <GridView ItemsSource="{Binding SimulationItems}" IsItemClickEnabled="False" SelectionMode="None">
+    <GridView ItemsSource="{Binding UITileItems}" IsItemClickEnabled="False" SelectionMode="None">
         <GridView.ItemsPanel>
             <ItemsPanelTemplate>
-                <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="2"/>
+                <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="3"/>
             </ItemsPanelTemplate>
         </GridView.ItemsPanel>
 
         <GridView.ItemTemplate>
-            <DataTemplate x:DataType="models:SimulationItem">
+            <DataTemplate x:DataType="models:UITileItem">
                 <Button Command="{x:Bind ExecuteCommand}" Margin="8" BorderThickness="0">
                     <Border Background="#FFF" CornerRadius="12" Padding="16" BorderBrush="#DDD" BorderThickness="1">
                         <StackPanel HorizontalAlignment="Center" Width="220">
@@ -30,7 +30,5 @@
             
         </GridView.ItemTemplate>
     </GridView>
-        <Button Content="Inspect Group Metadata" Margin="0,10,0,0" Command="{Binding InspectGroupMetadataCommand}" />
-
     </StackPanel>
 </Page>

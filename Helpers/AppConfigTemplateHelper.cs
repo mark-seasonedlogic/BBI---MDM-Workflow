@@ -1,5 +1,5 @@
 ﻿using BBIHardwareSupport.MDM.IntuneConfigManager.Interfaces;
-using BBIHardwareSupport.MDM.IntuneConfigManager.Services;
+using BBIHardwareSupport.MDM.Services.Authentication;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;

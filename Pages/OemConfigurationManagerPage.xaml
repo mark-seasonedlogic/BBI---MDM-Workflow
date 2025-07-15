@@ -1,27 +1,80 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Page
     x:Class="BBIHardwareSupport.MDM.IntuneConfigManager.Views.OemConfigurationManagerPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:models="using:BBIHardwareSupport.MDM.IntuneConfigManager.Models"
     mc:Ignorable="d">
 
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Padding="20" MaxWidth="1000">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <!-- ListView scrolls here -->
+            </Grid.RowDefinitions>
 
+            <TextBlock Text="Managed App Configurations (OEMConfig)"
+                       FontSize="24" FontWeight="Bold" Grid.Row="0" Margin="0 0 0 12"/>
 
-    <StackPanel Padding="20">
-        <TextBlock Text="OEMConfig Manager" FontSize="24" FontWeight="Bold" Margin="0 0 0 12"/>
-        <Button Content="Find Olo Expo Config" Command="{Binding TestFindOemConfigCommand}" />
-        <Button Content="Clone Managed App Config" Command="{Binding TestCloneOemConfigCommand}"/>
-        <Button Content="Load OEM Configs" Command="{Binding LoadOemConfigsCommand}" />
-<!--        <Button Content="Create Config for Restaurant" Click="CreateConfigForRestaurant_Click" Margin="0,20,0,0"/> -->
-        <ListView ItemsSource="{Binding OemConfigs}">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="x:String">
-                    <TextBlock Text="{x:Bind}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-    </StackPanel>
+            <GridView ItemsSource="{Binding OemConfigTiles}" 
+          IsItemClickEnabled="False" 
+          SelectionMode="None" 
+          Margin="0,24,0,0">
+                <GridView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="3"/>
+                    </ItemsPanelTemplate>
+                </GridView.ItemsPanel>
+
+                <GridView.ItemTemplate>
+                        <DataTemplate x:DataType="models:UITileItem">
+                            <Button Command="{x:Bind ExecuteCommand}" Margin="8" BorderThickness="0">
+                                <Border Background="#FFF" CornerRadius="12" Padding="16" BorderBrush="#DDD" BorderThickness="1">
+                                    <StackPanel HorizontalAlignment="Center" Width="220">
+                                        <Image Source="{x:Bind ImagePath}" Width="48" Height="48" Margin="0,0,0,12"/>
+                                        <TextBlock Text="{x:Bind Title}" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
+                                        <TextBlock Text="{x:Bind Description}" TextWrapping="Wrap" TextAlignment="Center" Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </Button>
+                        </DataTemplate>
+
+                    </GridView.ItemTemplate>
+
+            </GridView>
+
+            <ListView Grid.Row="4"
+          x:Name="OemConfigListView"
+          ItemsSource="{Binding OemConfigs}"
+          MaxHeight="400"
+          ScrollViewer.VerticalScrollBarVisibility="Auto"
+          IsItemClickEnabled="True"
+          SelectionMode="Single">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="LightGray" Padding="4" Margin="0,4,0,4">
+                            <StackPanel Margin="4">
+                                <TextBlock Text="{Binding [displayName]}" FontWeight="Bold" Foreground="Black"/>
+                                <TextBlock Text="{Binding [description]}" FontSize="12" TextWrapping="Wrap" Foreground="Black"/>
+                                <TextBlock Text="{Binding [lastModifiedDateTime]}" FontSize="10" FontStyle="Italic" Foreground="Black"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </Grid>
+    </ScrollViewer>
 </Page>

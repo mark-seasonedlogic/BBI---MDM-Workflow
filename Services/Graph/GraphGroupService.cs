@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Interfaces;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Models;
+using BBIHardwareSupport.MDM.Services.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
 using Microsoft.Graph.Models;

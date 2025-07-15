@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using BBIHardwareSupport.MDM.Services.Authentication;
+using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
 using Microsoft.Graph.Models;
 using Newtonsoft.Json;

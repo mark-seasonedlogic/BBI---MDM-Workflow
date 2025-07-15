@@ -9,7 +9,7 @@
 
     <StackPanel Padding="30" Spacing="15" Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}">
         <!-- Header -->
-        <TextBlock Text="MDM Intune Manager" FontSize="28" FontWeight="Bold" Foreground="DeepSkyBlue"/>
+        <TextBlock Text="BBI - MDM Workflow Manager" FontSize="28" FontWeight="Bold" Foreground="DeepSkyBlue"/>
 
         <!-- Navigation View -->
         <controls:NavigationView x:Name="NavView" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed"
@@ -28,6 +28,16 @@
                         <controls:NavigationViewItem Content="WS1 Device Battery Drain" Tag="WS1AndroidBatteryPage"/>
                         <controls:NavigationViewItem Content="Schema Extension Admin" Tag="SchemaExtensionAdminPage" Icon="Admin"/>
                     </controls:NavigationViewItem.MenuItems>
+                </controls:NavigationViewItem>
+                <controls:NavigationViewItem Content="WorkspaceOne Artifacts" Icon="Library" Tag="WorkspaceOnePage">
+                    <controls:NavigationViewItem.MenuItems>
+                        <controls:NavigationViewItem Content="Device Management" Tag="WS1DeviceManagementPage"/>
+                        <controls:NavigationViewItem Content="Smart Groups" Tag="WS1SmartGroupsPage"/>
+                        <controls:NavigationViewItem Content="Profiles" Tag="WS1ProfilesPage"/>
+                        <controls:NavigationViewItem Content="Applications" Tag="WS1ApplicationsPage"/>
+                        <controls:NavigationViewItem Content="Compliance Policies" Tag="WS1CompliancePoliciesPage"/>
+                    </controls:NavigationViewItem.MenuItems>
+
                 </controls:NavigationViewItem>
             </controls:NavigationView.MenuItems>
             <Frame x:Name="ContentFrame"/>

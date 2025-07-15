@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace BBIHardwareSupport.MDM.IntuneConfigManager.Models
 {
-    public class SimulationItem
+    public class UITileItem
     {
         public string Title { get; set; }
         public string Description { get; set; }

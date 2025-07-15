@@ -21,7 +21,19 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Helpers
             var folder = await picker.PickSingleFolderAsync();
             return folder?.Path;
         }
+        public static async Task<string?> PromptForFileAsync(XamlRoot xamlRoot, string? fileTypePattern = "*")
+        {
+            var picker = new Windows.Storage.Pickers.FileOpenPicker();
+            picker.FileTypeFilter.Add(fileTypePattern);
+            picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.List;
 
+            // Required for WinUI 3 apps
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
+
+            var file = await picker.PickSingleFileAsync();
+            return file?.Path;
+        }
         public static async Task<string?> ShowInputDialogAsync(XamlRoot xamlRoot, string title, string placeholder)
         {
             var inputBox = new TextBox { PlaceholderText = placeholder };

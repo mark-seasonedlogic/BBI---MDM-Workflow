@@ -8,6 +8,7 @@ using BBIHardwareSupport.MDM.IntuneConfigManager;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Interfaces;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Services;
 using BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels.Helpers;
+using BBIHardwareSupport.MDM.Services.Authentication;
 using Microsoft.Graph.Models;
 
 public class MainViewModel : INotifyPropertyChanged

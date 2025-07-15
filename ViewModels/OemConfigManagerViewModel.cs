@@ -1,7 +1,9 @@
 ﻿using BBIHardwareSupport.MDM.IntuneConfigManager.Helpers;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Interfaces;
+using BBIHardwareSupport.MDM.IntuneConfigManager.Models;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Services;
 using BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels.Helpers;
+using BBIHardwareSupport.MDM.Services.Authentication;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
@@ -19,9 +21,40 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels
         private readonly IGraphAuthService _authService;
         private readonly IGraphIntuneManagedAppService _managedAppService;
 
-        public ObservableCollection<string> OemConfigs { get; } = new();
+        public ObservableCollection<JObject> OemConfigs { get; } = new();
         //public ICommand LoadOemConfigsCommand { get; }
         //public ICommand TestFindOemConfigCommand { get; }
+
+        public ObservableCollection<UITileItem> OemConfigTiles { get; } = new();
+
+        private void InitializeOemTiles()
+        {
+            OemConfigTiles.Clear();
+            OemConfigTiles.Add(new UITileItem
+            {
+                Title = "Find Olo Expo Config",
+                Description = "Search for the latest Olo Expo config based on naming rules",
+                ImagePath = "ms-appx:///Assets/Find.png",
+                ExecuteCommand = TestFindOemConfigCommand
+            });
+
+            OemConfigTiles.Add(new UITileItem
+            {
+                Title = "Clone Managed App Config",
+                Description = "Clone an existing config and adjust for a new restaurant",
+                ImagePath = "ms-appx:///Assets/Clone.png",
+                ExecuteCommand = TestCloneOemConfigCommand
+            });
+
+            OemConfigTiles.Add(new UITileItem
+            {
+                Title = "Load OEM Configs",
+                Description = "View all managed app configurations from Intune",
+                ImagePath = "ms-appx:///Assets/Load.png",
+                ExecuteCommand = LoadOemConfigsCommand
+            });
+        }
+
 
         [RelayCommand]
         public async Task TestFindOemConfigAsync()
@@ -102,7 +135,8 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels
             _configService = configService;
             _authService = authService;
             _managedAppService = managedAppService;
-            //LoadOemConfigsCommand = new RelayCommand(async () => await LoadOemConfigsAsync());
+            InitializeOemTiles();
+            //LoadOemConfigsCommand = new AsyncRelayCommand(async () => await LoadOemConfigsAsync());
             //TestFindOemConfigCommand = new RelayCommand(async () => await TestFindOemConfigAsync());
         }
         [RelayCommand]
@@ -112,7 +146,8 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels
             OemConfigs.Clear();
             foreach (var config in configs)
             {
-                OemConfigs.Add(config["displayName"]?.ToString() ?? "<no name>");
+                //var name = config["displayName"]?.ToString() ?? "<no name>";
+                OemConfigs.Add(config);
             }
         }
 

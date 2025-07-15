@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
 using NLog;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Services;
+using BBIHardwareSupport.MDM.Services.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 
 using BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels;
@@ -27,6 +28,12 @@ using BBIHardwareSupport.MDM.IntuneConfigManager.Helpers;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Pages;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
+using BBIHardwareSupport.MDM.WorkspaceOneManager.Interfaces;
+using BBIHardwareSupport.MDM.WorkspaceOneManager.Services;
+using BBIHardwareSupport.MDM.ViewModels;
+using BBIHardwareSupport.Services;
+using BBIHardwareSupport.MDM.Services.WorkspaceOne;
+using BBIHardwareSupport.MDM.IntuneConfigManager.Services.WorkspaceOne;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -77,16 +84,29 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
             services.AddSingleton<GitManagerViewModel>();
             services.AddScoped<OemConfigManagerViewModel>();
             services.AddScoped<OemConfigurationManagerPage>();
+            services.AddTransient<WorkspaceOnePage>();
+            services.AddTransient<WorkspaceOneViewModel>();
             services.AddScoped<IGraphIntuneConfigurationService, GraphIntuneConfigurationService>();
             services.AddScoped<IGraphIntuneManagedAppService, GraphIntuneManagedAppService>();
             services.AddScoped<IGraphDeviceCategoryService, GraphDeviceCategoryService>();
-
+            services.AddTransient<IWorkspaceOneDeviceService, WorkspaceOneDeviceService>();
+            services.AddScoped<IWorkspaceOneSmartGroupsService, WorkspaceOneSmartGroupsService>();
+            services.AddScoped<IProductsService, WorkspaceOneProductsService>();
+            services.AddScoped<IWorkspaceOneProfileService, WorkspaceOneProfileService>();
             services.AddHttpClient();
             services.AddScoped<IAppConfigTemplateHelper, AppConfigTemplateHelper>();
             services.AddScoped<ISchemaExtensionRegistrar, SchemaExtensionRegistrarService>();
             services.AddTransient<SchemaAdminViewModel>();
             services.AddTransient<SchemaExtensionAdminPage>();
             services.AddTransient<IntuneGroupsPage>();
+            services.AddSingleton<IWorkspaceOneAuthService, WorkspaceOneAuthService>();
+            services.AddSingleton<IApiAuthService, WorkspaceOneAuthService>();
+            services.AddSingleton<IGraphAuthService>(provider =>
+    new GraphAuthService(
+        "dd656aba-7b3a-4606-a1d5-b1d05cad986b",
+        "c937126d-5291-47ed-8e01-3cb0fd4e1dfb",
+        Environment.GetEnvironmentVariable("AZURE_CLIENT_SECRET")));
+
 
 
 

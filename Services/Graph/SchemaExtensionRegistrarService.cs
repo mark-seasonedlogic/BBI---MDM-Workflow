@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using BBIHardwareSupport.MDM.Services.Authentication;
 
 namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services
 {

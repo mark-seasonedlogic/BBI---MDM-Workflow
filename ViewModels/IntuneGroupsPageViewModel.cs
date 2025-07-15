@@ -37,24 +37,25 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels
 
 
         }
-        public ObservableCollection<SimulationItem> SimulationItems { get; } = new();
-        private void InitializeSimulationItems()
+        public ObservableCollection<UITileItem> UITileItems { get; } = new();
+        private void InitializeUITileItems()
         {
-            SimulationItems.Add(new SimulationItem
+            UITileItems.Clear();
+            UITileItems.Add(new UITileItem
             {
                 Title = "Simulate Enrollment",
                 Description = "Pretend a device has enrolled in MDM.",
                 ImagePath = "ms-appx:///Assets/Device_Enrolled.png",
                 ExecuteCommand = new AsyncRelayCommand(SimulateEnrollmentAsync)
             });
-            SimulationItems.Add(new SimulationItem
+            UITileItems.Add(new UITileItem
             {
                 Title = "Inspect Group Custom Metadata",
                 Description = "Display Custom Metadata for an Intune Group.",
                 ImagePath = "ms-appx:///Assets/Group_Metadata.png",
-                ExecuteCommand = new RelayCommand(() => Debug.WriteLine("Group Metadata"))
+                ExecuteCommand = new AsyncRelayCommand(InspectGroupMetadataAsync)
             });
-            SimulationItems.Add(new SimulationItem
+            UITileItems.Add(new UITileItem
             {
                 Title = "Simulate Rename Event",
                 Description = "Trigger device renaming logic.",
@@ -65,7 +66,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels
         public async Task OnLoadedAsync()
         {
             // Delay until after the constructor so RelayCommand can be initialized
-            InitializeSimulationItems();
+            InitializeUITileItems();
             await Task.CompletedTask;
         }
 
@@ -257,7 +258,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels
                 {
                     "BFG" => "2e635840-1408-4b00-a66a-5194229d8c28",
                     "CIG" => "645e588a-425c-448d-be84-43bb19fa882f",
-                    "OBS" => "8e8d9201-fe77-42db-aa03-3c889ca27a1a",
+                    "OBS" => "7bb975aa-5efb-4cf4-afbe-764fda90dc67",
                     _ => throw new InvalidOperationException("Unknown brand abbreviation.")
                 };
                 _logger.LogDebug("Retrieving master app configuration for brand {Brand} with ID {MasterId}", brand, masterId);
