@@ -1,0 +1,67 @@
+{
+  "General": {
+    "ProfileId": 424,
+    "AfwOemSettingsEnabled": false,
+    "AfwOemType": 0,
+    "Name": "AND-APP-CONTROL-DENY",
+    "Description": "",
+    "ProfileScope": "Production",
+    "Version": 2,
+    "AssignmentType": "Auto",
+    "EnableProvisioning": false,
+    "IsActive": true,
+    "IsManaged": true,
+    "Password": "",
+    "AllowRemoval": "Always",
+    "AssignedSmartGroups": [
+      {
+        "SmartGroupId": 261,
+        "Name": "All OUTBACK Android POS tablets"
+      },
+      {
+        "SmartGroupId": 284,
+        "Name": "All CARRABBAS Android POS tablets"
+      },
+      {
+        "SmartGroupId": 285,
+        "Name": "All BONEFISH Android POS tablets"
+      },
+      {
+        "SmartGroupId": 306,
+        "Name": "All FLEMINGS Android POS tablets"
+      },
+      {
+        "SmartGroupId": 488,
+        "Name": "AND-APP-CONTROL-DENY-TEST-10-25-23"
+      },
+      {
+        "SmartGroupId": 520,
+        "Name": "App Deny - Battery Opt - Launcher - 11-12-2023"
+      },
+      {
+        "SmartGroupId": 522,
+        "Name": "App Deny - Battery - Launcher - 18 -12 - 2023"
+      },
+      {
+        "SmartGroupId": 567,
+        "Name": "ALL LAB9921 Android POS Tablets"
+      },
+      {
+        "SmartGroupId": 570,
+        "Name": "All OUTBACK 1016 Android POS tablets"
+      }
+    ],
+    "ExcludedSmartGroups": [],
+    "ManagedLocationGroupID": 570,
+    "AssignedSchedule": [],
+    "ProfileUuid": "0a90e9c2-4c8b-4f7e-be82-b456afd59ab6",
+    "IsProvisionedForOobe": false
+  },
+  "AndroidForWorkApplicationControl": {
+    "PreventUninstallRequiredApps": true,
+    "DisableAccessToBlacklistedApps": true,
+    "EnableSystemAppsInsideAndroidforWork": false,
+    "ManagedDevices": true,
+    "WorkProfiles": false
+  }
+}

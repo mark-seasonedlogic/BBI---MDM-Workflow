@@ -1,0 +1,57 @@
+{
+  "General": {
+    "ProfileId": 457,
+    "AfwOemSettingsEnabled": false,
+    "AfwOemType": 0,
+    "Name": "AND-CUSTOM_SETTINGS_BAT_OPT_POSI",
+    "Description": "",
+    "ProfileScope": "Production",
+    "Version": 1,
+    "AssignmentType": "Auto",
+    "EnableProvisioning": false,
+    "IsActive": true,
+    "IsManaged": true,
+    "Password": "",
+    "AllowRemoval": "Always",
+    "AssignedSmartGroups": [
+      {
+        "SmartGroupId": 261,
+        "Name": "All OUTBACK Android POS tablets"
+      },
+      {
+        "SmartGroupId": 284,
+        "Name": "All CARRABBAS Android POS tablets"
+      },
+      {
+        "SmartGroupId": 285,
+        "Name": "All BONEFISH Android POS tablets"
+      },
+      {
+        "SmartGroupId": 593,
+        "Name": "AND-CUSTOM_SETTINGS_BAT_OPT_POSI"
+      },
+      {
+        "SmartGroupId": 608,
+        "Name": "APP Optimization POSI - 05/22/24"
+      },
+      {
+        "SmartGroupId": 613,
+        "Name": "APP Optimization POSI - 05/30/24"
+      },
+      {
+        "SmartGroupId": 621,
+        "Name": "APP Optimization POSI - 06/04/24"
+      }
+    ],
+    "ExcludedSmartGroups": [],
+    "ManagedLocationGroupID": 570,
+    "AssignedSchedule": [],
+    "ProfileUuid": "7a3882d6-6227-401f-bfdd-86a0395a004c",
+    "IsProvisionedForOobe": false
+  },
+  "AndroidForWorkCustomSettingsList": [
+    {
+      "CustomSettings": "<characteristic type=\"com.airwatch.android.androidwork.samsung.restrictions\" uuid=\"48b26037-04d9-43cf-96e3-9bdf6ec6499b\">\n\n     <parm name=\"DozeModeWhitelist\" value=\"com.RestaurantDataConceptsInc.POSiterm\" />\n\n</characteristic>"
+    }
+  ]
+}

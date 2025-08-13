@@ -1,0 +1,67 @@
+{
+  "General": {
+    "ProfileId": 382,
+    "AfwOemSettingsEnabled": false,
+    "AfwOemType": 0,
+    "Name": "AND-UPDATE-FREEZE",
+    "Description": "",
+    "ProfileScope": "Production",
+    "Version": 2,
+    "AssignmentType": "Auto",
+    "EnableProvisioning": false,
+    "IsActive": true,
+    "IsManaged": true,
+    "Password": "",
+    "AllowRemoval": "Always",
+    "AssignedSmartGroups": [
+      {
+        "SmartGroupId": 215,
+        "Name": "CARL"
+      },
+      {
+        "SmartGroupId": 261,
+        "Name": "All OUTBACK Android POS tablets"
+      },
+      {
+        "SmartGroupId": 284,
+        "Name": "All CARRABBAS Android POS tablets"
+      },
+      {
+        "SmartGroupId": 285,
+        "Name": "All BONEFISH Android POS tablets"
+      },
+      {
+        "SmartGroupId": 306,
+        "Name": "All FLEMINGS Android POS tablets"
+      },
+      {
+        "SmartGroupId": 567,
+        "Name": "ALL LAB9921 Android POS Tablets"
+      },
+      {
+        "SmartGroupId": 570,
+        "Name": "All OUTBACK 1016 Android POS tablets"
+      }
+    ],
+    "ExcludedSmartGroups": [],
+    "ManagedLocationGroupID": 570,
+    "AssignedSchedule": [],
+    "ProfileUuid": "665870d6-ce82-4adb-b7d9-dc2b04f8a4df",
+    "IsProvisionedForOobe": false
+  },
+  "AndroidForWorkSystemUpdates": {
+    "InstallPolicyType": 3,
+    "FreezePeriodsList": [
+      {
+        "StartPeriod": {
+          "Month": 8,
+          "Day": 1
+        },
+        "EndPeriod": {
+          "Month": 10,
+          "Day": 30
+        }
+      }
+    ]
+  }
+}

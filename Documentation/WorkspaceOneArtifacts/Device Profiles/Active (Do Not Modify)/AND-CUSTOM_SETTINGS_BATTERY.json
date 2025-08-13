@@ -1,0 +1,69 @@
+{
+  "General": {
+    "ProfileId": 420,
+    "AfwOemSettingsEnabled": false,
+    "AfwOemType": 0,
+    "Name": "AND-CUSTOM_SETTINGS_BATTERY",
+    "Description": "",
+    "ProfileScope": "Production",
+    "Version": 6,
+    "AssignmentType": "Auto",
+    "EnableProvisioning": false,
+    "IsActive": true,
+    "IsManaged": true,
+    "Password": "",
+    "AllowRemoval": "Always",
+    "AssignedSmartGroups": [
+      {
+        "SmartGroupId": 261,
+        "Name": "All OUTBACK Android POS tablets"
+      },
+      {
+        "SmartGroupId": 284,
+        "Name": "All CARRABBAS Android POS tablets"
+      },
+      {
+        "SmartGroupId": 285,
+        "Name": "All BONEFISH Android POS tablets"
+      },
+      {
+        "SmartGroupId": 306,
+        "Name": "All FLEMINGS Android POS tablets"
+      },
+      {
+        "SmartGroupId": 487,
+        "Name": "AND-CUSTOM_SETTINGS_BATTERY"
+      },
+      {
+        "SmartGroupId": 491,
+        "Name": "AND-CUSTOM-SETTINGS-BATTERY-TEST-10-25-23"
+      },
+      {
+        "SmartGroupId": 520,
+        "Name": "App Deny - Battery Opt - Launcher - 11-12-2023"
+      },
+      {
+        "SmartGroupId": 522,
+        "Name": "App Deny - Battery - Launcher - 18 -12 - 2023"
+      },
+      {
+        "SmartGroupId": 567,
+        "Name": "ALL LAB9921 Android POS Tablets"
+      },
+      {
+        "SmartGroupId": 570,
+        "Name": "All OUTBACK 1016 Android POS tablets"
+      }
+    ],
+    "ExcludedSmartGroups": [],
+    "ManagedLocationGroupID": 570,
+    "AssignedSchedule": [],
+    "ProfileUuid": "88ccb025-8e03-4d7b-9548-768502ff0cc2",
+    "IsProvisionedForOobe": false
+  },
+  "AndroidForWorkCustomSettingsList": [
+    {
+      "CustomSettings": "<characteristic type=\"com.airwatch.android.androidwork.launcher\" uuid=\"568bc89d-1df8-4ce9-a041-e5a24acdb7ed\">\n\n<parm name=\"BypassBatteryOptimizationPermission\" value=\"True\"/> </characteristic>"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "ProfileId": 352,
+  "ProfileName": "AND-TIMEZONE-EASTERN",
+  "ManagedBy": "Bloomin Brands",
+  "OrganizationGroupId": 570,
+  "OrganizationGroupUuid": "",
+  "ProfileStatus": "Active",
+  "Platform": "Android",
+  "AssignmentType": "Auto",
+  "AssignmentSmartGroups": [],
+  "ExcludedSmartGroups": [],
+  "ProfileType": "Device",
+  "ProfileUuid": "3bd337f3-945d-42e3-8960-0afe301f6aad",
+  "Context": "AndroidForWork"
+}

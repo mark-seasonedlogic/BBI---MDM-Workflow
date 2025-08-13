@@ -1,0 +1,38 @@
+{
+  "General": {
+    "ProfileId": 340,
+    "AfwOemSettingsEnabled": false,
+    "AfwOemType": 0,
+    "Name": "AND-WIFI Profile-BFG",
+    "Description": "",
+    "ProfileScope": "Production",
+    "Version": 2,
+    "AssignmentType": "Auto",
+    "EnableProvisioning": false,
+    "IsActive": true,
+    "IsManaged": true,
+    "Password": "",
+    "AllowRemoval": "Always",
+    "AssignedSmartGroups": [
+      {
+        "SmartGroupId": 285,
+        "Name": "All BONEFISH Android POS tablets"
+      }
+    ],
+    "ExcludedSmartGroups": [],
+    "ManagedLocationGroupID": 570,
+    "AssignedSchedule": [],
+    "ProfileUuid": "2dea0bea-5913-49fe-ad60-470a22097d6d",
+    "IsProvisionedForOobe": false
+  },
+  "AndroidForWorkWifiList": [
+    {
+      "ServiceSetIdentifier": "OSI-BFG-POS",
+      "SecurityType": "WPA",
+      "Password": "*****",
+      "SetAsActiveNetwork": true,
+      "HiddenNetwork": true,
+      "EnterprisePassword": "*****"
+    }
+  ]
+}

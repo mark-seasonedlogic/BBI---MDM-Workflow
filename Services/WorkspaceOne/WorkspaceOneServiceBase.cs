@@ -69,7 +69,15 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services.WorkspaceOne
                 else if (header.Key.Equals("Accept", StringComparison.OrdinalIgnoreCase))
                 {
                     request.Headers.Accept.Clear();
-                    request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(header.Value));
+                    if (!String.IsNullOrEmpty(accept))
+                    {
+                        request.Headers.TryAddWithoutValidation("Accept", accept);
+                    }
+                    else
+                    {
+                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(header.Value));
+                    }
+
                 }
                 else
                 {
@@ -118,15 +126,29 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services.WorkspaceOne
 
             do
             {
-                var queryWithPage = new Dictionary<string, string>(queryParams ?? new())
+                // Clone existing query parameters or create a new dictionary
+                var queryWithPage = new Dictionary<string, string>(queryParams ?? new());
+
+                // Only add "page" if it's not the first page
+                if (currentPage > 0)
                 {
-                    ["page"] = currentPage.ToString()
-                };
+                    queryWithPage["page"] = currentPage.ToString();
+                }
 
-                var queryString = string.Join("&", queryWithPage.Select(kvp =>
-                    $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value)}"));
+                // Build query string if any parameters exist
+                string queryString = queryWithPage.Count > 0
+                    ? string.Join("&", queryWithPage.Select(kvp =>
+                        $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value)}"))
+                    : string.Empty;
 
-                var response = await SendRequestAsync($"{endpoint}?{queryString}", HttpMethod.Get, null, accept);
+                // Construct the full URI
+                string requestUri = string.IsNullOrWhiteSpace(queryString)
+                    ? endpoint
+                    : $"{endpoint}?{queryString}";
+
+                // Make the request
+                var response = await SendRequestAsync(requestUri, HttpMethod.Get, null, accept);
+
 
                 if (string.IsNullOrEmpty(response))
                 {
@@ -146,12 +168,25 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services.WorkspaceOne
                             pageSize = int.TryParse(obj.Value<string>("page_size") ?? obj.Value<string>("PageSize"), out var ps) ? ps : 0;
 
                         if (totalItems == int.MaxValue)
-                            totalItems = int.TryParse(obj.Value<string>("total") ?? obj.Value<string>("Total"), out var ti) ? ti : 0;
+                            totalItems = int.TryParse(obj.Value<string>("TotalResults") ?? obj.Value<string>("total") ?? obj.Value<string>("total_size"), out var ti) ? ti : 0;
 
                         // Extract target collection by itemType key
-                        if (obj.TryGetValue(itemType, out var token) && token is JArray arr)
+                        if (obj.TryGetValue(itemType, out var token))
                         {
-                            objectItems = arr;
+                            switch (token.Type)
+                            {
+                                case JTokenType.Array:
+                                    objectItems = (JArray)token;
+                                    break;
+
+                                case JTokenType.Object:
+                                    objectItems = new JArray((JObject)token); // wrap in array
+                                    break;
+
+                                default:
+                                    Debug.WriteLine($"[WorkspaceOne] Unexpected token type '{token.Type}' for itemType '{itemType}'");
+                                    break;
+                            }
                         }
                     }
                     else if (jsonResponse is JArray arr)
@@ -169,6 +204,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services.WorkspaceOne
                 {
                     Debug.WriteLine($"[WorkspaceOne] JSON parsing error on page {currentPage}: {ex.Message}");
                 }
+
 
                 currentPage++;
 

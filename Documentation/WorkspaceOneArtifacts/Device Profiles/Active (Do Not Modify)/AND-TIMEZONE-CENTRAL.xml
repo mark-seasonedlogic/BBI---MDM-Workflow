@@ -1,0 +1,28 @@
+<wap-provisioningdoc id="769705ce-5606-4ba7-a890-62593575d68a"
+                     name="AND-TIMEZONE-EASTERN/V_3"
+                     profile-uuid="3bd337f3-945d-42e3-8960-0afe301f6aad"
+                     version="3"
+                     allowRemoval="True">
+	<characteristic uuid="717a5a30-e6fe-4aa8-a33e-5ea9e7cffd2f"
+	                type="com.airwatch.android.androidwork.datetime"
+	                target="2">
+		<parm name="DateTime"
+		      value="SNTP"/>
+		<parm name="URL"
+		      value="time.outback.com"/>
+		<parm name="EnablePeriodicSync"
+		      value="True"/>
+		<parm name="Region"
+		      value="Americas"/>
+		<parm name="TimeZone"
+		      value="US/Eastern"/>
+		<parm name="SetTimeZone"
+		      value="True"/>
+		<parm name="SyncIntervalDays"
+		      value="1"/>
+		<parm name="AllowDateTimeChange"
+		      value="True"/>
+		<parm name="AutomaticTime"
+		      value="False"/>
+	</characteristic>
+</wap-provisioningdoc>

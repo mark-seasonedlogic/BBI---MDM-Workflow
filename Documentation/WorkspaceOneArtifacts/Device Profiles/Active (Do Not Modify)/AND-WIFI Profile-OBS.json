@@ -1,0 +1,51 @@
+{
+  "General": {
+    "ProfileId": 351,
+    "AfwOemSettingsEnabled": false,
+    "AfwOemType": 0,
+    "Name": "AND-WIFI Profile-OBS",
+    "Description": "",
+    "ProfileScope": "Production",
+    "Version": 2,
+    "AssignmentType": "Auto",
+    "EnableProvisioning": false,
+    "IsActive": true,
+    "IsManaged": true,
+    "Password": "",
+    "AllowRemoval": "Never",
+    "AssignedSmartGroups": [
+      {
+        "SmartGroupId": 261,
+        "Name": "All OUTBACK Android POS tablets"
+      },
+      {
+        "SmartGroupId": 287,
+        "Name": "AND-WIFI-OBS-POS TEST"
+      }
+    ],
+    "ExcludedSmartGroups": [
+      {
+        "SmartGroupId": 293,
+        "Name": "AND-POS-5-EXCLUSION_EXISTING_DEVICES"
+      },
+      {
+        "SmartGroupId": 389,
+        "Name": "AND-WIFI-OBS-LAB"
+      }
+    ],
+    "ManagedLocationGroupID": 570,
+    "AssignedSchedule": [],
+    "ProfileUuid": "1bb706fa-c6e7-417d-98ac-1bf7725ffcb1",
+    "IsProvisionedForOobe": false
+  },
+  "AndroidForWorkWifiList": [
+    {
+      "ServiceSetIdentifier": "OSI-OBS-POS",
+      "SecurityType": "WPA",
+      "Password": "*****",
+      "SetAsActiveNetwork": true,
+      "HiddenNetwork": true,
+      "EnterprisePassword": "*****"
+    }
+  ]
+}

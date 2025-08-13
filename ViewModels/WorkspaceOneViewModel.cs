@@ -17,6 +17,10 @@ using BBIHardwareSupport.MDM.WorkspaceOne.Models;
 using BBIHardwareSupport.MDM.Services.WorkspaceOne;
 using Microsoft.Extensions.Logging;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Services.WorkspaceOne;
+using Newtonsoft.Json;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+using System.Text.Json;
+using System.IO;
 
 namespace BBIHardwareSupport.MDM.ViewModels
 {
@@ -74,6 +78,7 @@ namespace BBIHardwareSupport.MDM.ViewModels
         public ObservableCollection<WorkspaceOneSmartGroup> SmartGroups { get; } = new();
         public ObservableCollection<WorkspaceOneProduct> Products { get; } = new();
         public ObservableCollection<WorkspaceOneProfileSummary> Profiles { get; } = new();
+        public ObservableCollection<WorkspaceOneProfileDetails> ProfileDetails { get; } = new();
         private void InitializeUITileItems()
         {
             UITileItems.Clear();
@@ -200,11 +205,21 @@ namespace BBIHardwareSupport.MDM.ViewModels
             try
             {
                 Profiles.Clear();
+                ProfileDetails.Clear();
 
                 var profiles = await _profileService.GetAllProfilesAsync();
                 foreach (var profile in profiles)
                 {
+                    _logger.LogInformation("Loaded profile summary: {ProfileName} (ID: {ProfileId})", profile.ProfileName, profile.ProfileId);
                     Profiles.Add(profile);
+                    _logger.LogInformation("Loading details for profile ID {ProfileId}", profile.ProfileId);
+                    WorkspaceOneProfileDetails currProfile = await _profileService.GetProfileDetailsAsync(profile.ProfileId);
+                    ProfileDetails.Add(currProfile);
+                    //Write out to disk:
+
+                    string json = System.Text.Json.JsonSerializer.Serialize(currProfile, new JsonSerializerOptions { WriteIndented = true });
+
+                    File.WriteAllText($"C:\\Users\\MarkYoung\\source\\repos\\BBI - MDM Workflow\\Documentation\\WorkspaceOneArtifacts\\Device Profiles\\{profile.ProfileName}.json",json);
                 }
 
                 // ✅ Replace the collection to trigger UI update
@@ -217,8 +232,8 @@ namespace BBIHardwareSupport.MDM.ViewModels
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to load SmartGroups.");
-                await UiDialogHelper.ShowMessageAsync("Error loading SmartGroups.");
+                _logger.LogError(ex, "Failed to load Profiles.");
+                await UiDialogHelper.ShowMessageAsync("Error loading Profiles.");
             }
         }
 

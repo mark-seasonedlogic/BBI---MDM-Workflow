@@ -1,0 +1,38 @@
+{
+  "General": {
+    "ProfileId": 339,
+    "AfwOemSettingsEnabled": false,
+    "AfwOemType": 0,
+    "Name": "AND-WIFI Profile-CIG",
+    "Description": "",
+    "ProfileScope": "Production",
+    "Version": 4,
+    "AssignmentType": "Auto",
+    "EnableProvisioning": false,
+    "IsActive": true,
+    "IsManaged": true,
+    "Password": "",
+    "AllowRemoval": "Always",
+    "AssignedSmartGroups": [
+      {
+        "SmartGroupId": 284,
+        "Name": "All CARRABBAS Android POS tablets"
+      }
+    ],
+    "ExcludedSmartGroups": [],
+    "ManagedLocationGroupID": 570,
+    "AssignedSchedule": [],
+    "ProfileUuid": "3f02093c-ce33-4d49-bd60-c26c02b966d4",
+    "IsProvisionedForOobe": false
+  },
+  "AndroidForWorkWifiList": [
+    {
+      "ServiceSetIdentifier": "OSI-CIG-POS",
+      "SecurityType": "WPA",
+      "Password": "*****",
+      "SetAsActiveNetwork": true,
+      "HiddenNetwork": true,
+      "EnterprisePassword": "*****"
+    }
+  ]
+}

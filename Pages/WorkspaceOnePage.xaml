@@ -34,7 +34,7 @@
         </DataTemplate>
         <DataTemplate x:Key="ProfileTemplate" x:DataType="models:WorkspaceOneProfileSummary">
             <StackPanel>
-                <TextBlock Text="{x:Bind ProfileName}" />
+                <TextBlock Text="{x:Bind ProfileName}"  FontWeight="Bold" />
                 <TextBlock Text="{x:Bind ProfileType}" />
             </StackPanel>
         </DataTemplate>
@@ -65,7 +65,7 @@
                             <Border Background="#FFF" CornerRadius="12" Padding="16" BorderBrush="#DDD" BorderThickness="1">
                                 <StackPanel HorizontalAlignment="Center" Width="220">
                                     <Image Source="{x:Bind ImagePath}" Width="48" Height="48" Margin="0,0,0,12"/>
-                                    <TextBlock Text="{x:Bind Title}" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
+                                    <TextBlock Text="{x:Bind Title}" FontSize="16" FontWeight="Bold" TextAlignment="Center" TextWrapping="WrapWholeWords"/>
                                     <TextBlock Text="{x:Bind Description}" TextWrapping="Wrap" TextAlignment="Center" Margin="0,4,0,0"/>
                                 </StackPanel>
                             </Border>

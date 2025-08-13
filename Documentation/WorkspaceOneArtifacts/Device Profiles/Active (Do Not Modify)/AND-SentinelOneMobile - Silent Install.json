@@ -1,0 +1,269 @@
+{
+  "General": {
+    "ProfileId": 336,
+    "AfwOemSettingsEnabled": false,
+    "AfwOemType": 0,
+    "Name": "AND-SentinelOneMobile - Silent Install",
+    "Description": "SentinelOneMobile - Silent Install",
+    "ProfileScope": "Production",
+    "Version": 3,
+    "AssignmentType": "Auto",
+    "EnableProvisioning": false,
+    "IsActive": true,
+    "IsManaged": true,
+    "Password": "",
+    "AllowRemoval": "Always",
+    "AssignedSmartGroups": [
+      {
+        "SmartGroupId": 261,
+        "Name": "All OUTBACK Android POS tablets"
+      },
+      {
+        "SmartGroupId": 284,
+        "Name": "All CARRABBAS Android POS tablets"
+      },
+      {
+        "SmartGroupId": 285,
+        "Name": "All BONEFISH Android POS tablets"
+      },
+      {
+        "SmartGroupId": 306,
+        "Name": "All FLEMINGS Android POS tablets"
+      },
+      {
+        "SmartGroupId": 567,
+        "Name": "ALL LAB9921 Android POS Tablets"
+      },
+      {
+        "SmartGroupId": 570,
+        "Name": "All OUTBACK 1016 Android POS tablets"
+      }
+    ],
+    "ExcludedSmartGroups": [],
+    "ManagedLocationGroupID": 570,
+    "AssignedSchedule": [],
+    "ProfileUuid": "50ec13aa-35a4-4912-8b20-84fe3a9ede40",
+    "IsProvisionedForOobe": false
+  },
+  "AndroidForWorkPermissions": {
+    "MasterRuntimePermission": "0",
+    "AppLevelRuntimePermissionsList": [
+      {
+        "ProductId": "com.sentinelone.mobile",
+        "Kind": "SentinelOne",
+        "Permission": [
+          {
+            "PermissionId": "android.permission.ACCESS_BACKGROUND_LOCATION",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.ACCESS_FINE_LOCATION",
+            "Name": "precise location (GPS and network-based)",
+            "Description": "Allows the app to get your precise location using the Global Positioning System (GPS) or network location sources such as cell towers and Wi-Fi. These location services must be turned on and available to your device for the app to use them. Apps may use this to determine where you are, and may consume additional battery power.",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.ACCESS_NETWORK_STATE",
+            "Name": "view network connections",
+            "Description": "Allows the app to view information about network connections such as which networks exist and are connected.",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.ACCESS_WIFI_STATE",
+            "Name": "view Wi-Fi connections",
+            "Description": "Allows the app to view information about Wi-Fi networking, such as whether Wi-Fi is enabled and name of connected Wi-Fi devices.",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.BLUETOOTH",
+            "Name": "pair with Bluetooth devices",
+            "Description": "Allows the app to view the configuration of Bluetooth on the device, and to make and accept connections with paired devices.",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.BLUETOOTH_ADMIN",
+            "Name": "access Bluetooth settings",
+            "Description": "Allows the app to configure the local Bluetooth device, and to discover and pair with remote devices.",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.CAMERA",
+            "Name": "take pictures and videos",
+            "Description": "Allows the app to take pictures and videos with the camera. This permission allows the app to use the camera at any time without your confirmation.",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.CHANGE_NETWORK_STATE",
+            "Name": "change network connectivity",
+            "Description": "Allows the app to change the state of network connectivity.",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.CHANGE_WIFI_STATE",
+            "Name": "connect and disconnect from Wi-Fi",
+            "Description": "Allows the app to connect to and disconnect from Wi-Fi access points and to make changes to device configuration for Wi-Fi networks.",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.FOREGROUND_SERVICE",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.INTERNET",
+            "Name": "full network access",
+            "Description": "Allows the app to create network sockets and use custom network protocols. The browser and other applications provide means to send data to the internet, so this permission is not required to send data to the internet.",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.KILL_BACKGROUND_PROCESSES",
+            "Name": "close other apps",
+            "Description": "Allows the app to end background processes of other apps. This may cause other apps to stop running.",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.MANAGE_EXTERNAL_STORAGE",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.QUERY_ALL_PACKAGES",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.READ_EXTERNAL_STORAGE",
+            "Name": "read the contents of your USB storage",
+            "Description": "Allows the app to read the contents of your USB storage.",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.READ_PHONE_STATE",
+            "Name": "read phone status and identity",
+            "Description": "Allows the app to access the phone features of the device. This permission allows the app to determine the phone number and device IDs, whether a call is active, and the remote number connected by a call.",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.RECEIVE_BOOT_COMPLETED",
+            "Name": "run at startup",
+            "Description": "Allows the app to have itself started as soon as the system has finished booting. This can make it take longer to start the device and allow the app to slow down the overall device by always running.",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.REQUEST_DELETE_PACKAGES",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.REQUEST_INSTALL_PACKAGES",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.VIBRATE",
+            "Name": "control vibration",
+            "Description": "Allows the app to control the vibrator.",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.WAKE_LOCK",
+            "Name": "prevent device from sleeping",
+            "Description": "Allows the app to prevent the device from going to sleep.",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.WRITE_EXTERNAL_STORAGE",
+            "Name": "modify or delete the contents of your USB storage",
+            "Description": "Allows the app to write to the USB storage.",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "android.permission.sec.MDM_APP_MGMT",
+            "PermissionOption": 0
+          },
+          {
+            "PermissionId": "android.permission.sec.MDM_BLUETOOTH",
+            "PermissionOption": 0
+          },
+          {
+            "PermissionId": "android.permission.sec.MDM_FIREWALL",
+            "PermissionOption": 0
+          },
+          {
+            "PermissionId": "android.permission.sec.MDM_PHONE_RESTRICTION",
+            "PermissionOption": 0
+          },
+          {
+            "PermissionId": "android.permission.sec.MDM_RESTRICTION",
+            "PermissionOption": 0
+          },
+          {
+            "PermissionId": "android.permission.sec.MDM_SECURITY",
+            "PermissionOption": 0
+          },
+          {
+            "PermissionId": "android.permission.sec.MDM_WIFI",
+            "PermissionOption": 0
+          },
+          {
+            "PermissionId": "com.google.android.c2dm.permission.RECEIVE",
+            "Name": "receive data from Internet",
+            "Description": "Allows apps to accept cloud to device messages sent by the app's service. Using this service will incur data usage. Malicious apps could cause excess data usage.",
+            "PermissionOption": 0
+          },
+          {
+            "PermissionId": "com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE",
+            "PermissionOption": 1
+          },
+          {
+            "PermissionId": "com.samsung.android.knox.permission.KNOX_APP_MGMT",
+            "PermissionOption": 0
+          },
+          {
+            "PermissionId": "com.samsung.android.knox.permission.KNOX_BLUETOOTH",
+            "PermissionOption": 0
+          },
+          {
+            "PermissionId": "com.samsung.android.knox.permission.KNOX_CERTIFICATE",
+            "PermissionOption": 0
+          },
+          {
+            "PermissionId": "com.samsung.android.knox.permission.KNOX_FIREWALL",
+            "PermissionOption": 0
+          },
+          {
+            "PermissionId": "com.samsung.android.knox.permission.KNOX_HW_CONTROL",
+            "PermissionOption": 0
+          },
+          {
+            "PermissionId": "com.samsung.android.knox.permission.KNOX_MOBILE_THREAT_DEFENSE",
+            "PermissionOption": 0
+          },
+          {
+            "PermissionId": "com.samsung.android.knox.permission.KNOX_NPA",
+            "PermissionOption": 0
+          },
+          {
+            "PermissionId": "com.samsung.android.knox.permission.KNOX_PHONE_RESTRICTION",
+            "PermissionOption": 0
+          },
+          {
+            "PermissionId": "com.samsung.android.knox.permission.KNOX_RESTRICTION_MGMT",
+            "PermissionOption": 0
+          },
+          {
+            "PermissionId": "com.samsung.android.knox.permission.KNOX_SECURITY",
+            "PermissionOption": 0
+          },
+          {
+            "PermissionId": "com.samsung.android.knox.permission.KNOX_WIFI",
+            "PermissionOption": 0
+          },
+          {
+            "PermissionId": "com.zimperium.supportlibclient.SUPPORT_PERMISSION",
+            "PermissionOption": 0
+          }
+        ]
+      }
+    ]
+  }
+}

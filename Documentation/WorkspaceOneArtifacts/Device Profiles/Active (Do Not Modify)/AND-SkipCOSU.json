@@ -1,0 +1,53 @@
+{
+  "General": {
+    "ProfileId": 335,
+    "AfwOemSettingsEnabled": false,
+    "AfwOemType": 0,
+    "Name": "AND-SkipCOSU",
+    "Description": "",
+    "ProfileScope": "Production",
+    "Version": 1,
+    "AssignmentType": "Auto",
+    "EnableProvisioning": false,
+    "IsActive": true,
+    "IsManaged": true,
+    "Password": "",
+    "AllowRemoval": "Always",
+    "AssignedSmartGroups": [
+      {
+        "SmartGroupId": 261,
+        "Name": "All OUTBACK Android POS tablets"
+      },
+      {
+        "SmartGroupId": 284,
+        "Name": "All CARRABBAS Android POS tablets"
+      },
+      {
+        "SmartGroupId": 285,
+        "Name": "All BONEFISH Android POS tablets"
+      },
+      {
+        "SmartGroupId": 306,
+        "Name": "All FLEMINGS Android POS tablets"
+      },
+      {
+        "SmartGroupId": 567,
+        "Name": "ALL LAB9921 Android POS Tablets"
+      },
+      {
+        "SmartGroupId": 570,
+        "Name": "All OUTBACK 1016 Android POS tablets"
+      }
+    ],
+    "ExcludedSmartGroups": [],
+    "ManagedLocationGroupID": 570,
+    "AssignedSchedule": [],
+    "ProfileUuid": "55a083bf-0fc5-440b-872e-8356797eee1c",
+    "IsProvisionedForOobe": false
+  },
+  "AndroidForWorkCustomSettingsList": [
+    {
+      "CustomSettings": "<characteristic\r\n          type=\"com.airwatch.android.androidwork.launcher\"\r\n          uuid=\"568bc89d-1df8-4ce9-a041-e5a24acdb7ed\"><parm name=\"SkipCosuSetup\" value=\"True\"/></characteristic>"
+    }
+  ]
+}

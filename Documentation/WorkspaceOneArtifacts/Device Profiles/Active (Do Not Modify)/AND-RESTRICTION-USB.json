@@ -1,0 +1,164 @@
+{
+  "General": {
+    "ProfileId": 446,
+    "AfwOemSettingsEnabled": false,
+    "AfwOemType": 0,
+    "Name": "AND-RESTRICTION-USB",
+    "Description": "ANDROID - Restriction Policy",
+    "ProfileScope": "Production",
+    "Version": 2,
+    "AssignmentType": "Auto",
+    "EnableProvisioning": false,
+    "IsActive": true,
+    "IsManaged": true,
+    "Password": "5811",
+    "AllowRemoval": "WithAuthorization",
+    "AssignedSmartGroups": [
+      {
+        "SmartGroupId": 565,
+        "Name": "AND-RESTRICTIONS-USB"
+      },
+      {
+        "SmartGroupId": 570,
+        "Name": "All OUTBACK 1016 Android POS tablets"
+      },
+      {
+        "SmartGroupId": 658,
+        "Name": "NRO - OBS0811POS"
+      },
+      {
+        "SmartGroupId": 693,
+        "Name": "08-28-24 - OBS1099 - POSI 2.7.1 and POSITERM.ini 2.7.1"
+      },
+      {
+        "SmartGroupId": 706,
+        "Name": "OBS1523 - Logging Enabled"
+      },
+      {
+        "SmartGroupId": 712,
+        "Name": "Astropia Test Android Device"
+      },
+      {
+        "SmartGroupId": 753,
+        "Name": "SentinelOne - MD116 - Test"
+      },
+      {
+        "SmartGroupId": 772,
+        "Name": "OBS1056 Logging"
+      },
+      {
+        "SmartGroupId": 827,
+        "Name": "Developer Mode - OBS1523"
+      }
+    ],
+    "ExcludedSmartGroups": [
+      {
+        "SmartGroupId": 641,
+        "Name": "Lab 9921 - Individual Devices"
+      }
+    ],
+    "ManagedLocationGroupID": 570,
+    "AssignedSchedule": [],
+    "ProfileUuid": "bfdf070f-1cdc-41e0-995f-183664a85d75",
+    "IsProvisionedForOobe": false
+  },
+  "AndroidForWorkRestrictions": {
+    "AllowContactSharing": 0,
+    "AllowCopyPaste": 0,
+    "AllowNonWhitelistedIME": false,
+    "AllowNotifcationsInFull": 0,
+    "AllowCamera": false,
+    "AllowFactoryReset": true,
+    "AllowBluetooth": false,
+    "AllowBluetoothAndroidO": false,
+    "AllowOutgoingBluetoothConnections": false,
+    "AllowUSBDebugging": true,
+    "AllowAllowBackupServices": false,
+    "AllowWifiChanges": true,
+    "AllowAllTethering": true,
+    "AllowNonMarketAppInstall": true,
+    "AllowUSBMassStorage": true,
+    "InstallPolicyType": true,
+    "AllowedAccounts": "AllAccounts",
+    "AllowChrome": false,
+    "AllowScreenCapture": false,
+    "AllowAccountChanges": false,
+    "AllowRemoveWorkAccount": false,
+    "AllowOutgoingPhoneCalls": false,
+    "AllowSMS": false,
+    "AllowCredentialsChanges": false,
+    "AllowKeyguardFeatures": false,
+    "AllowKeyguardCamera": true,
+    "AllowKeyguardNotifications": true,
+    "AllowKeyguardFingerprint": true,
+    "AllowKeyguardTrustAgent": true,
+    "AllowKeyguardUnredacted": true,
+    "AllowModifyingAppsSettings": true,
+    "AllowInstallingApps": true,
+    "AllowUninstallingApps": true,
+    "AllowDisableAppVerify": true,
+    "AllowUSBFileTransfer": true,
+    "AllowVPNChanges": true,
+    "AllowMobileChanges": false,
+    "AllowWorkPersonalPaste": false,
+    "AllowWorkToAccessPersonal": false,
+    "AllowPersonalToAccessWork": false,
+    "AllowPersonalShareWithWork": false,
+    "AllowWorkShareWithPersonal": false,
+    "AllowWorkContactsInPhone": false,
+    "AllowContacts": false,
+    "ForceScreenOnPluggedAC": false,
+    "ForceScreenOnPluggedUSB": false,
+    "ForceScreenOnPluggedWireless": false,
+    "AllowStatusBar": false,
+    "AllowKeyguard": false,
+    "AllowAddingUsers": false,
+    "AllowRemovingUsers": false,
+    "AllowSafeBoot": false,
+    "AllowNFC": false,
+    "AllowManagedWifiChanges": true,
+    "AllowDataRoaming": false,
+    "AllowLocationAccess": 2,
+    "AllowBluetoothContactSharing": false,
+    "AllowWallpaperChange": false,
+    "AllowUserIconChange": false,
+    "AllowNonGoogleAccounts": false,
+    "WhitelistApprovedAccessibilityServices": true,
+    "SkipFirstUseHints": false,
+    "AllowSystemWindows": true,
+    "AllowSystemErrorDialogs": true,
+    "AndroidForWorkWorkProfileRestrictionsPayload": {
+      "WorkAllowScreenCapture": false,
+      "WorkAllowAccountChanges": false,
+      "WorkAllowKeyguardFingerprint": true,
+      "WorkAllowKeyguardTrustAgent": true,
+      "WorkAllowKeyguardUnredacted": true,
+      "WorkAllowNonGoogleAccounts": false,
+      "WorkAllowCamera": false,
+      "WorkAllowGooglePlay": false,
+      "WorkAllowedAccounts": "AllAccounts",
+      "WorkAllowChrome": false,
+      "WorkAllowNonMarketAppInstall": false,
+      "WorkAllowInstallFromUnknownSources": 1,
+      "WorkAllowInstallingApps": false,
+      "WorkAllowUninstallingApps": false,
+      "WorkAllowDisableAppVerify": false,
+      "WorkWhitelistPermittedAccessibilityServices": false,
+      "WorkWhitelistAppsCanUtilizeWidgets": false,
+      "WorkAllowUSBDebugging": false,
+      "WorkAllowOutgoingBluetoothConnections": false,
+      "WorkAllowNFC": false,
+      "WorkAllowWorkPersonalPaste": false,
+      "WorkAllowWorkToAccessPersonal": false,
+      "WorkAllowPersonalToAccessWork": false,
+      "WorkAllowPersonalShareWithWork": false,
+      "WorkAllowPersonalShareWithWorkApp": true,
+      "WorkAllowWorkShareWithPersonal": false,
+      "WorkAllowWorkContactsInPhone": false,
+      "WorkAllowWorkWidgetsToPersonal": false,
+      "WorkAllowBluetoothContactSharing": false,
+      "WorkAllowContacts": false,
+      "WorkSkipFirstUseHints": false
+    }
+  }
+}

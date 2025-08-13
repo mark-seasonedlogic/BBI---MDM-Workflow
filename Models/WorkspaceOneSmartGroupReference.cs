@@ -8,7 +8,7 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Models
 {
     public class WorkspaceOneSmartGroupReference
     {
-        public int Id { get; set; }
+        public int SmartGroupId { get; set; }
         public string Name { get; set; } = string.Empty;
     }
 

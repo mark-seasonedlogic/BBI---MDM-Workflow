@@ -1,0 +1,240 @@
+{
+  "General": {
+    "ProfileId": 429,
+    "AfwOemSettingsEnabled": false,
+    "AfwOemType": 0,
+    "Name": "AND-KIOSK-SPARKFLYBURGER",
+    "Description": "",
+    "ProfileScope": "Production",
+    "Version": 4,
+    "AssignmentType": "Auto",
+    "EnableProvisioning": false,
+    "IsActive": true,
+    "IsManaged": true,
+    "Password": "",
+    "AllowRemoval": "Never",
+    "AssignedSmartGroups": [
+      {
+        "SmartGroupId": 213,
+        "Name": "CARL TEST - ONLY"
+      },
+      {
+        "SmartGroupId": 261,
+        "Name": "All OUTBACK Android POS tablets"
+      },
+      {
+        "SmartGroupId": 284,
+        "Name": "All CARRABBAS Android POS tablets"
+      },
+      {
+        "SmartGroupId": 285,
+        "Name": "All BONEFISH Android POS tablets"
+      },
+      {
+        "SmartGroupId": 306,
+        "Name": "All FLEMINGS Android POS tablets"
+      },
+      {
+        "SmartGroupId": 494,
+        "Name": "SPARKFLYBURGER - 10-25-23"
+      },
+      {
+        "SmartGroupId": 520,
+        "Name": "App Deny - Battery Opt - Launcher - 11-12-2023"
+      },
+      {
+        "SmartGroupId": 522,
+        "Name": "App Deny - Battery - Launcher - 18 -12 - 2023"
+      },
+      {
+        "SmartGroupId": 570,
+        "Name": "All OUTBACK 1016 Android POS tablets"
+      }
+    ],
+    "ExcludedSmartGroups": [
+      {
+        "SmartGroupId": 310,
+        "Name": "Bomgar - ANDROID"
+      },
+      {
+        "SmartGroupId": 567,
+        "Name": "ALL LAB9921 Android POS Tablets"
+      },
+      {
+        "SmartGroupId": 654,
+        "Name": "07-17-24 - POSI 2.7.1 App Deployment - KIOSK-SPARKFLYBURGER-LAYOUT - POSITERM.ini 2.7.1"
+      },
+      {
+        "SmartGroupId": 771,
+        "Name": "Astrapria Monitor TEST 12-18-24"
+      },
+      {
+        "SmartGroupId": 786,
+        "Name": "Astrapia Monitor TEST - 01-14-25"
+      }
+    ],
+    "ManagedLocationGroupID": 570,
+    "AssignedSchedule": [],
+    "ProfileUuid": "01e0b108-4331-456c-a564-2047aeb692dc",
+    "IsProvisionedForOobe": false
+  },
+  "AndroidForWorkKiosk": {
+    "WallpaperType": 0,
+    "WallpaperId": 0,
+    "ScreenCount": 1,
+    "IconSize": 3,
+    "AdminPasscode": "*****",
+    "StatusBarFrequency": 1,
+    "DisplaySetting": true,
+    "SoundSetting": false,
+    "LanguageSetting": false,
+    "BluetoothSetting": false,
+    "WifiSetting": false,
+    "SecuritySetting": false,
+    "ApplicationSetting": false,
+    "StorageSetting": false,
+    "DockSetting": false,
+    "PowerSetting": false,
+    "FreezeIcons": true,
+    "PhoneCall": false,
+    "ContactsView": false,
+    "AllowedApplications": [
+      {
+        "ApplicationName": "POSi",
+        "ApplicationId": "com.RestaurantDataConceptsInc.POSiterm",
+        "FolderCategory": " ",
+        "ApplicationVisibility": true,
+        "ApplicationLocation": "Text Value",
+        "ApplicationHideFromUser": false,
+        "LaunchOnStart": false,
+        "AppType": "internal"
+      },
+      {
+        "ApplicationName": "AndroidHub",
+        "ApplicationId": "com.airwatch.androidagent",
+        "FolderCategory": "MISC",
+        "ApplicationVisibility": true,
+        "ApplicationLocation": "Text Value",
+        "ApplicationHideFromUser": false,
+        "LaunchOnStart": false,
+        "AppType": "internal"
+      },
+      {
+        "ApplicationName": "SentinelOne",
+        "ApplicationId": "com.sentinelone.mobile",
+        "FolderCategory": "MISC",
+        "ApplicationVisibility": true,
+        "ApplicationLocation": "Text Value",
+        "ApplicationHideFromUser": false,
+        "LaunchOnStart": false,
+        "AppType": "internal"
+      },
+      {
+        "ApplicationName": "popup Calculator",
+        "ApplicationId": "com.sec.android.app.popupcalculator",
+        "FolderCategory": "MISC",
+        "ApplicationVisibility": true,
+        "ApplicationLocation": "Text Value",
+        "ApplicationHideFromUser": false,
+        "LaunchOnStart": false,
+        "AppType": "public"
+      },
+      {
+        "ApplicationName": "sparkfly-positouch-app",
+        "ApplicationId": "com.sparkfly.positouch",
+        "FolderCategory": "MISC",
+        "ApplicationVisibility": true,
+        "ApplicationLocation": "Text Value",
+        "ApplicationHideFromUser": false,
+        "LaunchOnStart": false,
+        "AppType": "internal"
+      },
+      {
+        "ApplicationName": "Knox E-FOTA",
+        "ApplicationId": "com.samsung.android.knox.efota",
+        "FolderCategory": "MISC",
+        "ApplicationVisibility": true,
+        "ApplicationLocation": "Text Value",
+        "ApplicationHideFromUser": false,
+        "LaunchOnStart": false,
+        "AppType": "internal"
+      },
+      {
+        "ApplicationName": "Issue Tracker L",
+        "ApplicationId": "com.salab.issuetracker",
+        "FolderCategory": "MISC",
+        "ApplicationVisibility": true,
+        "ApplicationLocation": "Text Value",
+        "ApplicationHideFromUser": false,
+        "LaunchOnStart": false,
+        "AppType": "internal"
+      },
+      {
+        "ApplicationName": "Knox Service Plugin",
+        "ApplicationId": "com.samsung.android.knox.kpu",
+        "FolderCategory": "MISC",
+        "ApplicationVisibility": true,
+        "ApplicationLocation": "Text Value",
+        "ApplicationHideFromUser": false,
+        "LaunchOnStart": false,
+        "AppType": "public"
+      },
+      {
+        "ApplicationName": "ONE UI HOME",
+        "ApplicationId": "com.sec.android.app.launcher",
+        "FolderCategory": " ",
+        "ApplicationVisibility": false,
+        "ApplicationLocation": "Text Value",
+        "ApplicationHideFromUser": false,
+        "LaunchOnStart": false,
+        "AppType": "misc"
+      }
+    ],
+    "GridConfigLarge": "4*4",
+    "GridConfigXlarge": "4*4",
+    "GridConfigMediumAndSmall": "4*4",
+    "ShowAgentIconOnHomeScreen": false,
+    "PersistAdminPasscode": false,
+    "GridLayout": "0.0.1.3,1.0.0.0,1.0.0.0,1.0.0.0,1.0.0.0,1.0.0.0,1.0.0.0,1.0.0.0,0.0.-1.-1",
+    "GridConfigGeneric": "4*4",
+    "AllowIcons": false,
+    "AllowSettings": true,
+    "AllowUtilities": true,
+    "AllowHardwareKeys": true,
+    "AllowCustomTray": true,
+    "AllowCellularData": false,
+    "AllowAllTethering": false,
+    "AllowMiniLaunchBar": false,
+    "AllowGpsLocationServices": false,
+    "AllowWidgets": false,
+    "AllowTaskManager": true,
+    "AllowRecentTasks": false,
+    "AllowStatusBar": true,
+    "AllowKeyguard": false,
+    "AllowHomeButton": true,
+    "AllowNotificationBar": true,
+    "AllowNavigationBar": true,
+    "AllowPowerOff": true,
+    "AllowHomeKey": true,
+    "AllowBackKey": true,
+    "AllowOptionsKey": false,
+    "AllowVolumeUpKey": false,
+    "AllowVolumeDownKey": false,
+    "AllowTrayGPS": false,
+    "AllowTrayBluetooth": false,
+    "AllowTrayWifi": false,
+    "AllowTrayCellularData": false,
+    "TitleBarText": "Android {DeviceSerialNumber} ",
+    "TitleBarIcon": 0,
+    "AllowAirplaneMode": false,
+    "AllowStayAwake": false,
+    "AllowLauncherSettings": false,
+    "ScreenLock": false,
+    "SingleAppMode": false,
+    "AppMode": 2,
+    "GroupId": "{GroupIdentifier}",
+    "UserName": "{EnrollmentUser}",
+    "OrientationType": 0,
+    "TemplateModeData": "\"undefined\""
+  }
+}

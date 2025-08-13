@@ -1,0 +1,28 @@
+<wap-provisioningdoc id="cc0e69ec-8677-470e-bd1d-e1a22bfddd05"
+                     name="AND-TIMEZONE-MOUNTAIN/V_3"
+                     profile-uuid="0fcde8e9-1bd5-47f4-a10e-e5da5c8623d8"
+                     version="3"
+                     allowRemoval="True">
+	<characteristic uuid="0c040b68-ab29-4f39-a985-0ae93228b7c9"
+	                type="com.airwatch.android.androidwork.datetime"
+	                target="2">
+		<parm name="DateTime"
+		      value="SNTP"/>
+		<parm name="URL"
+		      value="time.outback.com"/>
+		<parm name="EnablePeriodicSync"
+		      value="True"/>
+		<parm name="Region"
+		      value="Americas"/>
+		<parm name="TimeZone"
+		      value="US/Mountain"/>
+		<parm name="SetTimeZone"
+		      value="True"/>
+		<parm name="SyncIntervalDays"
+		      value="1"/>
+		<parm name="AllowDateTimeChange"
+		      value="True"/>
+		<parm name="AutomaticTime"
+		      value="False"/>
+	</characteristic>
+</wap-provisioningdoc>

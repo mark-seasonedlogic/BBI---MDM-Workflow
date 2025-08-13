@@ -1,0 +1,43 @@
+{
+  "General": {
+    "ProfileId": 360,
+    "AfwOemSettingsEnabled": false,
+    "AfwOemType": 0,
+    "Name": "AND-WIFI Profile-FLM",
+    "Description": "",
+    "ProfileScope": "Production",
+    "Version": 1,
+    "AssignmentType": "Auto",
+    "EnableProvisioning": false,
+    "IsActive": true,
+    "IsManaged": true,
+    "Password": "",
+    "AllowRemoval": "Never",
+    "AssignedSmartGroups": [
+      {
+        "SmartGroupId": 306,
+        "Name": "All FLEMINGS Android POS tablets"
+      }
+    ],
+    "ExcludedSmartGroups": [
+      {
+        "SmartGroupId": 293,
+        "Name": "AND-POS-5-EXCLUSION_EXISTING_DEVICES"
+      }
+    ],
+    "ManagedLocationGroupID": 570,
+    "AssignedSchedule": [],
+    "ProfileUuid": "82578745-9cab-4c4d-9ca3-ceb67580264d",
+    "IsProvisionedForOobe": false
+  },
+  "AndroidForWorkWifiList": [
+    {
+      "ServiceSetIdentifier": "OSI-FLM-POS",
+      "SecurityType": "WPA",
+      "Password": "*****",
+      "SetAsActiveNetwork": true,
+      "HiddenNetwork": true,
+      "EnterprisePassword": "*****"
+    }
+  ]
+}

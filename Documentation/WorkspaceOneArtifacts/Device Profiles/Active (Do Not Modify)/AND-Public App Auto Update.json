@@ -1,0 +1,62 @@
+{
+  "General": {
+    "ProfileId": 383,
+    "AfwOemSettingsEnabled": false,
+    "AfwOemType": 0,
+    "Name": "AND-Public App Auto Update",
+    "Description": "",
+    "ProfileScope": "Production",
+    "Version": 3,
+    "AssignmentType": "Auto",
+    "EnableProvisioning": false,
+    "IsActive": true,
+    "IsManaged": true,
+    "Password": "",
+    "AllowRemoval": "Always",
+    "AssignedSmartGroups": [
+      {
+        "SmartGroupId": 261,
+        "Name": "All OUTBACK Android POS tablets"
+      },
+      {
+        "SmartGroupId": 284,
+        "Name": "All CARRABBAS Android POS tablets"
+      },
+      {
+        "SmartGroupId": 285,
+        "Name": "All BONEFISH Android POS tablets"
+      },
+      {
+        "SmartGroupId": 306,
+        "Name": "All FLEMINGS Android POS tablets"
+      },
+      {
+        "SmartGroupId": 567,
+        "Name": "ALL LAB9921 Android POS Tablets"
+      },
+      {
+        "SmartGroupId": 570,
+        "Name": "All OUTBACK 1016 Android POS tablets"
+      }
+    ],
+    "ExcludedSmartGroups": [
+      {
+        "SmartGroupId": 539,
+        "Name": "APP AUTO UPDATE BLOCK - EXCEPTION"
+      },
+      {
+        "SmartGroupId": 575,
+        "Name": "AND-Public App Auto Update-2"
+      }
+    ],
+    "ManagedLocationGroupID": 570,
+    "AssignedSchedule": [],
+    "ProfileUuid": "088324ba-c5ef-42a4-931d-a80c7d84e7fc",
+    "IsProvisionedForOobe": false
+  },
+  "AndroidForWorkAutoUpdate": {
+    "AutoUpdateInstallPolicy": "never",
+    "StartTime": "01:00",
+    "EndTime": "07:00"
+  }
+}
