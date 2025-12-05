@@ -1,26 +1,27 @@
-﻿using BBIHardwareSupport.MDM.IntuneConfigManager.Helpers;
-using BBIHardwareSupport.MDM.IntuneConfigManager;
+﻿using BBIHardwareSupport.MDM.IntuneConfigManager;
+using BBIHardwareSupport.MDM.IntuneConfigManager.Helpers;
+using BBIHardwareSupport.MDM.IntuneConfigManager.Models;
+using BBIHardwareSupport.MDM.IntuneConfigManager.Services.WorkspaceOne;
+using BBIHardwareSupport.MDM.Services.WorkspaceOne;
+using BBIHardwareSupport.MDM.WorkspaceOne.Interfaces;
+using BBIHardwareSupport.MDM.WorkspaceOne.Models;
 using BBIHardwareSupport.MDM.WorkspaceOneManager.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
+using Microsoft.Graph.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using BBIHardwareSupport.MDM.IntuneConfigManager.Models;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using Newtonsoft.Json.Linq;
-using Microsoft.Graph.Models;
-using System.Collections.Generic;
-using System.Linq;
-using BBIHardwareSupport.MDM.WorkspaceOne.Models;
-using BBIHardwareSupport.MDM.Services.WorkspaceOne;
-using Microsoft.Extensions.Logging;
-using BBIHardwareSupport.MDM.IntuneConfigManager.Services.WorkspaceOne;
-using Newtonsoft.Json;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
-using System.Text.Json;
 using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace BBIHardwareSupport.MDM.ViewModels
 {
@@ -35,7 +36,7 @@ namespace BBIHardwareSupport.MDM.ViewModels
         private readonly IWorkspaceOneProfileService _profileService;
 
         private readonly ILogger<WorkspaceOneViewModel> _logger;
-
+ 
 
         public WorkspaceOneViewModel(IWorkspaceOneAuthService authService, IWorkspaceOneDeviceService deviceService, ILogger<WorkspaceOneViewModel> logger, IWorkspaceOneSmartGroupsService smartGroupsService, IProductsService productService, IWorkspaceOneProfileService profileService)
         {
@@ -46,6 +47,26 @@ namespace BBIHardwareSupport.MDM.ViewModels
             _productService = productService;
             _profileService = profileService;
         }
+        private readonly IWorkspaceOneTaggingService _taggingService;
+
+        public WorkspaceOneViewModel(
+            IWorkspaceOneAuthService authService,
+            IWorkspaceOneDeviceService deviceService,
+            ILogger<WorkspaceOneViewModel> logger,
+            IWorkspaceOneSmartGroupsService smartGroupsService,
+            IProductsService productService,
+            IWorkspaceOneProfileService profileService,
+            IWorkspaceOneTaggingService taggingService)
+        {
+            _authService = authService;
+            _deviceService = deviceService;
+            _smartGroupsService = smartGroupsService;
+            _logger = logger;
+            _productService = productService;
+            _profileService = profileService;
+            _taggingService = taggingService;
+        }
+
         public async Task<bool> SetCredentialsAsync(string Username, string Password, string ApiKey)
         {
 
@@ -79,6 +100,8 @@ namespace BBIHardwareSupport.MDM.ViewModels
         public ObservableCollection<WorkspaceOneProduct> Products { get; } = new();
         public ObservableCollection<WorkspaceOneProfileSummary> Profiles { get; } = new();
         public ObservableCollection<WorkspaceOneProfileDetails> ProfileDetails { get; } = new();
+        public ObservableCollection<TimeZoneTagReviewRow> TimeZoneTagReviewRows { get; } = new();
+
         private void InitializeUITileItems()
         {
             UITileItems.Clear();
@@ -117,6 +140,14 @@ namespace BBIHardwareSupport.MDM.ViewModels
                 ImagePath = "ms-appx:///Assets/Device_Renamed.png",
                 ExecuteCommand = new RelayCommand(() => Debug.WriteLine("Load OEM Config Policies"))
             });
+            UITileItems.Add(new UITileItem
+            {
+                Title = "Review Time Zone Tags",
+                Description = "Audit and bulk-tag POS devices per restaurant time zone",
+                ImagePath = "ms-appx:///Assets/Device_Renamed.png",
+                ExecuteCommand = new RelayCommand(async () => await ShowTimeZoneTagReviewAsync())
+            });
+
         }
         public async Task OnLoadedAsync()
         {
@@ -125,6 +156,64 @@ namespace BBIHardwareSupport.MDM.ViewModels
             await Task.CompletedTask;
 
         }
+        private void SortTimeZoneRows<TKey>(Func<TimeZoneTagReviewRow, TKey> keySelector, bool descending = false)
+        {
+            var ordered = descending
+                ? TimeZoneTagReviewRows.OrderByDescending(keySelector).ToList()
+                : TimeZoneTagReviewRows.OrderBy(keySelector).ToList();
+
+            TimeZoneTagReviewRows.Clear();
+            foreach (var r in ordered)
+                TimeZoneTagReviewRows.Add(r);
+
+            RefreshTimeZoneDisplayedItems();
+        }
+        // Using CommunityToolkit.Mvvm
+        [ObservableProperty]
+        private bool isTimeZoneReviewActive;
+
+        [RelayCommand]
+        private void SortTimeZoneByRestaurant()
+            => SortTimeZoneRows(r => r.RestaurantCode);
+
+        [RelayCommand]
+        private void SortTimeZoneByTimeZone()
+            => SortTimeZoneRows(r => r.TimeZone);
+
+        [RelayCommand]
+        private void SortTimeZoneByTagName()
+            => SortTimeZoneRows(r => r.TagName);
+
+        [RelayCommand]
+        private void SortTimeZoneByTagId()
+            => SortTimeZoneRows(r => r.TagId);
+
+        [RelayCommand]
+        private void SortTimeZoneByDeviceId()
+            => SortTimeZoneRows(r => r.DeviceId);
+
+        [RelayCommand]
+        private void SortTimeZoneByEnrollmentUser()
+            => SortTimeZoneRows(r => r.EnrollmentUserName);
+
+        [RelayCommand]
+        private void SelectAllTimeZoneRows()
+        {
+            foreach (var row in TimeZoneTagReviewRows)
+                row.IsSelected = true;
+
+            RefreshTimeZoneDisplayedItems();
+        }
+
+        [RelayCommand]
+        private void DeselectAllTimeZoneRows()
+        {
+            foreach (var row in TimeZoneTagReviewRows)
+                row.IsSelected = false;
+
+            RefreshTimeZoneDisplayedItems();
+        }
+
         [RelayCommand]
         private async Task AuthenticateAsync()
         {
@@ -166,13 +255,19 @@ namespace BBIHardwareSupport.MDM.ViewModels
                 OnPropertyChanged(nameof(IsSmartGroupView));
                 OnPropertyChanged(nameof(IsProductView));
                 OnPropertyChanged(nameof(IsProfileView));
+                OnPropertyChanged(nameof(IsTimeZoneReviewView));
             }
         }
-
+        public bool IsTimeZoneReviewView => SelectedArtifactType is TimeZoneTagReviewRow;
         public bool IsDeviceView => SelectedArtifactType is WorkspaceOneDevice;
         public bool IsSmartGroupView => SelectedArtifactType is WorkspaceOneSmartGroup;
         public bool IsProductView => SelectedArtifactType is WorkspaceOneProduct;
         public bool IsProfileView => SelectedArtifactType is WorkspaceOneProfileSummary;
+        private void RefreshTimeZoneDisplayedItems()
+        {
+            DisplayedItems = new ObservableCollection<object>(TimeZoneTagReviewRows.Cast<object>());
+            SelectedArtifactType = TimeZoneTagReviewRows.FirstOrDefault();
+        }
 
         public async Task LoadAllProductsAsync()
         {
@@ -315,6 +410,95 @@ namespace BBIHardwareSupport.MDM.ViewModels
             finally
             {
                 IsLoading = false;
+            }
+        }
+        public async Task ShowTimeZoneTagReviewAsync()
+        {
+            try
+            {
+                // 1) Prompt for input files (uses UiDialogHelper, like your other dialogs). :contentReference[oaicite:7]{index=7}
+                var masterPath = await UiDialogHelper.PromptForFileAsync(App.MainWindow.Content.XamlRoot, ".csv","Choose Master Restaurant Directory CSV");
+                if (string.IsNullOrWhiteSpace(masterPath)) return;
+
+                var restaurantsPath = await UiDialogHelper.PromptForFileAsync(App.MainWindow.Content.XamlRoot, ".csv", "Choose List of Restaurants CSV");
+                if (string.IsNullOrWhiteSpace(restaurantsPath)) return;
+
+                // Ensure devices are loaded (or call device service directly)
+                if (Devices.Count == 0)
+                    await LoadDevicesByOrgGroupAsync();
+
+                var request = new TimeZoneTagAuditRequest
+                {
+                    MasterCsvPath = masterPath,
+                    RestaurantsPath = restaurantsPath,
+                    Devices = Devices.ToList(),
+                    OgId = 570 // or bind from settings
+                };
+                // Set the TimeZoneReviewMode to true:
+                IsTimeZoneReviewActive = true;
+                // 2) Run the audit
+                var plan = await _taggingService.InvokeTimeZoneTagAuditAsync(request);
+                if (plan == null || plan.Count == 0)
+                {
+                    await UiDialogHelper.ShowMessageAsync("No plan items were produced.");
+                    return;
+                }
+
+                // 3) Flatten to per-device rows
+                var rows = new List<TimeZoneTagReviewRow>();
+                foreach (var p in plan)
+                {
+                    if (p.TagId is null || p.DeviceIds == null || p.DeviceIds.Count == 0)
+                        continue;
+
+                    foreach (var dev in p.DeviceIds)
+                    {
+                        // Find corresponding device to get enrollment user name
+                        var device = Devices.FirstOrDefault(d =>
+                            string.Equals(d.DeviceId.ToString(), dev, StringComparison.OrdinalIgnoreCase));
+
+                        rows.Add(new TimeZoneTagReviewRow
+                        {
+                            RestaurantCode = p.RestaurantCode,
+                            TimeZone = p.TimeZone,
+                            TagName = p.TagName,
+                            TagId = p.TagId.Value,
+                            DeviceId = dev,
+                            EnrollmentUserName = device?.UserName // or EnrollmentUserName property if you have one
+                        });
+                    }
+                }
+
+                if (!rows.Any())
+                {
+                    await UiDialogHelper.ShowMessageAsync("Nothing to review (no devices needing tags or no TagId resolved).");
+                    return;
+                }
+
+                // 4) Pull membership per TagId
+                var tagIds = rows.Select(r => r.TagId).Distinct().ToList();
+                var memberMap = new Dictionary<int, HashSet<string>>();
+                foreach (var tid in tagIds)
+                {
+                    memberMap[tid] = await _taggingService.GetDevicesForTagAsync(tid, pageSize: 500);
+                }
+
+                TimeZoneTagReviewRows.Clear();
+                foreach (var row in rows)
+                {
+                    var set = memberMap[row.TagId];
+                    row.AlreadyTagged = set != null && set.Contains(row.DeviceId);
+                    row.IsSelected = !row.AlreadyTagged; // default: only ones that need tagging
+                    TimeZoneTagReviewRows.Add(row);
+                }
+
+                RefreshTimeZoneDisplayedItems();
+                IsTimeZoneReviewActive = true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error running WS1 Time Zone Tag Review.");
+                await UiDialogHelper.ShowMessageAsync($"Error running time zone tag review: {ex.Message}");
             }
         }
 

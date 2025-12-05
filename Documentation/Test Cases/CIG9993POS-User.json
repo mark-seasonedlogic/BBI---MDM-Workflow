@@ -1,0 +1,30 @@
+{
+  "UserName": "CIG9993POS",
+  "FirstName": "Carrabbas",
+  "LastName": "9993",
+  "Status": true,
+  "Email": "noreply@airwatch.com",
+  "SecurityType": 2,
+  "ContactNumber": "",
+  "DisplayName": "Carrabbas 9993 POS",
+  "MobileNumber": "",
+  "MessageType": -1,
+  "EmailUserName": "",
+  "Group": "Bloomin Brands",
+  "LocationGroupId": "570",
+  "OrganizationGroupUuid": "888b2d6c-0bb7-4664-87f4-d67c2a2d17dd",
+  "Role": "Basic Access",
+  "EnrolledDevicesCount": "1",
+  "CustomAttribute1": "",
+  "CustomAttribute2": "",
+  "CustomAttribute3": "",
+  "CustomAttribute4": "",
+  "CustomAttribute5": "",
+  "ExternalId": "",
+  "StagingMode": 0,
+  "DeviceStagingEnabled": false,
+  "Id": {
+    "Value": 5139
+  },
+  "Uuid": "a1cd8e56-9507-46bd-97b7-90252c6408a6"
+}

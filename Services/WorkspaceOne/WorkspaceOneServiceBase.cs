@@ -1,4 +1,5 @@
 ﻿using BBIHardwareSupport.MDM.WorkspaceOneManager.Interfaces;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -112,6 +113,20 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services.WorkspaceOne
                 return null;
             }
         }
+        protected async Task<string?> PostJsonAsync(
+    string endpoint,
+    object payload,
+    string? accept = null)
+        {
+            var json = JsonConvert.SerializeObject(payload);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            return await SendRequestAsync(
+                endpoint,
+                HttpMethod.Post,
+                content,
+                accept);
+        }
 
         protected async Task<List<JObject>> GetPagedResponseAsync(
             string endpoint,
@@ -168,7 +183,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services.WorkspaceOne
                             pageSize = int.TryParse(obj.Value<string>("page_size") ?? obj.Value<string>("PageSize"), out var ps) ? ps : 0;
 
                         if (totalItems == int.MaxValue)
-                            totalItems = int.TryParse(obj.Value<string>("TotalResults") ?? obj.Value<string>("total") ?? obj.Value<string>("total_size"), out var ti) ? ti : 0;
+                            totalItems = int.TryParse(obj.Value<string>("TotalResults") ?? obj.Value<string>("Total") ?? obj.Value<string>("total_size"), out var ti) ? ti : 0;
 
                         // Extract target collection by itemType key
                         if (obj.TryGetValue(itemType, out var token))
@@ -213,5 +228,6 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services.WorkspaceOne
             return allResults;
         }
     }
+
 
 }

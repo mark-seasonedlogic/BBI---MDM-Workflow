@@ -17,6 +17,7 @@ using BBIHardwareSupport.MDM.IntuneConfigManager.Views;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using BBIHardwareSupport.MDM.UI.Helpers;
+using BBIHardwareSupport.MDM.UI.ViewModels.Helpers;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.

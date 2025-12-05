@@ -36,6 +36,7 @@
                         <controls:NavigationViewItem Content="Profiles" Tag="WS1ProfilesPage"/>
                         <controls:NavigationViewItem Content="Applications" Tag="WS1ApplicationsPage"/>
                         <controls:NavigationViewItem Content="Compliance Policies" Tag="WS1CompliancePoliciesPage"/>
+                        <controls:NavigationViewItem Content="Graph Editor" Tag="nav-graph-editor" Icon="Edit"/>
                     </controls:NavigationViewItem.MenuItems>
 
                 </controls:NavigationViewItem>

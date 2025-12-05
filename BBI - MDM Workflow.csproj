@@ -9,14 +9,30 @@
     <Nullable>enable</Nullable>
     <Platforms>x86;x64;ARM64</Platforms>
     <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
-    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <!-- Need the following for passing Dictionary Objects -->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+    <!-- Unpackaged, self-contained WinUI 3 -->
+    <WindowsPackageType>None</WindowsPackageType>
+    <SelfContained>true</SelfContained>
+    <AppxPackage>false</AppxPackage>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <DisableMsixProjectCapabilityAddedByProject>true</DisableMsixProjectCapabilityAddedByProject>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Services\WorkspaceOne\WorkspaceOneGraphService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Assets\graph\index.html" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove="JsonViewerWindow.xaml" />
     <None Remove="Pages\GitManagerPage.xaml" />
+    <None Remove="Pages\GraphEditorPage.xaml" />
     <None Remove="Pages\OemConfigurationManagerPage.xaml" />
     <None Remove="Pages\SchemaExtensionAdminPage.xaml" />
     <None Remove="Pages\SettingsPage.xaml" />
@@ -51,7 +67,10 @@
     <PackageReference Include="Microsoft.Graph" Version="5.72.0" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.69.1" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.250205002" />
+    <!-- Updated to 1.7.250606001 to avoid PRI-related build errors
+      <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.250205002" />
+    -->
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.9.2" />
     <PackageReference Include="MSTest.TestFramework" Version="3.9.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -64,9 +83,15 @@
     <Page Update="JsonViewerWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <None Update="Assets\graph\index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="Pages\GraphEditorPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Pages\WS1CompliancePoliciesPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -110,6 +135,13 @@
 
   <ItemGroup>
     <Folder Include="Documentation\WorkspaceOneArtifacts\" />
+    <Folder Include="installer\redist\" />
+    <Folder Include="Services\Meraki\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="installer\wix\BBI.MDM.Workflow.Bundle.wixproj" />
+    <None Include="installer\wix\BBI.MDM.Workflow.Msi.wixproj" />
   </ItemGroup>
 
   <!-- Remove MSIX-related settings -->
@@ -119,10 +151,18 @@
 
   <!-- Publish Properties -->
   <PropertyGroup>
-    <PublishReadyToRun Condition="'$(Configuration)' == 'Debug'">False</PublishReadyToRun>
-    <PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">True</PublishReadyToRun>
-    <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
-    <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
+    <PublishReadyToRun>False</PublishReadyToRun>
+    <PublishReadyToRun>True</PublishReadyToRun>
+    <PublishTrimmed>False</PublishTrimmed>
   </PropertyGroup>
+  <!-- Robust app-local copy of WinAppSDK native deps for per-user installs -->
+  <PropertyGroup>
+    <WinAppSDKVersion>1.7.250606001</WinAppSDKVersion>
+    <NuGetPackageRoot>$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
+    <WinAppSDKNativeDir1>$(NuGetPackageRoot)microsoft.windowsappsdk\$(WinAppSDKVersion)\runtimes\win10-x64\native\</WinAppSDKNativeDir1>
+    <WinAppSDKNativeDir2>$(NuGetPackageRoot)microsoft.windowsappsdk\$(WinAppSDKVersion)\runtimes\win-x64\native\</WinAppSDKNativeDir2>
+  </PropertyGroup>
+
+  
 
 </Project>

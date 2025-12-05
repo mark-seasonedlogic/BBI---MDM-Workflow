@@ -17,6 +17,7 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Models
         public DateTime? EnrollmentDate { get; set; }
         public bool Compliant { get; set; }
         public string? AssetNumber { get; set; }
+        public string? EnrollmentUserName { get; set; }
         public string? EnrollmentStatus { get; set; }
         public DateTime? UnEnrolledDate { get; set; }
 

@@ -1,0 +1,38 @@
+﻿<Project Sdk="WixToolset.Sdk/4.0.5">
+  <PropertyGroup>
+    <OutputType>Package</OutputType>
+    <Platform>x64</Platform>
+    <GeneratePackageId>true</GeneratePackageId>
+
+    <!-- Make $(var.PublishDir) available to WiX -->
+    <DefineConstants>PublishDir=$(PublishDir)</DefineConstants>
+
+    <!-- Publish folder used by AppFiles.wxs -->
+    <PublishDir>$(MSBuildThisFileDirectory)..\..\bin\Release\net8.0-windows10.0.19041.0\win-x64\publish</PublishDir>
+
+    <!-- Name of the generated MSI, e.g. BBI.MDM.Workflow.msi -->
+    <OutputName>BBI.MDM.Workflow</OutputName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Bundle.wxs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Product.wxs" />
+    <!-- <Compile Include="AppFiles.wxs" /> -->
+  </ItemGroup>
+  <!-- This brings in the <Files> element -->
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Heat" Version="4.0.5" />
+    <HarvestDirectory Include="$(PublishDir)">
+      <ComponentGroupName>AppFiles</ComponentGroupName>
+      <DirectoryRefId>APPDIR</DirectoryRefId>
+      <SuppressRootDirectory>true</SuppressRootDirectory>
+      <!-- Optional: keep generated markup portable -->
+      <PreprocessorVariable>var.PublishDir</PreprocessorVariable>
+    </HarvestDirectory>
+    <!-- Optional but helpful for binding -->
+    <BindPath Include="$(PublishDir)" />
+  </ItemGroup>
+
+</Project>

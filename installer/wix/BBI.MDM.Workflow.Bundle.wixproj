@@ -1,0 +1,22 @@
+﻿<Project Sdk="WixToolset.Sdk/4.0.5">
+  <PropertyGroup>
+    <OutputType>Bundle</OutputType>
+    <Platform>x64</Platform>
+    <OutputName>BBI.MDM.Workflow.Setup</OutputName>
+    <Cultures>neutral</Cultures>
+    <!-- These constants feed Bundle.wxs -->
+    <DefineConstants>
+      MsiPath=$(MSBuildThisFileDirectory)BBI.MDM.Workflow.msi;
+      RedistDir=$(MSBuildThisFileDirectory)..\redist
+    </DefineConstants>
+    <EnableDefaultItems>false</EnableDefaultItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="bundle\Bundle.wxs" />
+  </ItemGroup>
+  <!-- Ensure the MSI builds first -->
+  <ItemGroup>
+    <ProjectReference Include="BBI.MDM.Workflow.Msi.wixproj" />
+  </ItemGroup>
+  <!-- Add Burn + Util extensions via NuGet so VS/MSBuild restore them automatically -->
+</Project>

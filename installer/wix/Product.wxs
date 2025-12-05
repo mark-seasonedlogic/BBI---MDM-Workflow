@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+
+  <Package Name="BBI - MDM Workflow"
+           Manufacturer="Seasoned Logic LLC"
+           Version="1.0.0"
+           UpgradeCode="bdcb8839-3f99-4bae-b0b0-96e256e76bb1"
+           Language="1033"
+           Scope="perUser"
+           InstallerVersion="500">
+
+  <MajorUpgrade DowngradeErrorMessage="A newer version of BBI - MDM Workflow is already installed." />
+
+  <MediaTemplate EmbedCab="yes" />
+
+  <!-- Install under Program Files\BBI Hardware Implementation\BBI - MDM Workflow -->
+  <StandardDirectory Id="LocalAppDataFolder">
+        <Directory Id="UserPrograms" Name="Programs">
+
+    <Directory Id="SLROOT" Name="BBI.Hardware.Implementation">
+      <Directory Id="APPDIR" Name="BBI - MDM Workflow" />
+    </Directory>
+  </Directory>
+  </StandardDirectory>
+
+  <!-- Start menu folder -->
+  <StandardDirectory Id="ProgramMenuFolder">
+    <Directory Id="AppProgramMenuDir" Name="BBI Hardware Implementation" />
+  </StandardDirectory>
+
+  <!-- Files harvested by heat -->
+  <Feature Id="MainFeature" Title="BBI - MDM Workflow" Level="1">
+    <ComponentGroupRef Id="AppFiles" />
+    <ComponentRef Id="AppShortcut" />
+  </Feature>
+
+  <!-- Start menu shortcut (points to the app EXE in APPDIR) -->
+  <Component Id="AppShortcut" Directory="AppProgramMenuDir" Guid="78b27742-6f6c-4fc2-a83f-9c7eab699652">
+    <Shortcut Id="StartMenuShortcut"
+              Name="BBI - MDM Workflow"
+              Directory="AppProgramMenuDir"
+              Target="[APPDIR]BBI - MDM Workflow.exe"
+              WorkingDirectory="APPDIR" />
+    <RemoveFolder Id="RemoveAppProgramMenuDir" Directory="AppProgramMenuDir" On="uninstall" />
+    <RegistryKey Root="HKCU" Key="Software\BBI-Hardware-Implementation\BBI-MDM-Workflow">
+      <RegistryValue Name="Installed" Type="integer" Value="1" KeyPath="yes" />
+    </RegistryKey>
+  </Component>
+
+  <!-- Optional: use your app icon if present in publish
+
+  <Icon Id="app.ico" SourceFile="$(var.PublishDir)\app.ico" />
+  <Property Id="ARPPRODUCTICON" Value="app.ico" />
+  -->
+  </Package>
+</Wix>

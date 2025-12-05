@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util"
+     xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
+
+  <!-- Bundle output (an .exe) -->
+  <Bundle Name="BBI - MDM Workflow Setup"
+          Version="1.0.0"
+          Manufacturer="Seasoned Logic LLC"
+          UpgradeCode="3f8291a8-c55a-4bf4-9873-40ac077ac5f5"
+          Compressed="yes">
+<BootstrapperApplication Name="WixStdBA.exe">
+      <!-- stock BA; change theme if you like -->
+      <bal:WixStandardBootstrapperApplication
+	Theme="rtfLicense" 
+	LicenseFile="$(var.BundleDir)\Eula.rtf" />
+    </BootstrapperApplication>
+
+
+    <!-- Skip runtime if already present (either per-user or machine-wide) -->
+    <util:RegistrySearch Id="WAS_USER_INSTALLED"
+                         Variable="WAS_USER_INSTALLED"
+                         Root="HKCU"
+                         Key="Software\Microsoft\WindowsAppRuntime\Installed"
+                         Result="exists" />
+    <util:RegistrySearch Id="WAS_MACHINE_INSTALLED"
+                         Variable="WAS_MACHINE_INSTALLED"
+                         Root="HKLM"
+                         Key="SOFTWARE\Microsoft\WindowsAppRuntime\Installed"
+                         Result="exists" />
+
+    <Chain>
+      <!-- Windows App Runtime: run NOT elevated for per-user -->
+      <ExePackage Id="WinAppSDK_Redist"
+          SourceFile="$(var.RedistDir)\WindowsAppRuntimeInstall-x64.exe"
+          Compressed="yes"
+          Permanent="yes"
+          InstallArguments="/quiet /norestart"
+          RepairArguments="/repair /quiet /norestart"
+          UninstallArguments="/uninstall /quiet /norestart" 
+          DetectCondition="WAS_USER_INSTALLED OR WAS_MACHINE_INSTALLED" />
+
+      <!-- Your MSI (make sure the MSI itself is authored per-user if that's what you want) -->
+      <MsiPackage Id="AppMsi"
+                  SourceFile="$(var.MsiPath)"
+                  Compressed="yes"
+		  Scope="perUser"
+		  bal:DisplayInternalUICondition="0" />
+    </Chain>
+  </Bundle>
+</Wix>

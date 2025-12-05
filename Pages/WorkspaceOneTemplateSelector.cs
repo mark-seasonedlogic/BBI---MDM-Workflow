@@ -36,6 +36,11 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Pages
         public DataTemplate ProfileTemplate { get; set; }
 
         /// <summary>
+        /// Gets or sets the template used to render <see cref="WorkspaceOneTimeZoneTagReview"/> items.
+        /// </summary>
+        public DataTemplate TimeZoneTagReviewTemplate { get; set; }
+
+        /// <summary>
         /// Returns the appropriate <see cref="DataTemplate"/> based on the type of the item.
         /// This overload is called internally by the framework when rendering items.
         /// </summary>
@@ -50,6 +55,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Pages
                 WorkspaceOneSmartGroup => SmartGroupTemplate,
                 WorkspaceOneProduct => ProductTemplate,
                 WorkspaceOneProfileSummary => ProfileTemplate,
+                TimeZoneTagReviewRow => TimeZoneTagReviewTemplate,
                 _ => base.SelectTemplateCore(item)
             };
         }

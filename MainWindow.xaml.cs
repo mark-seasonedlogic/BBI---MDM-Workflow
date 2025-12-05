@@ -99,6 +99,10 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
                         var ws1CompliancePoliciesPage = _serviceProvider.GetRequiredService<WS1CompliancePoliciesPage>();
                         ContentFrame.Content = ws1CompliancePoliciesPage;
                         break;
+                    case "nav-graph-editor":
+                        ContentFrame.Navigate(typeof(GraphEditorPage));
+                        break;
+
 
 
                 }
