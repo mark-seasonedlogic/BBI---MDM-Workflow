@@ -1,9 +1,0 @@
-<!-- AppFiles.wxs (WiX 6 + Harvesters) -->
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-  <Fragment>
-    <ComponentGroup Id="AppFiles" Directory="APPDIR">
-      <!-- PublishDir should NOT end with a backslash; use \** here -->
-      <Files Include="$(var.PublishDir)\**" />
-    </ComponentGroup>
-  </Fragment>
-</Wix>
