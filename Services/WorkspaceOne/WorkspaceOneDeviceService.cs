@@ -1,4 +1,5 @@
 ﻿using BBIHardwareSupport.MDM.IntuneConfigManager.Services.WorkspaceOne;
+using BBIHardwareSupport.MDM.WorkspaceOne.Models;
 using BBIHardwareSupport.MDM.WorkspaceOneManager.Interfaces;
 using BBIHardwareSupport.MDM.WorkspaceOneManager.Models;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
@@ -34,12 +35,39 @@ namespace BBIHardwareSupport.Services
         public async Task<List<JObject>> GetAllAndroidDevicesByOrgExAsync(string orgId)
         {
             var queryParams = new Dictionary<string, string>
-        {
-            { "organizationgroupid", orgId },
-            { "platform", "Android" }
-        };
+    {
+        { "organizationgroupid", orgId },
+        { "platform", "Android" }
+    };
+
             await AddAuthHeaderAsync();
-            return await GetPagedResponseAsync("/mdm/devices/extensivesearch", "Devices", queryParams, "application/json;version=2");
+
+            var result = await GetPagedResponseAsync(
+                "/mdm/devices/extensivesearch",
+                "Devices",
+                queryParams,
+                "application/json;version=2");
+
+            return result ?? new List<JObject>();
+        }
+        public async Task<List<JObject>> GetAllAndroidDevicesByOrgExAsync(
+    string orgId,
+    Action<WorkspaceOnePagingProgress>? progress = null)
+        {
+            var queryParams = new Dictionary<string, string>
+    {
+        { "organizationgroupid", orgId },
+        { "platform", "Android" }
+    };
+
+            await AddAuthHeaderAsync();
+
+            return await GetPagedResponseAsync(
+                "/mdm/devices/extensivesearch",
+                "Devices",
+                queryParams,
+                "application/json;version=2",
+                progress);
         }
 
 

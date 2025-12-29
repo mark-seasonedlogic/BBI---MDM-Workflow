@@ -68,62 +68,82 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
         {
             var services = new ServiceCollection();
 
-            // Register NLog as a logging provider
             services.AddLogging(builder =>
             {
-                builder.ClearProviders();         // Remove default providers
-                builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace); // Adjust as needed
-                builder.AddNLog();                // Plug in NLog
+                builder.ClearProviders();
+                builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                builder.AddNLog();
             });
 
-            // Register services and view models
-            services.AddSingleton<IGraphAuthService, GraphAuthService>();
+            // ──────────────────────────────────────────────────────────────
+            // CORE (currently active)
+            // ──────────────────────────────────────────────────────────────
+
+            // Graph auth (single registration)
+            services.AddSingleton<IGraphAuthService>(_ =>
+                new GraphAuthService(
+                    "dd656aba-7b3a-4606-a1d5-b1d05cad986b",
+                    "c937126d-5291-47ed-8e01-3cb0fd4e1dfb",
+                    Environment.GetEnvironmentVariable("AZURE_CLIENT_SECRET")));
+
             services.AddSingleton<IGraphADDeviceService, GraphEnrolledDeviceService>();
             services.AddSingleton<IGraphIntuneDeviceService, GraphManagedDeviceService>();
             services.AddSingleton<IGraphADGroupService, GraphGroupService>();
             services.AddSingleton<IGraphDeviceUpdater, GraphDeviceUpdater>();
+            services.AddHttpClient<IWorkspaceOneAdminsService, WorkspaceOneAdminsService>();
+
             services.AddSingleton<MainViewModel>();
-            services.AddSingleton<IntuneGroupsPageViewModel>();
-            services.AddSingleton<GitManagerViewModel>();
-            services.AddScoped<OemConfigManagerViewModel>();
-            services.AddScoped<OemConfigurationManagerPage>();
+
+            // Keep pages (DI only needed if you resolve via GetRequiredService<Page>())
             services.AddTransient<WorkspaceOnePage>();
             services.AddTransient<WorkspaceOneViewModel>();
-            services.AddScoped<IGraphIntuneConfigurationService, GraphIntuneConfigurationService>();
-            services.AddScoped<IGraphIntuneManagedAppService, GraphIntuneManagedAppService>();
-            services.AddScoped<IGraphDeviceCategoryService, GraphDeviceCategoryService>();
+
+            services.AddTransient<OemConfigurationManagerPage>();
+            services.AddTransient<OemConfigManagerViewModel>();
+
+            // If WS1AndroidBatteryPage has a VM and you resolve via DI, register here:
+            // services.AddTransient<WS1AndroidBatteryPage>();
+            // services.AddTransient<WS1AndroidBatteryViewModel>();
+
+            // Workspace ONE services
+            services.AddSingleton<IWorkspaceOneAuthService, WorkspaceOneAuthService>();
+            services.AddSingleton<IApiAuthService, WorkspaceOneAuthService>();
+
             services.AddTransient<IWorkspaceOneDeviceService, WorkspaceOneDeviceService>();
             services.AddHttpClient<IWorkspaceOneSmartGroupsService, WorkspaceOneSmartGroupsService>();
             services.AddScoped<IProductsService, WorkspaceOneProductsService>();
             services.AddScoped<IWorkspaceOneProfileService, WorkspaceOneProfileService>();
-            services.AddHttpClient();
             services.AddHttpClient<IWorkspaceOneTaggingService, WorkspaceOneTaggingService>();
+
+            services.AddSingleton<IJournalService, FileJournalService>();
+            services.AddSingleton<IWorkspaceOneGraphService, WorkspaceOneGraphServiceAdapter>();
+
+            // Graph/Intune configuration services (keep if still used)
+            services.AddScoped<IGraphIntuneConfigurationService, GraphIntuneConfigurationService>();
+            services.AddScoped<IGraphIntuneManagedAppService, GraphIntuneManagedAppService>();
+            services.AddScoped<IGraphDeviceCategoryService, GraphDeviceCategoryService>();
+
+            services.AddHttpClient();
+
+            // ──────────────────────────────────────────────────────────────
+            // PARKED (pages/features moved to Pages\Experimental)
+            // ──────────────────────────────────────────────────────────────
+            #region Parked_ExperimentalPagesAndFeatures
+            /*
+            services.AddSingleton<IntuneGroupsPageViewModel>();
+            services.AddSingleton<GitManagerViewModel>();
 
             services.AddScoped<IAppConfigTemplateHelper, AppConfigTemplateHelper>();
             services.AddScoped<ISchemaExtensionRegistrar, SchemaExtensionRegistrarService>();
             services.AddTransient<SchemaAdminViewModel>();
             services.AddTransient<SchemaExtensionAdminPage>();
-            services.AddTransient<IntuneGroupsPage>();
-            services.AddSingleton<IWorkspaceOneAuthService, WorkspaceOneAuthService>();
-            services.AddSingleton<IApiAuthService, WorkspaceOneAuthService>();
 
-            services.AddSingleton<IJournalService, FileJournalService>();
-            services.AddSingleton<IWorkspaceOneGraphService, WorkspaceOneGraphServiceAdapter>();
-            
+            services.AddTransient<IntuneGroupsPage>();
+
             services.AddTransient<GraphEditorViewModel>();
             services.AddTransient<GraphEditorPage>();
-
-            services.AddSingleton<IGraphAuthService>(provider =>
-    new GraphAuthService(
-        "dd656aba-7b3a-4606-a1d5-b1d05cad986b",
-        "c937126d-5291-47ed-8e01-3cb0fd4e1dfb",
-        Environment.GetEnvironmentVariable("AZURE_CLIENT_SECRET")));
-
-
-
-
-
-
+            */
+            #endregion
 
             return services.BuildServiceProvider();
         }

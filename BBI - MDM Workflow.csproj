@@ -20,6 +20,11 @@
     <DisableMsixProjectCapabilityAddedByProject>true</DisableMsixProjectCapabilityAddedByProject>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
   </PropertyGroup>
+  <!-- Parked pages that are not currently in use.  We are ensuring VS does not include these in a build and break something-->
+  <ItemGroup>
+    <Page Remove="Pages\Experimental\**\*.xaml" />
+    <Compile Remove="Pages\Experimental\**\*.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Services\WorkspaceOne\WorkspaceOneGraphService.cs" />

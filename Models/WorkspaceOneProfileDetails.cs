@@ -1,44 +1,44 @@
-﻿using BBIHardwareSupport.MDM.WorkspaceOne.Models;
-using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BBIHardwareSupport.MDM.WorkspaceOne.Models.Payloads;
 
 namespace BBIHardwareSupport.MDM.WorkspaceOne.Models
 {
-    public class WorkspaceOneProfileDetails
+    /// <summary>
+    /// Represents Workspace ONE profile details.
+    ///
+    /// This model supports TWO shapes you've encountered:
+    ///  1) API profile-details (v2): { "General": { ... }, "AndroidForWorkPermissions": { ... }, ... }
+    ///  2) Baseline/exported profiles: { "General": { ... }, "Payload": { "payloads": [ ... ] } }
+    ///
+    /// Unknown sections are captured in <see cref="AdditionalSections"/> for later modeling.
+    /// </summary>
+    public sealed class WorkspaceOneProfileDetails
     {
-        public int ProfileId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Platform { get; set; } // e.g., Android, iOS
-        public string ProfileType { get; set; } // e.g., Restrictions, Wi-Fi
-        public string ProfileScope { get; set; } // e.g., Production, Test
-        public int Version { get; set; }
-        public string AssignmentType { get; set; } // Auto or Manual
-        public bool IsActive { get; set; }
-        public bool IsManaged { get; set; }
-        public string AllowRemoval { get; set; } // e.g., "WithAuthorization"
+        [JsonProperty("Name")]
+        public string? Name { get; set; }
 
-        // Organizational context
-        public int OrganizationGroupId { get; set; }
-        public string OrganizationGroupName { get; set; }
+        [JsonProperty("General")]
+        public WorkspaceOneProfileGeneral? General { get; set; }
 
-        // Assignment information
-        public List<WorkspaceOneSmartGroupReference> AssignedSmartGroups { get; set; } = new();
-        public List<WorkspaceOneSmartGroupReference> ExcludedSmartGroups { get; set; } = new();
+        // Baseline/exported JSON shape
+        [JsonProperty("Payload")]
+        public WorkspaceOneProfilePayloadContainer? Payload { get; set; }
 
-        // Optional raw payload from Workspace ONE
-        public object Payload { get; set; }
+        // API details (v2) shape
+        [JsonProperty("AndroidForWorkPermissions")]
+        public AndroidForWorkPermissions? AndroidForWorkPermissions { get; set; }
 
-        // For Git/package tracking
-        public string PackageTag { get; set; } // e.g., "android-base-package"
-        public string CommitHash { get; set; } // optional for Git traceability
+        [JsonProperty("ApplicationControlPayload")]
+        public ApplicationControlPayload? ApplicationControlPayload { get; set; }
 
-        // Timestamps or audit metadata
-        public DateTime? LastModified { get; set; }
-        public string LastModifiedBy { get; set; }
+
+        /// <summary>
+        /// Captures any additional sections returned by Workspace ONE that we haven't modeled yet
+        /// (e.g., AndroidForWorkCustomSettingsList, AndroidForWorkCustomSettings, etc.).
+        /// </summary>
+        [JsonExtensionData]
+        public IDictionary<string, JToken>? AdditionalSections { get; set; }
     }
-
 }

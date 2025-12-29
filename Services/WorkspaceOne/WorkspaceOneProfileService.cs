@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -76,22 +77,29 @@ namespace BBIHardwareSupport.MDM.Services.WorkspaceOne
         {
             try
             {
+                var details = await GetJsonAsync<WorkspaceOneProfileDetails>(
+                    $"mdm/profiles/{profileId}",
+                    "application/json;version=2");
 
-                var obj = await GetPagedResponseAsync($"/mdm/profiles/{profileId}", "General", null, "application/json;version=2");
-                if (obj.Count > 0)
-                {
-                    JObject token = obj[0];
-                    string json = token.ToString(Formatting.Indented);
-                    WorkspaceOneProfileDetails currProfile = obj[0].ToObject<WorkspaceOneProfileDetails>() ?? new WorkspaceOneProfileDetails();
-                    File.WriteAllText($"C:\\Users\\MarkYoung\\source\\repos\\BBI - MDM Workflow\\Documentation\\WorkspaceOneArtifacts\\Device Profiles\\{currProfile.Name}.json", json);
-                    return currProfile;
-                }
+                if (details is null)
+                    return new WorkspaceOneProfileDetails();
+
+                var json = JsonConvert.SerializeObject(details, Formatting.Indented);
+
+                var safeName = string.Concat((details.Name ?? $"profile_{profileId}")
+                    .Select(ch => Path.GetInvalidFileNameChars().Contains(ch) ? '_' : ch));
+
+                File.WriteAllText(
+                    $"C:\\Users\\MarkYoung\\source\\repos\\BBI - MDM Workflow\\Documentation\\WorkspaceOneArtifacts\\Device Profiles\\{safeName}.json",
+                    json);
+
+                return details;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Failed to retrieve profile details for profile ID {profileId}");
+                _logger.LogError(ex, "Failed to retrieve profile details for profile ID {ProfileId}", profileId);
+                return new WorkspaceOneProfileDetails();
             }
-            return new WorkspaceOneProfileDetails();
         }
 
         public async Task<List<WorkspaceOneProfileDetails>> GetProfileDetailsBySummaryList(List<WorkspaceOneProfileSummary> profileSummaries)

@@ -1,4 +1,5 @@
-﻿using BBIHardwareSupport.MDM.WorkspaceOneManager.Interfaces;
+﻿using BBIHardwareSupport.MDM.WorkspaceOne.Models;
+using BBIHardwareSupport.MDM.WorkspaceOneManager.Interfaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -127,28 +128,81 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services.WorkspaceOne
                 content,
                 accept);
         }
+        protected async Task<T?> GetJsonAsync<T>(
+    string relativeUrl,
+    string? accept = null)
+        {
+            var baseUri = _authService.GetBaseUri();
+            var baseUriString = baseUri.ToString();
+
+            // Ensure trailing slash so "/API/" is treated as a directory segment
+            if (!baseUriString.EndsWith("/"))
+            {
+                baseUriString += "/";
+                baseUri = new Uri(baseUriString);
+            }
+
+            Debug.WriteLine($"[DEBUG] Base URI string (normalized): {baseUri}");
+
+            var combinedUri = new Uri(baseUri, relativeUrl);
+            Debug.WriteLine($"[DEBUG] Combined URI result: {combinedUri}");
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, combinedUri);
+
+
+            var headers = await _authService.GetAuthorizationHeaderAsync();
+            foreach (var h in headers)
+            {   if (h.Key.Equals("Accept") && !string.IsNullOrWhiteSpace(accept))
+                    continue;
+                request.Headers.TryAddWithoutValidation(h.Key, h.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(accept))
+                request.Headers.TryAddWithoutValidation("Accept", accept);
+
+            using var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            // If the API sometimes returns "" or whitespace
+            if (string.IsNullOrWhiteSpace(json))
+                return default;
+            string raw = json;
+
+            // 1) unwrap if double-encoded
+            JToken t = JToken.Parse(raw);
+            string payload = t.Type == JTokenType.String ? t.Value<string>()! : raw;
+
+            // 2) remove accidental hard newlines (if present)
+            payload = payload.Replace("\r", "").Replace("\n", "");
+
+            // 3) deserialize
+            var result = JsonConvert.DeserializeObject<T>(payload);
+            return result;
+
+        }
 
         protected async Task<List<JObject>> GetPagedResponseAsync(
-            string endpoint,
-            string itemType,
-            Dictionary<string, string>? queryParams = null,
-            string? accept = null)
+           string endpoint,
+           string itemType,
+           Dictionary<string, string>? queryParams = null,
+           string? accept = null,
+           Action<WorkspaceOnePagingProgress>? progress = null)
         {
             var allResults = new List<JObject>();
             int currentPage = 0;
             int pageSize = 0;
             int totalItems = int.MaxValue;
 
-            do
+            while (true)
             {
                 // Clone existing query parameters or create a new dictionary
                 var queryWithPage = new Dictionary<string, string>(queryParams ?? new());
 
                 // Only add "page" if it's not the first page
                 if (currentPage > 0)
-                {
                     queryWithPage["page"] = currentPage.ToString();
-                }
 
                 // Build query string if any parameters exist
                 string queryString = queryWithPage.Count > 0
@@ -161,15 +215,28 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services.WorkspaceOne
                     ? endpoint
                     : $"{endpoint}?{queryString}";
 
-                // Make the request
-                var response = await SendRequestAsync(requestUri, HttpMethod.Get, null, accept);
+                Debug.WriteLine($"[Paging] page={currentPage} loaded={allResults.Count} total={totalItems}");
 
+
+                // ✅ progress: about to request next page
+                progress?.Invoke(new WorkspaceOnePagingProgress
+                {
+                    CurrentPage = currentPage,
+                    PageSize = pageSize,
+                    TotalItems = (totalItems == int.MaxValue) ? 0 : totalItems,
+                    ItemsLoaded = allResults.Count,
+                    RequestUri = requestUri
+                });
+
+                var response = await SendRequestAsync(requestUri, HttpMethod.Get, null, accept);
 
                 if (string.IsNullOrEmpty(response))
                 {
                     Debug.WriteLine($"[WorkspaceOne] Empty response on page {currentPage}");
                     break;
                 }
+
+                int itemsAddedThisPage = 0;
 
                 try
                 {
@@ -212,18 +279,55 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services.WorkspaceOne
                     foreach (var item in objectItems)
                     {
                         if (item is JObject jobject)
+                        {
                             allResults.Add(jobject);
+                            itemsAddedThisPage++;
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"[WorkspaceOne] JSON parsing error on page {currentPage}: {ex.Message}");
+                    break; // parsing failed; stop paging
                 }
 
+                // ✅ progress: after adding items
+                progress?.Invoke(new WorkspaceOnePagingProgress
+                {
+                    CurrentPage = currentPage,
+                    PageSize = pageSize,
+                    TotalItems = (totalItems == int.MaxValue) ? 0 : totalItems,
+                    ItemsLoaded = allResults.Count,
+                    RequestUri = requestUri
+                });
+
+                // ✅ stop conditions (robust)
+                if (itemsAddedThisPage == 0)
+                {
+                    // No items returned -> we’re done
+                    break;
+                }
+
+                // If we have reliable metadata, stop when we’ve reached/exceeded total
+                if (totalItems != int.MaxValue && totalItems > 0)
+                {
+                    if (allResults.Count >= totalItems)
+                        break;
+                }
+
+                // If pageSize is known, we can also stop when we “should” be past total
+                if (pageSize > 0 && totalItems != int.MaxValue && totalItems > 0)
+                {
+                    // next page start index would be currentPage+1 * pageSize
+                    if (((currentPage + 1) * pageSize) >= totalItems)
+                    {
+                        // We *might* already have last page; but itemsAddedThisPage==0 handles the definitive end.
+                        // Let the loop continue one more time only if current page was full.
+                    }
+                }
 
                 currentPage++;
-
-            } while ((currentPage - 1) * pageSize < totalItems);
+            }
 
             return allResults;
         }

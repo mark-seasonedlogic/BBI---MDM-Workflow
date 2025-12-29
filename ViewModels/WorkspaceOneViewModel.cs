@@ -36,18 +36,9 @@ namespace BBIHardwareSupport.MDM.ViewModels
         private readonly IWorkspaceOneProfileService _profileService;
 
         private readonly ILogger<WorkspaceOneViewModel> _logger;
- 
+        private readonly IWorkspaceOneAdminsService _adminsService;
 
-        public WorkspaceOneViewModel(IWorkspaceOneAuthService authService, IWorkspaceOneDeviceService deviceService, ILogger<WorkspaceOneViewModel> logger, IWorkspaceOneSmartGroupsService smartGroupsService, IProductsService productService, IWorkspaceOneProfileService profileService)
-        {
-            _authService = authService;
-            _deviceService = deviceService;
-            _smartGroupsService = smartGroupsService;
-            _logger = logger;
-            _productService = productService;
-            _profileService = profileService;
-        }
-        private readonly IWorkspaceOneTaggingService _taggingService;
+       private readonly IWorkspaceOneTaggingService _taggingService;
 
         public WorkspaceOneViewModel(
             IWorkspaceOneAuthService authService,
@@ -56,7 +47,9 @@ namespace BBIHardwareSupport.MDM.ViewModels
             IWorkspaceOneSmartGroupsService smartGroupsService,
             IProductsService productService,
             IWorkspaceOneProfileService profileService,
-            IWorkspaceOneTaggingService taggingService)
+            IWorkspaceOneTaggingService taggingService,
+            IWorkspaceOneAdminsService adminsService, 
+            MainViewModel mainVM)
         {
             _authService = authService;
             _deviceService = deviceService;
@@ -65,6 +58,8 @@ namespace BBIHardwareSupport.MDM.ViewModels
             _productService = productService;
             _profileService = profileService;
             _taggingService = taggingService;
+            _adminsService = adminsService;
+            _mainVM = mainVM;
         }
 
         public async Task<bool> SetCredentialsAsync(string Username, string Password, string ApiKey)
@@ -101,10 +96,21 @@ namespace BBIHardwareSupport.MDM.ViewModels
         public ObservableCollection<WorkspaceOneProfileSummary> Profiles { get; } = new();
         public ObservableCollection<WorkspaceOneProfileDetails> ProfileDetails { get; } = new();
         public ObservableCollection<TimeZoneTagReviewRow> TimeZoneTagReviewRows { get; } = new();
+        public Func<Task<bool>>? LoginRequested { get; set; }
+        private readonly MainViewModel _mainVM;
+        private Task<bool> RequestLoginAsync()
+            => LoginRequested?.Invoke() ?? Task.FromResult(false);
 
         private void InitializeUITileItems()
         {
             UITileItems.Clear();
+            UITileItems.Add(new UITileItem
+            {
+                Title = "Sign in to Workspace ONE",
+                Description = "Enter credentials to enable Workspace ONE actions",
+                ImagePath = "ms-appx:///Assets/Login.png", // or reuse an existing icon
+                ExecuteCommand = new AsyncRelayCommand(async () => await RequestLoginAsync())
+            });
             UITileItems.Add(new UITileItem
             {
                 Title = "Load All BBI Devices",
@@ -117,21 +123,21 @@ namespace BBIHardwareSupport.MDM.ViewModels
                 Title = "Load All SmartGroups",
                 Description = "Load List with All SmartGroups",
                 ImagePath = "ms-appx:///Assets/Group_Metadata.png",
-                ExecuteCommand = new RelayCommand(async () => await LoadAllSmartGroupsAsync())
+                ExecuteCommand = new AsyncRelayCommand(LoadAllSmartGroupsAsync)
             });
             UITileItems.Add(new UITileItem
             {
                 Title = "Load All Device Profiles",
                 Description = "Load List with All Profiles",
                 ImagePath = "ms-appx:///Assets/Device_Renamed.png",
-                ExecuteCommand = new RelayCommand(async () => await LoadAllProfilesAsync())
+                ExecuteCommand = new AsyncRelayCommand(LoadAllProfilesAsync)
             });
             UITileItems.Add(new UITileItem
             {
                 Title = "Load All Products",
                 Description = "Load List with All Products",
                 ImagePath = "ms-appx:///Assets/Device_Renamed.png",
-                ExecuteCommand = new RelayCommand(async () => await LoadAllProductsAsync())
+                ExecuteCommand = new AsyncRelayCommand(LoadAllProductsAsync)
             });
             UITileItems.Add(new UITileItem
             {
@@ -145,7 +151,7 @@ namespace BBIHardwareSupport.MDM.ViewModels
                 Title = "Review Time Zone Tags",
                 Description = "Audit and bulk-tag POS devices per restaurant time zone",
                 ImagePath = "ms-appx:///Assets/Device_Renamed.png",
-                ExecuteCommand = new RelayCommand(async () => await ShowTimeZoneTagReviewAsync())
+                ExecuteCommand = new AsyncRelayCommand(ShowTimeZoneTagReviewAsync)
             });
 
         }
@@ -271,6 +277,14 @@ namespace BBIHardwareSupport.MDM.ViewModels
 
         public async Task LoadAllProductsAsync()
         {
+            if (_mainVM.IsLoading) return;
+            if (!IsAuthenticated)
+            {
+                DeviceTestResult = "Please sign in to Workspace ONE first.";
+                return;
+            }
+            BeginLoad("Loading Products...");
+            Products.Clear(); // important to prevent duplicates
             try
             {
                 Products.Clear();
@@ -294,9 +308,22 @@ namespace BBIHardwareSupport.MDM.ViewModels
                 _logger.LogError(ex, "Failed to load SmartGroups.");
                 await UiDialogHelper.ShowMessageAsync("Error loading SmartGroups.");
             }
+            finally
+            { 
+                IsLoading = false;
+                EndLoad();
+            }
         }
         public async Task LoadAllProfilesAsync()
         {
+            if (_mainVM.IsLoading) return;
+            if (!IsAuthenticated)
+            {
+                DeviceTestResult = "Please sign in to Workspace ONE first.";
+                return;
+            }
+            BeginLoad("Loading Profiles...");
+            Profiles.Clear(); // important to prevent duplicates
             try
             {
                 Profiles.Clear();
@@ -330,10 +357,24 @@ namespace BBIHardwareSupport.MDM.ViewModels
                 _logger.LogError(ex, "Failed to load Profiles.");
                 await UiDialogHelper.ShowMessageAsync("Error loading Profiles.");
             }
+            finally
+            {
+                IsLoading = false;
+                EndLoad();
+            }
+
         }
 
         public async Task LoadAllSmartGroupsAsync()
         {
+            if (_mainVM.IsLoading) return;
+            if (!IsAuthenticated)
+            {
+                DeviceTestResult = "Please sign in to Workspace ONE first.";
+                return;
+            }
+            BeginLoad("Loading SmartGroups...");
+            SmartGroups.Clear(); // important to prevent duplicates
             try
             {
                 SmartGroups.Clear();
@@ -357,26 +398,106 @@ namespace BBIHardwareSupport.MDM.ViewModels
                 _logger.LogError(ex, "Failed to load SmartGroups.");
                 await UiDialogHelper.ShowMessageAsync("Error loading SmartGroups.");
             }
+            finally
+            {
+                IsLoading = false;
+                EndLoad();
+            }
+
         }
+        public async Task<bool> ValidateLoginAsync(string username)
+        {
+            try
+            {
+                IsLoading = true;
+                DeviceTestResult = "Validating Workspace ONE credentials...";
+
+                var admin = await _adminsService.GetAdminByUsernameAsync(username);
+
+                if (admin == null)
+                {
+                    DeviceTestResult = "Login validated, but admin user was not found (or not authorized).";
+                    IsAuthenticated = false;
+                    return false;
+                }
+
+             /*Add Later   // Success: store/display identity if you want
+                CurrentAdminUserName = admin.UserName; // optional property for UI
+                DeviceTestResult = $"Signed in as {admin.FirstName} {admin.LastName} ({admin.LocationGroup})";
+                IsAuthenticated = true;
+
+                // IMPORTANT: if you gate tile commands by IsAuthenticated, notify CanExecute here
+                NotifyAllCommandsCanExecuteChanged();
+             */
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                DeviceTestResult = "Invalid username/password/API key (401).";
+                IsAuthenticated = false;
+                return false;
+            }
+            catch (Exception ex)
+            {
+                DeviceTestResult = $"Login validation failed: {ex.Message}";
+                IsAuthenticated = false;
+                return false;
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
         public async Task LoadDevicesByOrgGroupAsync()
         {
-            if (IsLoading) return;
-            
-            IsLoading = true;
-            DeviceTestResult = string.Empty;
-            DevicesJson = string.Empty;
-            Devices.Clear(); // important to prevent duplicates
+            if (_mainVM.IsLoading) return;
+
+            if (!IsAuthenticated)
+            {
+                DeviceTestResult = "Please sign in to Workspace ONE first.";
+                _mainVM.StatusMessage = "Not authenticated to Workspace ONE.";
+                return;
+            }
+
+            BeginLoad("Loading Devices...");
+            SetGlobalStatus("Loading devices from Workspace ONE...");
+            Devices.Clear();
 
             try
             {
                 string orgGroupId = "570";
                 var stopwatch = Stopwatch.StartNew();
 
-                List<JObject> rawDevices = await _deviceService.GetAllAndroidDevicesByOrgExAsync(orgGroupId);
+                List<JObject> rawDevices = await _deviceService.GetAllAndroidDevicesByOrgExAsync(
+                    orgGroupId,
+                    progress =>
+                    {
+                        // push progress to UI thread
+                        App.MainWindow.DispatcherQueue.TryEnqueue(() =>
+                        {
+                            if (progress.TotalItems.HasValue && progress.TotalItems.Value > 0)
+                            {
+                                var pct = (progress.ItemsLoaded * 100.0) / progress.TotalItems.Value;
+                                DeviceTestResult =
+                                    $"Loading… {progress.ItemsLoaded}/{progress.TotalItems} ({pct:0}%)";
+                                _mainVM.StatusMessage =
+                                    $"Loading… {progress.ItemsLoaded}/{progress.TotalItems} ({pct:0}%)";
+                            }
+                            else
+                            {
+                                DeviceTestResult =
+                                    $"Loading… page {progress.CurrentPage + 1}, loaded {progress.ItemsLoaded}";
+                                _mainVM.StatusMessage =
+                                    $"Loading… page {progress.CurrentPage + 1}, loaded {progress.ItemsLoaded}";
+                            }
+                        });
+                    });
+
                 stopwatch.Stop();
 
                 Debug.WriteLine($"Retrieved {rawDevices.Count} Android devices in {stopwatch.ElapsedMilliseconds} ms.");
-                DeviceTestResult = $"Retrieved {rawDevices.Count} Android devices.";
+                DeviceTestResult = $"Retrieved {rawDevices.Count} Android devices in {stopwatch.ElapsedMilliseconds} ms.";
 
                 foreach (var j in rawDevices)
                 {
@@ -410,10 +531,21 @@ namespace BBIHardwareSupport.MDM.ViewModels
             finally
             {
                 IsLoading = false;
+                EndLoad();
             }
         }
         public async Task ShowTimeZoneTagReviewAsync()
         {
+            if (_mainVM.IsLoading) return;
+            if (!IsAuthenticated)
+            {
+                DeviceTestResult = "Please sign in to Workspace ONE first.";
+                _mainVM.StatusMessage = "Not authenticated to Workspace ONE.";
+                return;
+            }
+
+            BeginLoad("Loading Time Zone Tag Review…");
+            TimeZoneTagReviewRows.Clear(); // important to prevent duplicates
             try
             {
                 // 1) Prompt for input files (uses UiDialogHelper, like your other dialogs). :contentReference[oaicite:7]{index=7}
@@ -500,31 +632,43 @@ namespace BBIHardwareSupport.MDM.ViewModels
                 _logger.LogError(ex, "Error running WS1 Time Zone Tag Review.");
                 await UiDialogHelper.ShowMessageAsync($"Error running time zone tag review: {ex.Message}");
             }
+            finally
+            {
+                IsLoading = false;
+                EndLoad();
+            }
+
         }
 
-
-        [RelayCommand]
-        private async Task LoadDevicesAsync()
+        private void BeginLoad(string status = "")
         {
-            
-
-            try
-            {
-                using var httpClient = new HttpClient();
-                var headers = await _authService.GetAuthorizationHeaderAsync();
-                var request = new HttpRequestMessage(HttpMethod.Get, new Uri(_authService.GetBaseUri(), "/API/mdm/devices/search"));
-                foreach (var header in headers)
-                    request.Headers.Add(header.Key, header.Value);
-
-                var response = await httpClient.SendAsync(request);
-                response.EnsureSuccessStatusCode();
-
-                DevicesJson = await response.Content.ReadAsStringAsync();
-            }
-            catch (Exception ex)
-            {
-                DevicesJson = $"Error: {ex.Message}";
-            }
+            IsLoading = true;
+            SetGlobalLoading(true, status);
+            DeviceTestResult = status;
+            DevicesJson = string.Empty;
         }
+
+        private void SetGlobalLoading(bool isLoading, string? message = null)
+        {
+            _mainVM.IsLoading = isLoading;
+
+            if (message != null)
+                _mainVM.StatusMessage = message;
+        }
+
+        private void SetGlobalStatus(string message)
+        {
+            _mainVM.StatusMessage = message;
+        }
+
+        private void EndLoad()
+        {
+            IsLoading = false;
+            _mainVM.IsLoading = false;
+            
+        }
+
     }
+
+
 }

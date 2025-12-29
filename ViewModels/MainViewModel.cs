@@ -108,7 +108,13 @@ public class MainViewModel : INotifyPropertyChanged
     public bool IsLoading
     {
         get => _isLoading;
-        set { _isLoading = value; OnPropertyChanged(); }
+        set
+        {
+            if (_isLoading == value) return;
+            _isLoading = value;
+            System.Diagnostics.Debug.WriteLine($"[MainVM] IsLoading = {value}\n{Environment.StackTrace}");
+            OnPropertyChanged();
+        }
     }
 
     public bool IsAutoSyncEnabled

@@ -1,12 +1,14 @@
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using CommunityToolkit.WinUI.UI.Controls;
+﻿using BBIHardwareSupport.MDM.IntuneConfigManager.Pages;
 using BBIHardwareSupport.MDM.IntuneConfigManager.ViewModels;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Views;
-using System;
-using Microsoft.Extensions.DependencyInjection;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Views;
-using BBIHardwareSupport.MDM.IntuneConfigManager.Pages;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.WinUI.UI.Controls;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using System;
+using System.Diagnostics;
 
 namespace BBIHardwareSupport.MDM.IntuneConfigManager
 {
@@ -15,21 +17,76 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
         private readonly IServiceProvider _serviceProvider;
 
         public MainViewModel ViewModel { get; }
+        public bool IsLoading { get; set; }
+        public string StatusMessage { get; set; } = string.Empty;
 
         public MainWindow()
         {
             this.InitializeComponent();
 
+            if (ContentFrame is null)
+            {
+                throw new InvalidOperationException(
+                    "ContentFrame is null. Check MainWindow.xaml: <Frame x:Name=\"ContentFrame\" /> " +
+                    "and make sure it is not inside a DataTemplate and the x:Name matches exactly.");
+            }
+
             // Use the DI container to resolve MainViewModel
             ViewModel = App.Services.GetRequiredService<MainViewModel>();
-
-            if (Content is FrameworkElement rootElement)
+            RootGrid.DataContext = ViewModel;
+            ViewModel.PropertyChanged += (s, e) =>
             {
-                rootElement.DataContext = ViewModel;
-            }
-            _serviceProvider = App.Services;
-            // Set initial page
-            ContentFrame.Navigate(typeof(GitManagerPage));
+                if (e.PropertyName == nameof(ViewModel.IsLoading))
+                {
+                    Debug.WriteLine($"[FOOTER DEBUG] IsLoading changed → {ViewModel.IsLoading}");
+                }
+
+                if (e.PropertyName == nameof(ViewModel.StatusMessage))
+                {
+                    Debug.WriteLine($"[FOOTER DEBUG] StatusMessage changed → {ViewModel.StatusMessage}");
+                }
+            };
+
+            /*            if (Content is FrameworkElement rootElement)
+                        {
+                            rootElement.DataContext = ViewModel;
+                        }
+                        _serviceProvider = App.Services;
+                        // Set initial page
+                        try
+                        {
+                            var p = new WorkspaceOnePage();
+                            ContentFrame.Content = p; // optional: display it
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine("WorkspaceOnePage ctor failed:");
+                            System.Diagnostics.Debug.WriteLine(ex.ToString());
+                            throw;
+                        }
+
+                        try
+                        {
+                            ContentFrame.Navigate(typeof(WorkspaceOnePage));
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine("NAV FAILED:");
+                            System.Diagnostics.Debug.WriteLine(ex.ToString());
+
+                            if (ex is Microsoft.UI.Xaml.Markup.XamlParseException xpe)
+                            {
+                                System.Diagnostics.Debug.WriteLine("XamlParseException: " + xpe.Message);
+                                System.Diagnostics.Debug.WriteLine("Inner: " + xpe.InnerException?.ToString());
+                            }
+
+                            throw;
+                        }
+                     */
+
+            ContentFrame.Navigate(typeof(WorkspaceOnePage));
+            StatusMessage = ViewModel.StatusMessage;
+            IsLoading = ViewModel.IsLoading;
         }
 
         private async void ShowHelp(object sender, RoutedEventArgs e)
@@ -51,60 +108,17 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
             {
                 switch (selectedItem.Tag)
                 {
-                    case "GitManager":
-                        ContentFrame.Navigate(typeof(GitManagerPage));
+                    case "WorkspaceOnePage":
+                        ContentFrame.Navigate(typeof(WorkspaceOnePage));
                         break;
-                    case "IntuneArtifacts":
-                        ContentFrame.Navigate(typeof(IntuneArtifactsPage));
+
+                    case "OemConfigurationManagerPage":
+                        ContentFrame.Navigate(typeof(OemConfigurationManagerPage));
                         break;
-                    case "Settings":
-                        ContentFrame.Navigate(typeof(SettingsPage));
-                        break;
+
                     case "WS1AndroidBatteryPage":
                         ContentFrame.Navigate(typeof(WS1AndroidBatteryPage));
                         break;
-                    case "IntuneGroupsPage":
-                        var groupPage = _serviceProvider.GetRequiredService<IntuneGroupsPage>();
-                        ContentFrame.Content = groupPage;
-                        break;
-                    case "DeviceConfigurationsPage":
-                        var page = _serviceProvider.GetRequiredService<OemConfigurationManagerPage>();
-                        ContentFrame.Content = page;
-                        break;
-                    case "SchemaExtensionAdminPage":
-                        var adminPage = _serviceProvider.GetRequiredService <SchemaExtensionAdminPage>();
-                        ContentFrame.Content = adminPage;
-                        break;
-                    case "WorkspaceOnePage":
-                        var ws1Page = _serviceProvider.GetRequiredService<WorkspaceOnePage>();
-                        ContentFrame.Content = ws1Page;
-                        break;
-                    case "WS1DeviceManagementPage":
-                        var ws1DevicePage = _serviceProvider.GetRequiredService<WS1DeviceManagementPage>();
-                        ContentFrame.Content = ws1DevicePage;
-                        break;
-                    case "WS1SmartGroupsPage":
-                        var ws1SmartGroupsPage = _serviceProvider.GetRequiredService<WS1SmartGroupsPage>();
-                        ContentFrame.Content = ws1SmartGroupsPage;
-                        break;
-                    case "WS1ProfilesPage":
-                        var ws1ProfilesPage = _serviceProvider.GetRequiredService<WS1ProfilesPage>();
-                        ContentFrame.Content = ws1ProfilesPage;
-                        break;
-                    case "WS1ApplicationsPage":
-                        var ws1AppsPage = _serviceProvider.GetRequiredService<WS1ApplicationsPage>();
-                        ContentFrame.Content = ws1AppsPage;
-                        break;
-                    case "WS1CompliancePoliciesPage":
-                        var ws1CompliancePoliciesPage = _serviceProvider.GetRequiredService<WS1CompliancePoliciesPage>();
-                        ContentFrame.Content = ws1CompliancePoliciesPage;
-                        break;
-                    case "nav-graph-editor":
-                        ContentFrame.Navigate(typeof(GraphEditorPage));
-                        break;
-
-
-
                 }
             }
         }

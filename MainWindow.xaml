@@ -3,87 +3,54 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
-    xmlns:local="using:BBIHardwareSupport.MDM.IntuneConfigManager"
-    xmlns:datagrid="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:helpers="using:BBIHardwareSupport.MDM.UI.ViewModels.Helpers"
     Title="BBI - MDM Workflow">
 
-    <StackPanel Padding="30" Spacing="15" Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}">
-        <!-- Header -->
-        <TextBlock Text="BBI - MDM Workflow Manager" FontSize="28" FontWeight="Bold" Foreground="DeepSkyBlue"/>
+    <Grid Name="RootGrid"
+          Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
+          RowDefinitions="Auto,*,Auto">
 
-        <!-- Navigation View -->
-        <controls:NavigationView x:Name="NavView" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed"
+        <Grid.Resources>
+            <helpers:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        </Grid.Resources>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0"
+                   Text="BBI - MDM Workflow Manager"
+                   Margin="30,24,30,12"
+                   FontSize="28"
+                   FontWeight="Bold"
+                   Foreground="DeepSkyBlue" />
+
+        <!-- Navigation -->
+        <controls:NavigationView Grid.Row="1"
+                                 x:Name="NavView"
+                                 Margin="30,0,30,0"
+                                 PaneDisplayMode="Left"
+                                 IsBackButtonVisible="Collapsed"
                                  SelectionChanged="NavView_SelectionChanged">
             <controls:NavigationView.MenuItems>
-                <controls:NavigationViewItem Content="Git Manager" Icon="Save" Tag="GitManager"/>
-                <controls:NavigationViewItem Content="Intune Artifacts" Icon="Library" Tag="IntuneArtifactsRootPage">
-                    <controls:NavigationViewItem.MenuItems>
-                        <controls:NavigationViewItem Content="Device Configurations" Tag="DeviceConfigurationsPage"/>
-                        <controls:NavigationViewItem Content="Intune Groups" Tag="IntuneGroupsPage"/>
-                        <controls:NavigationViewItem Content="Apps" Tag="AppsPage"/>
-                        <controls:NavigationViewItem Content="Compliance Policies" Tag="CompliancePoliciesPage"/>
-                        <controls:NavigationViewItem Content="Entra Groups" Tag="EntraGroupsPage"/>
-                        <controls:NavigationViewItem Content="Update UserName" Tag="UpdateUserNamePage"/>
-                        <controls:NavigationViewItem Content="OEMConfig Profiles" Tag="OemConfigurationManagerPage"/>
-                        <controls:NavigationViewItem Content="WS1 Device Battery Drain" Tag="WS1AndroidBatteryPage"/>
-                        <controls:NavigationViewItem Content="Schema Extension Admin" Tag="SchemaExtensionAdminPage" Icon="Admin"/>
-                    </controls:NavigationViewItem.MenuItems>
-                </controls:NavigationViewItem>
-                <controls:NavigationViewItem Content="WorkspaceOne Artifacts" Icon="Library" Tag="WorkspaceOnePage">
-                    <controls:NavigationViewItem.MenuItems>
-                        <controls:NavigationViewItem Content="Device Management" Tag="WS1DeviceManagementPage"/>
-                        <controls:NavigationViewItem Content="Smart Groups" Tag="WS1SmartGroupsPage"/>
-                        <controls:NavigationViewItem Content="Profiles" Tag="WS1ProfilesPage"/>
-                        <controls:NavigationViewItem Content="Applications" Tag="WS1ApplicationsPage"/>
-                        <controls:NavigationViewItem Content="Compliance Policies" Tag="WS1CompliancePoliciesPage"/>
-                        <controls:NavigationViewItem Content="Graph Editor" Tag="nav-graph-editor" Icon="Edit"/>
-                    </controls:NavigationViewItem.MenuItems>
-
-                </controls:NavigationViewItem>
+                <controls:NavigationViewItem Content="Workspace ONE" Icon="Library" Tag="WorkspaceOnePage" />
+                <controls:NavigationViewItem Content="OEMConfig Manager" Icon="AllApps" Tag="OemConfigurationManagerPage" />
+                <controls:NavigationViewItem Content="WS1 Battery Drain" Icon="AllApps" Tag="WS1AndroidBatteryPage" />
             </controls:NavigationView.MenuItems>
-            <Frame x:Name="ContentFrame"/>
+
+            <Frame x:Name="ContentFrame" />
         </controls:NavigationView>
 
-        <!-- Command Bar -->
-        <CommandBar>
-            <AppBarButton Icon="Save" Label="Save"/>
-            <AppBarButton Icon="Refresh" Label="Refresh" Command="{x:Bind ViewModel.GetDeviceConfigurationsCommand}"/>
-            <AppBarButton Icon="Help" Label="Help" Click="ShowHelp"/>
-        </CommandBar>
+        <!-- Footer / Status (pinned to bottom of WINDOW) -->
+        <Border Grid.Row="2"
+                Padding="12"
+                Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
+                Visibility="{Binding IsLoading, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
 
-        <!-- Tab View for Multiple Sections 
-        <controls:TabView>
-            <controls:TabViewItem Header="Git Manager">
-                <StackPanel Spacing="10">
-                    <TextBlock Text="Branch Name:" FontWeight="Bold"/>
-                    <TextBox Width="300" Text="{x:Bind ViewModel.BranchName, Mode=TwoWay}" PlaceholderText="feature/new-branch"/>
-                    <Button Content="Create Branch" Command="{x:Bind ViewModel.CreateBranchCommand}" Width="200"/>
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <ProgressRing IsActive="{Binding IsLoading}" Width="24" Height="24"/>
+                <TextBlock Text="{Binding StatusMessage, Mode=OneWay}"
+                           VerticalAlignment="Center"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
 
-                    <Button Content="Commit Changes" Command="{x:Bind ViewModel.CommitChangesCommand}" Width="200"/>
-                    <Button Content="View Diff" Command="{x:Bind ViewModel.GetDiffCommand}" Width="200"/>
-                </StackPanel>
-            </controls:TabViewItem>
-
-            <controls:TabViewItem Header="Intune Artifacts">
-                <StackPanel Spacing="10">
-                    <TextBlock Text="Enter Group ID:" FontWeight="Bold"/>
-                    <TextBox Width="300" Text="{x:Bind ViewModel.GroupId, Mode=TwoWay}" PlaceholderText="Enter Group ID"/>
-
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content="Get Device Configurations" Command="{x:Bind ViewModel.GetDeviceConfigurationsCommand}" Width="200"/>
-                        <Button Content="Get Apps" Command="{x:Bind ViewModel.GetAppsCommand}" Width="200"/>
-                    </StackPanel>
-                </StackPanel>
-            </controls:TabViewItem>
-        </controls:TabView> -->
-
-        <!-- Status and Loading -->
-        <StackPanel Orientation="Horizontal">
-            <ProgressRing IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}" Width="40" Height="40"/>
-            <TextBlock Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}" Margin="10"/>
-        </StackPanel>
-
-        <!-- Data Grid for Artifacts -->
-        <datagrid:DataGrid ItemsSource="{x:Bind ViewModel.Artifacts}" AutoGenerateColumns="True" Width="600" Height="300"/>
-    </StackPanel>
+    </Grid>
 </Window>
