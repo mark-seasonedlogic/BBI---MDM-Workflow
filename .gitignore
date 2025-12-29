@@ -367,3 +367,9 @@ MigrationBackup/
 FodyWeavers.xsd
 /Documentation/WorkspaceOneArtifacts
 
+
+# Installer logs
+installer/Install Logs/*.PML
+installer/Install Logs/*.pml
+installer/Install Logs/*.log
+
