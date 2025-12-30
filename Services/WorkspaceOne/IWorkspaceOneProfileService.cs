@@ -1,9 +1,10 @@
-﻿using System;
+﻿using BBIHardwareSupport.MDM.WorkspaceOne.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using BBIHardwareSupport.MDM.WorkspaceOne.Models;
 
 namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services.WorkspaceOne
 {
@@ -13,6 +14,11 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services.WorkspaceOne
         Task<WorkspaceOneProfileSummary> GetProfileByIdAsync(int profileId);
         Task<WorkspaceOneProfileDetails> GetProfileDetailsAsync(int profileId);
         Task<List<WorkspaceOneProfileDetails>> GetProfileDetailsBySummaryList(List<WorkspaceOneProfileSummary> profileSummaries);
+
+        // NEW: thin transport method (HTTP POST to WS1)
+        Task<WorkspaceOneProfileDetails> CreateProfileAsync(
+            WorkspaceOneProfileCreateRequest request,
+            CancellationToken ct = default);
 
     }
 }

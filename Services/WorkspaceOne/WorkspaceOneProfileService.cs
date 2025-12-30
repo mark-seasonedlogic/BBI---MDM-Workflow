@@ -10,7 +10,9 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -72,7 +74,48 @@ namespace BBIHardwareSupport.MDM.Services.WorkspaceOne
         {
             throw new NotImplementedException();
         }
+        
 
+        public async Task<WorkspaceOneProfileDetails> CreateProfileAsync(
+            WorkspaceOneProfileCreateRequest request,
+            CancellationToken ct = default)
+        {
+            if (request is null) throw new ArgumentNullException(nameof(request));
+            if (string.IsNullOrWhiteSpace(request.PlatformSegment)) throw new ArgumentException("Platform is required.", nameof(request));
+            if (request.Payload is null) throw new ArgumentException("Payload is required.", nameof(request));
+
+            try
+            {
+                // Normalize platform segment to match endpoint expectations
+                var platform = request.PlatformSegment.Trim();
+                // (Optional) enforce known values:
+                // if (!new[] { "Android", "iOS", "Windows" }.Contains(platform, StringComparer.OrdinalIgnoreCase)) ...
+
+                var endpoint = $"profiles/platforms/{platform}/Create";
+
+                using var msg = new HttpRequestMessage(HttpMethod.Post, endpoint);
+
+                // WS1 v2 contract owned by transport layer
+                msg.Headers.Accept.Clear();
+                msg.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(Ws1V2Json));
+
+                msg.Content = new StringContent(
+                    request.Payload.ToString(Formatting.None),
+                    Encoding.UTF8,
+                    "application/json");
+
+                var resp = await _httpClient.SendAsync(msg, ct);
+                resp.EnsureSuccessStatusCode();
+
+                var json = await resp.Content.ReadAsStringAsync(ct);
+                return JsonConvert.DeserializeObject<WorkspaceOneProfileDetails>(json) ?? new WorkspaceOneProfileDetails();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to create WS1 profile for platform {Platform}", request.PlatformSegment);
+                return new WorkspaceOneProfileDetails();
+            }
+        }
         public async Task<WorkspaceOneProfileDetails> GetProfileDetailsAsync(int profileId)
         {
             try

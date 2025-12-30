@@ -17,7 +17,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Services.WorkspaceOne
     {
         protected readonly HttpClient _httpClient;
         protected readonly IWorkspaceOneAuthService _authService;
-
+        protected const string Ws1V2Json = "application/json;version=2";
         protected WorkspaceOneServiceBase(HttpClient httpClient, IWorkspaceOneAuthService authService)
         {
             _httpClient = httpClient;
