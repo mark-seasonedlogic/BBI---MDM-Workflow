@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using BBIHardwareSupport.MDM.WorkspaceOne.Core.Services.Authentication;
 
 namespace BBIHardwareSupport.MDM.Services.Authentication
 {

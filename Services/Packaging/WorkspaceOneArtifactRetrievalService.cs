@@ -2,8 +2,7 @@
 using System.Threading.Tasks;
 using BBIHardwareSupport.MDM.Generic.Models;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Services.Packaging;
-using BBIHardwareSupport.MDM.WorkspaceOneManager.Interfaces;
-using BBIHardwareSupport.MDM.Services.WorkspaceOne;
+using BBIHardwareSupport.MDM.WorkspaceOne.Core.Services;
 namespace BBIHardwareSupport.MDM.Services.Packaging
 {
     /// <summary>

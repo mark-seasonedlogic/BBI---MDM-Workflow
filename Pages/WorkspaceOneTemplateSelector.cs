@@ -1,6 +1,8 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using BBIHardwareSupport.MDM.WorkspaceOne.Core.Models;
 using BBIHardwareSupport.MDM.WorkspaceOne.Models;
+
 
 namespace BBIHardwareSupport.MDM.IntuneConfigManager.Pages
 {

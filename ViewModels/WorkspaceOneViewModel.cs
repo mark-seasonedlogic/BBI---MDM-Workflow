@@ -1,27 +1,23 @@
 ﻿using BBIHardwareSupport.MDM.IntuneConfigManager;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Helpers;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Models;
-using BBIHardwareSupport.MDM.IntuneConfigManager.Services.WorkspaceOne;
-using BBIHardwareSupport.MDM.Services.WorkspaceOne;
-using BBIHardwareSupport.MDM.WorkspaceOne.Interfaces;
 using BBIHardwareSupport.MDM.WorkspaceOne.Models;
-using BBIHardwareSupport.MDM.WorkspaceOneManager.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using Microsoft.Graph.Models;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
 using System.Text.Json;
+using BBIHardwareSupport.MDM.WorkspaceOne.Core.Services.Authentication;
+using BBIHardwareSupport.MDM.WorkspaceOne.Core.Services;
+using BBIHardwareSupport.MDM.WorkspaceOne.Core.Models;
 using System.Threading.Tasks;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+using System;
+using System.Linq;
+using System.IO;
+using System.Collections.Generic;
+using System.Net.Http;
 
 namespace BBIHardwareSupport.MDM.ViewModels
 {
