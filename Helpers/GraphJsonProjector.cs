@@ -1,4 +1,4 @@
-﻿using BBIHardwareSupport.MDM.Models.Graph;
+﻿using BBIHardwareSupport.MDM.WorkspaceOne.Core.Models.GraphDS;
 using BBIHardwareSupport.MDM.ViewModels;
 using System;
 using System.Collections.Generic;

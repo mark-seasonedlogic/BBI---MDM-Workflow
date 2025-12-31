@@ -2,7 +2,8 @@
     x:Class="BBIHardwareSupport.MDM.IntuneConfigManager.Pages.WorkspaceOnePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:models="using:BBIHardwareSupport.MDM.WorkspaceOne.Models"
+    xmlns:models="using:BBIHardwareSupport.MDM.WorkspaceOne.Core.Models"
+    xmlns:oldModels="using:BBIHardwareSupport.MDM.WorkspaceOne.Models"
     xmlns:uimodels="using:BBIHardwareSupport.MDM.IntuneConfigManager.Models"
     xmlns:helpers="using:BBIHardwareSupport.MDM.UI.ViewModels.Helpers"
     xmlns:local="using:BBIHardwareSupport.MDM.IntuneConfigManager.Pages"
@@ -42,7 +43,7 @@
             </StackPanel>
         </DataTemplate>
         <DataTemplate x:Key="TimeZoneTagReviewTemplate"
-              x:DataType="models:TimeZoneTagReviewRow">
+              x:DataType="oldModels:TimeZoneTagReviewRow">
             <Grid ColumnDefinitions="Auto,Auto,*,*,*,*"
           Padding="8">
                 <!-- Select / Apply -->

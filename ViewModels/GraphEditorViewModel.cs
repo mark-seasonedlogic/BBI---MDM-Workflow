@@ -1,6 +1,6 @@
-﻿using BBIHardwareSupport.MDM.Models.Graph;
-using BBIHardwareSupport.MDM.Services.Graph;
-using BBIHardwareSupport.MDM.Services.WorkspaceOne;
+﻿using BBIHardwareSupport.MDM.WorkspaceOne.Core.Models;
+using BBIHardwareSupport.MDM.WorkspaceOne.Core.Models.GraphDS;
+using BBIHardwareSupport.MDM.WorkspaceOne.Core.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;

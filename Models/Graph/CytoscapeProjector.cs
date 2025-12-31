@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BBIHardwareSupport.MDM.Models.Graph;
+using BBIHardwareSupport.MDM.WorkspaceOne.Core.Models.GraphDS;
 using System.Text.Json;
 
 namespace BBIHardwareSupport.MDM.Models.Graph

@@ -25,7 +25,12 @@
     <Page Remove="Pages\Experimental\**\*.xaml" />
     <Compile Remove="Pages\Experimental\**\*.cs" />
   </ItemGroup>
-
+<!-- Remove unit testing artifacts -->
+  <ItemGroup>
+    <!-- Prevent the WinUI app project from glob-compiling other projects' source -->
+    <Compile Remove="BBIHardwareSupport.MDM.Core\**\*.cs" />
+    <Compile Remove="tests\**\*.cs" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Remove="Services\WorkspaceOne\WorkspaceOneGraphService.cs" />
   </ItemGroup>
@@ -76,12 +81,14 @@
       <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.250205002" />
     -->
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
+    <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.9.2" />
     <PackageReference Include="MSTest.TestFramework" Version="3.9.2" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="NLog" Version="5.5.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
     <PackageReference Include="NLog.Extensions.Logging" Version="5.5.0" />
+    <PackageReference Include="xunit.abstractions" Version="2.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -147,6 +154,10 @@
   <ItemGroup>
     <None Include="installer\wix\BBI.MDM.Workflow.Bundle.wixproj" />
     <None Include="installer\wix\BBI.MDM.Workflow.Msi.wixproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="BBIHardwareSupport.MDM.Core\BBIHardwareSupport.MDM.Core.csproj" />
   </ItemGroup>
 
   <!-- Remove MSIX-related settings -->

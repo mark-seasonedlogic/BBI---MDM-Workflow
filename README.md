@@ -1,134 +1,78 @@
-﻿# 📘 Intune iPad Management Project Documentation
+# BBI -- MDM Workflow (Core Library + WinUI 8.0)
 
-## 🧾 Project Overview
-This project establishes a scalable and secure process for managing corporate-owned iPads at Bloomin' Brands using:
-- **Apple Business Manager (ABM)** for device provisioning
-- **Microsoft Intune** for MDM
-- **Microsoft Entra ID (Azure AD)** for dynamic group management
-- **Microsoft Graph API** for automation and scripting
+## Enterprise-Scale Device Lifecycle Automation
 
-The goal is to automate enrollment, organize devices dynamically, and deliver managed apps and configurations without user interaction.
+Windows Desktop / WinUI 3 / C# / XAML / SOLID / MVVM / Dependency
+Injection / xUnit / Moq
 
----
+### Problem Space
 
-## 🧱 Technical Components
+Bloomin' Brands operates \~14,000+ managed restaurant tablets and iPads
+used for POS, staging, telemetry, and compliance workflows.\
+This toolset provides a modular, testable, Git-backed automation
+framework to:
 
-| Component | Role |
-|----------|------|
-| **Apple Business Manager (ABM)** | Device assignment to Intune MDM server |
-| **Intune** | Enrollment, compliance policies, app deployment |
-| **Microsoft Graph API** | Automation of group creation, app config deployment, and device auditing |
-| **Microsoft Entra ID** | Hosts dynamic groups used by Intune for targeting policies and apps |
+-   Inventory MDM artifacts (Workspace ONE + Microsoft Intune)
+-   Manage device tags and SmartGroup hierarchies
+-   Create, move, and validate device profiles
+-   Analyze battery drain trends using telemetry heuristics
+-   Correlate Wi‑Fi roaming + signal strength with POS performance
+-   Provide a version‑controlled source‑of‑truth baseline
 
----
+### Solution Architecture
 
-## 🔐 Required Microsoft Graph API Permissions
+Solution\
+├── BBI -- MDM Workflow (WinUI 3 UI)\
+│ ├── Views (NavigationView pages, login dialogs, dashboards)\
+│ ├── ViewModels (MVVM + async command orchestration)\
+│ └── Installer (WiX bundle -- not required for prototype/tests)\
+│\
+├── BBIHardwareSupport.MDM.Core (Core Library)\
+│ ├── Models (Device, SmartGroup, Profile Create Request, etc.)\
+│ ├── Services (API transport + business logic)\
+│ └── Authentication abstractions (Graph + WS1 auth)\
+│\
+└── tests/BBIHardwareSupport.MDM.Tests (Unit Test Project)\
+├── Transport contract validation (mocked HTTP via Moq.Protected)\
+└── CreateProfile service tests (coverage WIP)
 
-| Permission Scope | Purpose | Admin Consent |
-|------------------|---------|----------------|
-| `Group.ReadWrite.All` | Create, modify, and delete Entra ID groups | ✅ |
-| `DeviceManagementApps.ReadWrite.All` | Create managed app configuration for iOS | ✅ |
-| `DeviceManagementManagedDevices.Read.All` | Query enrolled device data | ✅ |
+### Design Principles
 
----
+-   SOLID architecture (interface‑based service boundaries)
+-   MVVM (WinUI 3 NavigationView)
+-   Async‑first HTTP transport
+-   Dependency Injection for API clients and logging
+-   Unit‑testable service layers for team handoff
 
-## 🔄 Device Lifecycle Workflow
+### Restore & Build
 
-```plaintext
-[Apple Business Manager] 
-    ⇓
-[Intune Enrollment (ADE)] 
-    ⇓
-[Dynamic Group Assignment via Entra ID] 
-    ⇓
-[Configuration Profiles + Apps Assigned via Intune] 
-    ⇓
-[Managed App Configurations Applied]
+``` powershell
+dotnet restore
+dotnet build
 ```
 
----
+### Run Tests
 
-## 📦 Managed App Configuration Strategy
-- Apps are added via **Apple Business Manager** and synced into Intune via **VPP token**
-- Apps must be assigned with **Device Licensing** for silent install
-- Managed App Config for iOS apps is entered in **XML plist format** within the Intune UI
-
-Example snippet:
-```xml
-<dict>
-  <key>storeId</key>
-  <string>1034</string>
-  <key>env</key>
-  <string>production</string>
-</dict>
+``` powershell
+dotnet test ./tests/BBIHardwareSupport.MDM.Tests/BBIHardwareSupport.MDM.Tests.csproj -v minimal
 ```
 
----
+### Prototype Handoff Goals
 
-## 🧠 Dynamic Group Rules and Naming Strategy
+This repo is structured to allow:
 
-### Hierarchical Dynamic Group Structure
-Dynamic groups will be created based on a hierarchy starting at the Organization level:
-- **Organization**: Bloomin' Brands, Inc.
-  - **Concept**: OBS = Outback, CIG = Carrabba's, BFG = Bonefish Grill, FPS = Fleming's Prime Steakhouse
+-   Transport contract validation (endpoint path, headers, JSON payload)
+-   Mocked HTTP calls (Moq.Protected) instead of hitting real endpoints
+-   Throw behavior verification on non‑success HTTP status
+-   JSON serialization correctness for WS1 Version=2 media type
+    contracts
+-   Team ownership of full test coverage while prototype features
+    continue to expand
 
-### Device Naming Convention
-Prior to enrollment, devices will be named using the following structure:
+### About the Author
 
-```plaintext
-{Concept-Abbreviation}{Restaurant-Number}{Device-Function}
-```
-
-Example:
-```plaintext
-OBS1234CIM
-```
-Meaning:
-- **OBS** = Outback Steakhouse
-- **1234** = Restaurant number
-- **CIM** = Customer Interaction Manager device
-
-### Supported Device Function Types
-
-| Function Type | Example Naming Convention |
-|---------------|-----------------------------|
-| POS Server (P1) | OBS1234P1 |
-| Network Device (N1) | OBS1234N1 |
-| Kitchen Device (K1) | OBS1234K1 |
-| Queue Management Device (Q1) | OBS1234Q1 |
-| Kitchen Display System (KDS, ST1 - ST10) | OBS1234ST1, OBS1234ST2, ..., OBS1234ST10 |
-| Back of House (BoH) | OBS1234BoH |
-| Laptop | OBS1234LTT |
-| POS Mobile Device | OBS1234POS |
-| CIM Mobile Device | OBS1234CIM |
-
-Dynamic device group rules will use this naming structure to automatically place devices into the correct concept, restaurant, and functional hierarchy.
-
-### Example Dynamic Group Rule
-```plaintext
-(device.deviceName -startsWith "OBS1234")
-```
-Assigns all Outback devices from restaurant 1234.
-
----
-
-## 🧠 Known Issues and Considerations
-
-| Issue | Workaround |
-|-------|------------|
-| iPads prompt for Apple ID during app install | Ensure apps are VPP-distributed and use **Device Licensing** |
-| MAC randomization causes Wi-Fi issues | Confirm system is not silently toggling MAC type due to failures |
-| Notes field not searchable in Intune UI | Use Graph API or export CSV for filtering notes |
-
----
-
-## 📌 Future Enhancements
-- Automate app config updates using Graph API and integrated UI flows
-- Build out management tooling and auditing capabilities directly within the WinUI 3 application
-- Expand device configuration and assignment visualization in the WinUI interface
-
----
-
-> **Maintainer:** Mark Young  
-> **Last Updated:** April 25, 2025
-
+Mark Young\
+Founder, Seasoned Logic LLC\
+Senior Technical Lead, Bloomin' Brands (2014--Present)\
+Enterprise tooling engineer specializing in MDM automation, API
+integrations, WinUI desktop apps, and telemetry correlation at scale.
