@@ -142,7 +142,7 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Services
                 baseUri = new Uri(baseUriString);
             }
 
-            Debug.WriteLine($"[DEBUG] Base URI string (normalized): {baseUri}");
+            Debug.Write($"[DEBUG] Base URI string (normalized): {baseUri}");
 
             var combinedUri = new Uri(baseUri, relativeUrl);
             Debug.WriteLine($"[DEBUG] Combined URI result: {combinedUri}");

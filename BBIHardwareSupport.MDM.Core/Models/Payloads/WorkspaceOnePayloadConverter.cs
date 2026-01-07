@@ -24,6 +24,7 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Models.Payloads
             {
                 "WiFi" => typeof(WiFiPayload),
                 "Restriction.Plural" => typeof(RestrictionPluralPayload),
+                "Permission.plural" => typeof(AndroidForWorkPermissionsPayload),
                 "DataUsage" => typeof(DataUsagePayload),
                 "Custom" => typeof(CustomPayload),
                 "CustomSettings" => typeof(CustomSettingsPayload),

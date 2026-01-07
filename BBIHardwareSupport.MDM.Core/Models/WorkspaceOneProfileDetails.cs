@@ -19,6 +19,9 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Models
         [JsonProperty("Name")]
         public string? Name { get; set; }
 
+        [JsonProperty("ProfileUuid")]
+        public string? ProfileUuid { get; set; }
+
         [JsonProperty("General")]
         public WorkspaceOneProfileGeneral? General { get; set; }
 

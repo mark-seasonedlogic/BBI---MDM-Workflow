@@ -331,7 +331,8 @@ namespace BBIHardwareSupport.MDM.ViewModels
                     _logger.LogInformation("Loaded profile summary: {ProfileName} (ID: {ProfileId})", profile.ProfileName, profile.ProfileId);
                     Profiles.Add(profile);
                     _logger.LogInformation("Loading details for profile ID {ProfileId}", profile.ProfileId);
-                    WorkspaceOneProfileDetails currProfile = await _profileService.GetProfileDetailsAsync(profile.ProfileId);
+                    //WorkspaceOneProfileDetails currProfile = await _profileService.GetProfileDetailsAsync(profile.ProfileId);
+                    WorkspaceOneProfileDetails currProfile = await _profileService.GetProfilePayloadDetailsAsync(profile.ProfileUuid);
                     ProfileDetails.Add(currProfile);
                     //Write out to disk:
 

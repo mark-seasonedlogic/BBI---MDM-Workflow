@@ -3,6 +3,8 @@ using BBIHardwareSupport.MDM.IntuneConfigManager.Views;
 using BBIHardwareSupport.MDM.UI.Helpers;
 using BBIHardwareSupport.MDM.UI.ViewModels.Helpers;
 using BBIHardwareSupport.MDM.ViewModels;
+using BBIHardwareSupport.MDM.WorkspaceOne.Core.Models;
+using BBIHardwareSupport.MDM.WorkspaceOne.Core.Services;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
@@ -19,9 +21,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.System.Profile;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -35,11 +39,12 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Pages
     public sealed partial class WorkspaceOnePage : Page
     {
         private readonly WorkspaceOneViewModel _viewModel;
-
+        private readonly IWorkspaceOneProfileExportService _profileExportService;
         // Parameterless constructor used by XAML/Frame.Navigate
         public WorkspaceOnePage()
             : this(App.Services.GetRequiredService<WorkspaceOneViewModel>())
         {
+            _profileExportService = App.Services.GetRequiredService<IWorkspaceOneProfileExportService>();
         }
         private void EnsureLoginTile()
         {
@@ -111,6 +116,17 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Pages
             };
             await msg.ShowAsync();
         }
+        private async Task ShowMessage(string title, string content, string closeButtonText = "OK")
+        {
+            var msg = new ContentDialog
+            {
+                Title = title,
+                Content = content,
+                CloseButtonText = closeButtonText,
+                XamlRoot = this.XamlRoot
+            };
+            await msg.ShowAsync();
+        }
 
         private async void WorkspaceOnePage_Loaded(object sender, RoutedEventArgs e)
         {
@@ -121,25 +137,78 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Pages
                 if (!await PromptWorkspaceOneLoginAsync(refreshAfterLogin: false))
                     return;
             }
-            ContextMenuHelper.AttachObjectJsonRightClickHandler(WorkspaceOneDeviceListView, this.XamlRoot);
+            //ContextMenuHelper.AttachObjectJsonRightClickHandler(WorkspaceOneDeviceListView, this.XamlRoot);
 
             await _viewModel.OnLoadedAsync();
         }
         private void WorkspaceOneDeviceListView_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            if (sender is ListView listView && e.OriginalSource is FrameworkElement fe)
+            if (sender is not ListView listView) return;
+            if (e.OriginalSource is not DependencyObject original) return;
+
+            // 1) Try to find the ListViewItem container (best)
+            var container = FindAncestor<ListViewItem>(original);
+
+            // 2) Determine the item (DataContext) using multiple fallbacks
+            object? item = container?.Content;
+
+            // Some templates don't set Content the way you expect; try DataContext
+            item ??= container?.DataContext;
+
+            // Fallback: use the DataContext of the original source if it's a FrameworkElement
+            if (item is null && e.OriginalSource is FrameworkElement fe)
+                item = fe.DataContext;
+
+            if (item is null)
+                return; // right-click wasn't on an item
+
+            var flyout = new MenuFlyout();
+
+
+            // Always keep existing functionality: View JSON for any type
+            var viewJsonItem = new MenuFlyoutItem { Text = "View JSON" };
+            viewJsonItem.Click += (_, __) =>
             {
-                if (fe.DataContext is JObject device)
+                var json = JsonConvert.SerializeObject(item, Formatting.Indented);
+                var viewer = new JsonViewerWindow(json);
+                viewer.Activate();
+            };
+            flyout.Items.Add(viewJsonItem);
+
+            // Only add this extra option when the clicked item is a ProfileSummary
+            if (item is WorkspaceOneProfileSummary profile)
+            {
+                flyout.Items.Add(new MenuFlyoutSeparator());
+
+                var viewDetailsJsonItem = new MenuFlyoutItem { Text = "View Payload Details JSON" };
+                viewDetailsJsonItem.Click += async (_, __) =>
                 {
-                    var flyout = new MenuFlyout();
+                    try
+                    {
+                        var export = await _profileExportService.BuildProfileExportAsync(profile, ct: CancellationToken.None);
+                        ShowJsonDialog(JObject.FromObject(export.PayloadDetails));
+                    }
+                    catch (Exception ex)
+                    {
+                        ShowMessage("Error", ex.Message, "OK");
+                    }
+                };
 
-                    var viewJsonItem = new MenuFlyoutItem { Text = "View JSON" };
-                    viewJsonItem.Click += (s, args) => ShowJsonDialog(device);
-                    flyout.Items.Add(viewJsonItem);
-
-                    flyout.ShowAt(fe, e.GetPosition(fe));
-                }
+                flyout.Items.Add(viewDetailsJsonItem);
             }
+
+            flyout.ShowAt(container, e.GetPosition(container));
+        }
+
+        private static T? FindAncestor<T>(DependencyObject start) where T : DependencyObject
+        {
+            DependencyObject? current = start;
+            while (current is not null)
+            {
+                if (current is T typed) return typed;
+                current = VisualTreeHelper.GetParent(current);
+            }
+            return null;
         }
 
         private async void ShowJsonDialog(JObject device)

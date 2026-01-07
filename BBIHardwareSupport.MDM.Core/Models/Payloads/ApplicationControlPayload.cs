@@ -7,11 +7,8 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Models.Payloads
     /// WS1 "ApplicationControlPayload" (Android restrictions / app control).
     /// Exact fields vary by WS1 version and profile template, so keep this tolerant.
     /// </summary>
-    public class ApplicationControlPayload
+    public class ApplicationControlPayload : WorkspaceOnePayloadBase
     {
-        // Many payloads include a "PayloadType" string in your baseline JSON set
-        [JsonProperty("PayloadType")]
-        public string? PayloadType { get; set; }
 
         // Common WS1 keys you may see (names can vary); keep nullable.
         [JsonProperty("Name")]

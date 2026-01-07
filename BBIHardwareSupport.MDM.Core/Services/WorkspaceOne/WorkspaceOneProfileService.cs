@@ -1,9 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using BBIHardwareSupport.MDM.WorkspaceOne.Core.Models;
+using BBIHardwareSupport.MDM.WorkspaceOne.Core.Services.Authentication;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
-using BBIHardwareSupport.MDM.WorkspaceOne.Core.Models;
-using BBIHardwareSupport.MDM.WorkspaceOne.Core.Services.Authentication;
 namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Services
 {
     /// <summary>
@@ -17,6 +18,34 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Services
         public WorkspaceOneProfileService(HttpClient httpClient, IWorkspaceOneAuthService authService, ILogger<WorkspaceOneProfileService> logger) : base(httpClient, authService)
         {
             _logger = logger;
+        }
+        public async Task<string> GetProfileDetailsRawAsync(int profileId, CancellationToken ct = default)
+        {
+            if (profileId <= 0) throw new ArgumentOutOfRangeException(nameof(profileId));
+            string? json = string.Empty;
+            string? endpoint = $"mdm/profiles/{profileId}";
+            try
+            {
+                 _logger.LogInformation($"WS1: GET {endpoint}");
+                json = await SendRequestAsync(
+                    endpoint,HttpMethod.Get,null,"application/json;version=2");
+                    if (string.IsNullOrWhiteSpace(json))
+                    {
+                        throw new InvalidOperationException($"WS1 returned empty body for {endpoint}.");
+                    }
+                            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Error retrieving profile details for ProfileId {ProfileId} (Endpoint {Endpoint})",
+                    profileId, endpoint);
+
+                // Preserve original exception as InnerException (or just `throw;`)
+                throw new InvalidOperationException(
+                    $"An exception occurred retrieving profile details for ProfileId {profileId}.",
+                    ex);
+            }
+            return json;
         }
 
         public async Task<List<WorkspaceOneProfileSummary>> GetAllProfilesAsync()
@@ -105,7 +134,7 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Services
                 throw;
             }
         }
-        public async Task<WorkspaceOneProfileDetails> GetProfileDetailsAsync(int profileId)
+        public async Task<WorkspaceOneProfileDetails> GetProfilePayloadAndExportAsync(int profileId)
         {
             try
             {
@@ -133,6 +162,35 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Services
                 return new WorkspaceOneProfileDetails();
             }
         }
+        public async Task<WorkspaceOneProfileDetails> GetProfilePayloadDetailsAsync(string profileUuid)
+        {
+            try
+            {
+                var details = await GetJsonAsync<WorkspaceOneProfileDetails>(
+                    $"v2/mdm/profile-payload-details/{profileUuid}",
+                    "application/json;version=2");
+
+                if (details is null)
+                    return new WorkspaceOneProfileDetails();
+
+                var json = JsonConvert.SerializeObject(details, Formatting.Indented);
+
+                var safeName = string.Concat((details.Name ?? $"profile_{profileUuid}")
+                    .Select(ch => Path.GetInvalidFileNameChars().Contains(ch) ? '_' : ch));
+
+                File.WriteAllText(
+                    $"C:\\Users\\MarkYoung\\source\\repos\\BBI - MDM Workflow\\Documentation\\WorkspaceOneArtifacts\\Device Profiles\\{safeName}.json",
+                    json);
+
+                return details;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to retrieve profile details for profile Uuid {ProfileUuid}", profileUuid);
+                return new WorkspaceOneProfileDetails();
+            }
+        }
+
 
         public async Task<List<WorkspaceOneProfileDetails>> GetProfileDetailsBySummaryList(List<WorkspaceOneProfileSummary> profileSummaries)
         {
@@ -146,7 +204,7 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Services
                         _logger.LogWarning($"Profile ID is invalid: {profile.ProfileId}");
                         continue;
                     }
-                    var profileDetails = await GetProfileDetailsAsync(profile.ProfileId);
+                    var profileDetails = await GetProfilePayloadAndExportAsync(profile.ProfileId);
                     if(profileDetails != null)
                     {
                         profileDetailsList.Add(profileDetails);
@@ -160,5 +218,32 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Services
             }
             return profileDetailsList;
         }
+
+        public async Task<string> GetProfilePayloadDetailsRawAsync(string profileUuid, CancellationToken ct = default)
+        {
+            if (string.IsNullOrWhiteSpace(profileUuid))
+                throw new ArgumentException("Profile UUID is required.", nameof(profileUuid));
+
+            var endpoint = $"v2/mdm/profile-payload-details/{profileUuid}";
+            _logger.LogInformation("WS1: GET {Endpoint}", endpoint);
+
+            try
+            {
+                // If you have SendRequestAsync in the base, use that instead of GetJsonAsync
+                var json = await SendRequestAsync(endpoint, HttpMethod.Get, null, "application/json;version=2");
+
+                if (string.IsNullOrWhiteSpace(json))
+                    throw new InvalidOperationException($"WS1 returned empty body for {endpoint}.");
+
+                return json;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to retrieve payload details for profile UUID {ProfileUuid} (Endpoint {Endpoint})",
+                    profileUuid, endpoint);
+                throw;
+            }
+        }
+
     }
 }

@@ -57,6 +57,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="BBIHardwareSupport.MDM.Core\Models\Payloads\WorkspaceOnePayloadDetailsResponse.cs" />
+    <Compile Include="BBIHardwareSupport.MDM.Core\Models\WorkspaceOneProfileExport.cs" />
+    <Compile Include="BBIHardwareSupport.MDM.Core\Models\WorkspaceOneProfileRecordEnvelope.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="Assets\SplashScreen.scale-200.png" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\Square150x150Logo.scale-200.png" />

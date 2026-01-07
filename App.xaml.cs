@@ -93,6 +93,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
 
             services.AddSingleton<IJournalService, FileJournalService>();
             services.AddSingleton<IWorkspaceOneGraphService, WorkspaceOneGraphServiceAdapter>();
+            services.AddSingleton<IWorkspaceOneProfileExportService, WorkspaceOneProfileExportService>();
 
             // Graph/Intune configuration services (keep if still used)
             services.AddScoped<IGraphIntuneConfigurationService, GraphIntuneConfigurationService>();
