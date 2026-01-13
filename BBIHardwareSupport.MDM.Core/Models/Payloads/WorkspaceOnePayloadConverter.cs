@@ -15,26 +15,60 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Models.Payloads
 
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
-            if (reader.TokenType == JsonToken.Null) return null;
+            if (reader.TokenType == JsonToken.Null)
+                return null;
 
             var jo = JObject.Load(reader);
-            var payloadType = jo["PayloadType"]?.ToString();
+            var payloadType = jo["PayloadType"]?.Value<string>();
 
-            Type targetType = payloadType switch
+            var targetType = payloadType switch
             {
                 "WiFi" => typeof(WiFiPayload),
                 "Restriction.Plural" => typeof(RestrictionPluralPayload),
-                "Permission.plural" => typeof(AndroidForWorkPermissionsPayload),
                 "DataUsage" => typeof(DataUsagePayload),
                 "Custom" => typeof(CustomPayload),
                 "CustomSettings" => typeof(CustomSettingsPayload),
                 "ApplicationControl" => typeof(ApplicationControlPayload),
-                _ => typeof(UnknownPayload),
+                "Permission.plural" => typeof(AndroidForWorkPermissionsPayload),
+                _ => typeof(UnknownPayload)
             };
 
-            // Create a new reader from the JObject so the serializer can populate the target type.
             return jo.ToObject(targetType, serializer);
         }
+
+        private static JsonSerializer CreateSerializerWithoutThisConverter(JsonSerializer serializer)
+        {
+            var nested = new JsonSerializer
+            {
+                Culture = serializer.Culture,
+                ContractResolver = serializer.ContractResolver,
+                NullValueHandling = serializer.NullValueHandling,
+                DefaultValueHandling = serializer.DefaultValueHandling,
+                ObjectCreationHandling = serializer.ObjectCreationHandling,
+                MissingMemberHandling = serializer.MissingMemberHandling,
+                ReferenceLoopHandling = serializer.ReferenceLoopHandling,
+                TypeNameHandling = serializer.TypeNameHandling,
+                MetadataPropertyHandling = serializer.MetadataPropertyHandling,
+                DateFormatHandling = serializer.DateFormatHandling,
+                DateTimeZoneHandling = serializer.DateTimeZoneHandling,
+                DateParseHandling = serializer.DateParseHandling,
+                FloatFormatHandling = serializer.FloatFormatHandling,
+                FloatParseHandling = serializer.FloatParseHandling,
+                StringEscapeHandling = serializer.StringEscapeHandling,
+                Formatting = serializer.Formatting,
+                MaxDepth = serializer.MaxDepth,
+                CheckAdditionalContent = serializer.CheckAdditionalContent,
+            };
+
+            foreach (var conv in serializer.Converters)
+            {
+                if (conv is WorkspaceOnePayloadConverter) continue;
+                nested.Converters.Add(conv);
+            }
+
+            return nested;
+        }
+
 
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {

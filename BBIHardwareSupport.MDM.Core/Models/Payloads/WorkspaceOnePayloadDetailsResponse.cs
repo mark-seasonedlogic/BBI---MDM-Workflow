@@ -30,7 +30,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.BBIHardwareSupport.MDM.Core
         public string? ManagedByOg { get; set; }
 
         // Top-level payload list
-        [JsonProperty("payloads")]
+        [JsonProperty("payloads", ItemConverterType = typeof(WorkspaceOnePayloadConverter))]
         public List<WorkspaceOnePayloadBase>? Payloads { get; set; }
     }
 

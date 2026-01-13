@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Models.Payloads
 {
-    [JsonConverter(typeof(WorkspaceOnePayloadConverter))]
     public abstract class WorkspaceOnePayloadBase
     {
-        [JsonProperty("PayloadType")]
         public string? PayloadType { get; set; }
     }
 

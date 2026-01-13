@@ -23,7 +23,7 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Services
         {
             if (profileId <= 0) throw new ArgumentOutOfRangeException(nameof(profileId));
             string? json = string.Empty;
-            string? endpoint = $"mdm/profiles/{profileId}";
+            string? endpoint = $"/mdm/profiles/{profileId}";
             try
             {
                  _logger.LogInformation($"WS1: GET {endpoint}");
@@ -224,7 +224,7 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Services
             if (string.IsNullOrWhiteSpace(profileUuid))
                 throw new ArgumentException("Profile UUID is required.", nameof(profileUuid));
 
-            var endpoint = $"v2/mdm/profile-payload-details/{profileUuid}";
+            var endpoint = $"/v2/mdm/profile-payload-details/{profileUuid}";
             _logger.LogInformation("WS1: GET {Endpoint}", endpoint);
 
             try

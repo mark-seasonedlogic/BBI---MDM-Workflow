@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,10 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Services
     {
         private readonly IWorkspaceOneProfileService _profileService;
         private readonly ILogger<IWorkspaceOneProfileExportService> _logger;
+        private readonly ConcurrentDictionary<string, Lazy<Task<WorkspaceOneProfileExport>>> _exportsByUuid
+            = new(StringComparer.OrdinalIgnoreCase);
+
+        private static string NormUuid(string uuid) => uuid.Trim().Trim('{', '}');
         public WorkspaceOneProfileExportService(IWorkspaceOneProfileService profileApiService, ILogger<IWorkspaceOneProfileExportService> logger)
         {
             _profileService = profileApiService;

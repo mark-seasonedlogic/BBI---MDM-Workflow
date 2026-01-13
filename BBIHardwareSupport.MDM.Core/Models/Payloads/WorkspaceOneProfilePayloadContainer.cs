@@ -9,7 +9,7 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Models.Payloads
     /// </summary>
     public sealed class WorkspaceOneProfilePayloadContainer
     {
-        [JsonProperty("payloads")]
+        [JsonProperty("payloads", ItemConverterType = typeof(WorkspaceOnePayloadConverter))]
         public List<WorkspaceOnePayloadBase>? Payloads { get; set; }
     }
 }
