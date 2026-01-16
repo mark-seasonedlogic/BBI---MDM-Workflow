@@ -26,14 +26,25 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Services
             string? endpoint = $"/mdm/profiles/{profileId}";
             try
             {
-                 _logger.LogInformation($"WS1: GET {endpoint}");
+                _logger.LogInformation($"WS1: GET {endpoint}");
                 json = await SendRequestAsync(
-                    endpoint,HttpMethod.Get,null,"application/json;version=2");
-                    if (string.IsNullOrWhiteSpace(json))
-                    {
-                        throw new InvalidOperationException($"WS1 returned empty body for {endpoint}.");
-                    }
-                            }
+                    endpoint, HttpMethod.Get, null, "application/json;version=2");
+                if (string.IsNullOrWhiteSpace(json))
+                {
+                    throw new InvalidOperationException($"WS1 returned empty body for {endpoint}.");
+                }
+            }
+
+            //DateTime android profiles have an issue, and return an "invalid payload" error 
+            //  from the WS1 endpoint.  We need to continue with the processing using
+            //  payload-details endpoint in this case.
+
+            catch (WorkspaceOneApiException)
+            {
+               // _logger.LogWarning("ProfileId {Id}: record/details unavailable (Invalid Payload Key). Using payload-details only. ActivityId={ActivityId}",
+               //     profileId, ex.ApiError?.ActivityId);
+                throw;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex,
@@ -150,9 +161,9 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Services
                 var safeName = string.Concat((details.Name ?? $"profile_{profileId}")
                     .Select(ch => Path.GetInvalidFileNameChars().Contains(ch) ? '_' : ch));
 
-                File.WriteAllText(
-                    $"C:\\Users\\MarkYoung\\source\\repos\\BBI - MDM Workflow\\Documentation\\WorkspaceOneArtifacts\\Device Profiles\\{safeName}.json",
-                    json);
+                //File.WriteAllText(
+                //    $"C:\\Users\\MarkYoung\\source\\repos\\BBI - MDM Workflow\\Documentation\\WorkspaceOneArtifacts\\Device Profiles\\{safeName}.json",
+                //    json);
 
                 return details;
             }
@@ -178,9 +189,9 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Services
                 var safeName = string.Concat((details.Name ?? $"profile_{profileUuid}")
                     .Select(ch => Path.GetInvalidFileNameChars().Contains(ch) ? '_' : ch));
 
-                File.WriteAllText(
-                    $"C:\\Users\\MarkYoung\\source\\repos\\BBI - MDM Workflow\\Documentation\\WorkspaceOneArtifacts\\Device Profiles\\{safeName}.json",
-                    json);
+                //File.WriteAllText(
+                //    $"C:\\Users\\MarkYoung\\source\\repos\\BBI - MDM Workflow\\Documentation\\WorkspaceOneArtifacts\\Device Profiles\\{safeName}.json",
+                //    json);
 
                 return details;
             }

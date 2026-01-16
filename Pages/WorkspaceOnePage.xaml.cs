@@ -185,7 +185,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Pages
                 {
                     try
                     {
-                        var export = await _profileExportService.BuildProfileExportAsync(profile, ct: CancellationToken.None);
+                        var export = await _profileExportService.GetExportAsync(profile, ct: CancellationToken.None);
                         ShowJsonDialog(JObject.FromObject(export.PayloadDetails));
                     }
                     catch (Exception ex)

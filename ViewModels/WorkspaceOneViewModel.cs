@@ -30,6 +30,7 @@ namespace BBIHardwareSupport.MDM.ViewModels
         private readonly IWorkspaceOneSmartGroupsService _smartGroupsService;
         private readonly IProductsService _productService;
         private readonly IWorkspaceOneProfileService _profileService;
+        private readonly IWorkspaceOneProfileExportService _profileExportService;
 
         private readonly ILogger<WorkspaceOneViewModel> _logger;
         private readonly IWorkspaceOneAdminsService _adminsService;
@@ -43,6 +44,7 @@ namespace BBIHardwareSupport.MDM.ViewModels
             IWorkspaceOneSmartGroupsService smartGroupsService,
             IProductsService productService,
             IWorkspaceOneProfileService profileService,
+            IWorkspaceOneProfileExportService profileExportService,
             IWorkspaceOneTaggingService taggingService,
             IWorkspaceOneAdminsService adminsService, 
             MainViewModel mainVM)
@@ -53,6 +55,7 @@ namespace BBIHardwareSupport.MDM.ViewModels
             _logger = logger;
             _productService = productService;
             _profileService = profileService;
+            _profileExportService = profileExportService;
             _taggingService = taggingService;
             _adminsService = adminsService;
             _mainVM = mainVM;
@@ -323,31 +326,23 @@ namespace BBIHardwareSupport.MDM.ViewModels
             try
             {
                 Profiles.Clear();
-                ProfileDetails.Clear();
+                ProfileDetails.Clear(); // can delete later if you stop using it
 
                 var profiles = await _profileService.GetAllProfilesAsync();
+
                 foreach (var profile in profiles)
-                {
-                    _logger.LogInformation("Loaded profile summary: {ProfileName} (ID: {ProfileId})", profile.ProfileName, profile.ProfileId);
                     Profiles.Add(profile);
-                    _logger.LogInformation("Loading details for profile ID {ProfileId}", profile.ProfileId);
-                    //WorkspaceOneProfileDetails currProfile = await _profileService.GetProfileDetailsAsync(profile.ProfileId);
-                    WorkspaceOneProfileDetails currProfile = await _profileService.GetProfilePayloadDetailsAsync(profile.ProfileUuid);
-                    ProfileDetails.Add(currProfile);
-                    //Write out to disk:
 
-                    string json = System.Text.Json.JsonSerializer.Serialize(currProfile, new JsonSerializerOptions { WriteIndented = true });
-
-                    File.WriteAllText($"C:\\Users\\MarkYoung\\source\\repos\\BBI - MDM Workflow\\Documentation\\WorkspaceOneArtifacts\\Device Profiles\\{profile.ProfileName}.json",json);
-                }
-
-                // ✅ Replace the collection to trigger UI update
+                // ✅ Trigger UI update
                 DisplayedItems = new ObservableCollection<object>(profiles.Cast<object>());
-
-                // ✅ Update the artifact type so the template selector works
                 SelectedArtifactType = profiles.FirstOrDefault();
 
+                // ✅ Preload export cache (record + payload-details), throttled inside service
+                _profileExportService.ClearCache(); // optional; keep if you want always-fresh
+                await _profileExportService.PreloadAsync(profiles);
 
+                // ✅ Optional: persist cache for dev
+                // await _profileExportService.SaveCacheToDiskAsync();
             }
             catch (Exception ex)
             {
@@ -356,10 +351,8 @@ namespace BBIHardwareSupport.MDM.ViewModels
             }
             finally
             {
-                IsLoading = false;
                 EndLoad();
             }
-
         }
 
         public async Task LoadAllSmartGroupsAsync()

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BBIHardwareSupport.MDM.IntuneConfigManager.BBIHardwareSupport.MDM.Core.Models
+namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Models
 {
     public sealed class WorkspaceOneProfileExport
     {

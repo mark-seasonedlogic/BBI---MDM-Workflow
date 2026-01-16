@@ -10,6 +10,11 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Services
 {
     public interface IWorkspaceOneProfileExportService
     {
-        Task<WorkspaceOneProfileExport> BuildProfileExportAsync(WorkspaceOneProfileSummary summary, CancellationToken ct);
+        Task<WorkspaceOneProfileExport> GetExportAsync(WorkspaceOneProfileSummary summary, CancellationToken ct);
+        Task PreloadAsync(IEnumerable<WorkspaceOneProfileSummary> profiles, CancellationToken ct = default);
+        Task SaveCacheToDiskAsync(CancellationToken ct = default);
+        Task LoadCacheFromDiskAsync(TimeSpan? maxAge = null, CancellationToken ct = default);
+
+        void ClearCache();
     }
 }

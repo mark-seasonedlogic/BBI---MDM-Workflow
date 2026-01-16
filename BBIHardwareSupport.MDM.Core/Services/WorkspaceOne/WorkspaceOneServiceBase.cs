@@ -47,12 +47,19 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Services
                 _httpClient.DefaultRequestHeaders.Add(header.Key, header.Value);
             }
         }
+        protected static WorkspaceOneApiError? TryParseWs1Error(string? body)
+        {
+            if (string.IsNullOrWhiteSpace(body)) return null;
+            try { return JsonConvert.DeserializeObject<WorkspaceOneApiError>(body); }
+            catch { return null; }
+        }
 
-        protected async Task<string?> SendRequestAsync(
+        protected async Task<string> SendRequestAsync(
             string endpoint,
             HttpMethod method,
             HttpContent? content = null,
-            string? accept = null)
+            string? accept = null,
+            CancellationToken ct = default)
         {
             var request = new HttpRequestMessage(method, $"{_authService.BaseUri}{endpoint}");
 
@@ -64,22 +71,15 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Services
                 {
                     var parts = header.Value.Split(' ', 2);
                     if (parts.Length == 2)
-                    {
                         request.Headers.Authorization = new AuthenticationHeaderValue(parts[0], parts[1]);
-                    }
                 }
                 else if (header.Key.Equals("Accept", StringComparison.OrdinalIgnoreCase))
                 {
                     request.Headers.Accept.Clear();
-                    if (!String.IsNullOrEmpty(accept))
-                    {
+                    if (!string.IsNullOrEmpty(accept))
                         request.Headers.TryAddWithoutValidation("Accept", accept);
-                    }
                     else
-                    {
                         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(header.Value));
-                    }
-
                 }
                 else
                 {
@@ -91,27 +91,33 @@ namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Services
             }
 
             if (content != null)
-            {
                 request.Content = content;
-            }
 
             try
             {
-                var response = await _httpClient.SendAsync(request);
+                var response = await _httpClient.SendAsync(request, ct);
+                var body = await response.Content.ReadAsStringAsync(ct);
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    var errorBody = await response.Content.ReadAsStringAsync();
-                    Debug.WriteLine($"[WorkspaceOne] API Error: {response.StatusCode}, Body: {errorBody}");
-                    return null;
+                    var ws1Err = TryParseWs1Error(body);
+
+                    // IMPORTANT: throw, don’t return null
+                    throw new WorkspaceOneApiException(
+                        endpoint,
+                        (int)response.StatusCode,
+                        body,
+                        ws1Err);
                 }
 
-                return await response.Content.ReadAsStringAsync();
+                if (string.IsNullOrWhiteSpace(body))
+                    throw new InvalidOperationException($"WS1 returned empty body for {endpoint}.");
+
+                return body;
             }
             catch (HttpRequestException ex)
             {
-                Debug.WriteLine($"[WorkspaceOne] Request exception: {ex.Message}");
-                return null;
+                throw new WorkspaceOneApiException(endpoint, 0, null, null, ex);
             }
         }
         protected async Task<string?> PostJsonAsync(
