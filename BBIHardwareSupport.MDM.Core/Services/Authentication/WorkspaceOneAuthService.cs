@@ -1,163 +1,134 @@
-﻿using System;
+﻿using BBIHardwareSupport.MDM.WorkspaceOne.Core.Configuration;
+using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace BBIHardwareSupport.MDM.WorkspaceOne.Core.Services.Authentication
 {
-    public class WorkspaceOneAuthService : AuthServiceBase, IWorkspaceOneAuthService
+    public sealed class WorkspaceOneAuthService : AuthServiceBase, IWorkspaceOneAuthService
     {
-        private string _username;
-        private string _password;
-        private string _cachedToken;
-        private DateTime _tokenExpiry;
-        private string _baseUri;
-
-        public string BaseUri => _baseUri;
-        public string Username => _username;
-        public string Password => _password;
         private readonly HttpClient _httpClient;
-        private string? _bearerToken;
-        private string _apiKey;
+
+        private string? _username;
+        private string? _password;
+        private string? _tenantCode; // this is your API key / aw-tenant-code header value
+
+        private WorkspaceOneEnvironment _environment = WorkspaceOneEnvironment.Production; // default
+        private WorkspaceOneConnectionInfo? _connectionInfo;
 
         public WorkspaceOneAuthService(HttpClient httpClient)
         {
-            _httpClient = httpClient;
-            _baseUri = "https://as863.awmdm.com/API";
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
-        public string? BearerToken => _bearerToken;
+        // ---- IWorkspaceOneAuthService required members ----
 
+        public string Username => _username ?? string.Empty;
+        public string Password => _password ?? string.Empty;
 
-        public async Task<bool> AuthenticateAsync(string username, string password)
-        {
-            var payload = new
-            {
-                username,
-                password
-            };
+        // Your interface calls it TenantCode. This is the value used in the aw-tenant-code header.
+        public string TenantCode => _tenantCode ?? string.Empty;
 
-            var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("https://as863.awmdm.com/API/system/users/login", content);
+        // Your interface calls it BaseUri. We'll expose the resolved BaseUri from env vars.
+        public string BaseUri => _connectionInfo?.BaseUri ?? string.Empty;
 
-            if (!response.IsSuccessStatusCode)
-                return false;
-
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var tokenObj = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseBody);
-
-            if (tokenObj != null && tokenObj.TryGetValue("token", out var token))
-            {
-                _bearerToken = token;
-                return true;
-            }
-
-            return false;
-        }
-
-
-
-        public void SetCredentials(string username, string password, string apiKey)
-        {
-            _username = username;
-            _password = password;
-            var raw = $"{_username}:{_password}"; // Use raw credentials for Basic Auth
-            _apiKey = apiKey;
-            _cachedToken = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(raw));
-            _tokenExpiry = DateTime.MaxValue; // no expiration expected
-        }
-
-        public override async Task<string> GetAccessTokenAsync()
-        {
-            if (!string.IsNullOrWhiteSpace(_cachedToken) && DateTime.UtcNow < _tokenExpiry)
-                return _cachedToken;
-
-            // 🔐 Replace with actual API token request logic
-            var tokenResponse = await RequestNewTokenAsync(_username, _password);
-
-            _cachedToken = tokenResponse.AccessToken;
-            _tokenExpiry = DateTime.UtcNow.AddMinutes(tokenResponse.ExpiresInMinutes - 1);
-
-            return _cachedToken;
-        }
-
-        private async Task<(string AccessToken, int ExpiresInMinutes)> RequestNewTokenAsync(string user, string pass)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://as863.awmdm.com/API/system/users/login");
-
-            var payload = new FormUrlEncodedContent(new[]
-            {
-        new KeyValuePair<string, string>("username", user),
-        new KeyValuePair<string, string>("password", pass),
-        new KeyValuePair<string, string>("grant_type", "password")
-    });
-
-
-            var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
-            request.Content = content;
-            request.Headers.Add("Accept", "application/json");
-
-            var response = await _httpClient.SendAsync(request);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Auth failed: {response.StatusCode}");
-            }
-
-            var json = await response.Content.ReadAsStringAsync();
-            var tokenObj = JsonConvert.DeserializeObject<TokenResponse>(json);
-
-            return (tokenObj.access_token, tokenObj.expires_in / 60);
-        }
-
-        // Example token response model
-        private class TokenResponse
-        {
-            public string access_token { get; set; }
-            public int expires_in { get; set; }
-        }
-
+        // If your consumers depend on this:
         public bool IsAuthenticated =>
-            !string.IsNullOrWhiteSpace(_username)
-            && !string.IsNullOrWhiteSpace(_password);
+    !string.IsNullOrWhiteSpace(_username)
+    && !string.IsNullOrWhiteSpace(_password)
+    && _connectionInfo is not null
+    && !string.IsNullOrWhiteSpace(_connectionInfo.BaseUri)
+    && !string.IsNullOrWhiteSpace(_connectionInfo.AwTenantCode);
+
+
+        /// <summary>
+        /// Legacy interface method. For Basic auth, there isn't a separate "login" token flow.
+        /// Treat this as "validate that credentials+environment have been set".
+        /// </summary>
+        public Task<bool> AuthenticateAsync(string username, string password)
+        {
+            // Preserve old calling pattern: they pass username/password here
+            // but tenant code + environment must have been set via SetCredentials.
+            _username = username ?? throw new ArgumentNullException(nameof(username));
+            _password = password ?? throw new ArgumentNullException(nameof(password));
+
+            return Task.FromResult(IsAuthenticated);
+        }
+
+        /// <summary>
+        /// Legacy overload: keeps interface compatibility.
+        /// Uses the last selected environment (default Production) to resolve BaseUri/TenantId.
+        /// </summary>
+        public void SetCredentials(string username, string password, string tenantCode)
+        {
+            SetCredentials(username, password, _environment);
+        }
+
+        /// <summary>
+        /// Preferred overload going forward: includes environment selection.
+        /// </summary>
+        public void SetCredentials(string username, string password, WorkspaceOneEnvironment environment)
+        {
+            _username = username ?? throw new ArgumentNullException(nameof(username));
+            _password = password ?? throw new ArgumentNullException(nameof(password));
+
+            _environment = environment;
+
+            _connectionInfo = WorkspaceOneEnvironmentResolver.Resolve(environment);
+
+            // Optional: if this HttpClient is WS1-dedicated, set BaseAddress once
+            // _httpClient.BaseAddress = new Uri(_connectionInfo.BaseUri, UriKind.Absolute);
+        }
+
 
         public Uri GetBaseUri()
+        {
+            if (_connectionInfo is null)
+                throw new InvalidOperationException("Workspace ONE connection info has not been resolved. Call SetCredentials first.");
+
+            return new Uri(_connectionInfo.BaseUri, UriKind.Absolute);
+        }
+
+        public override Task<string> GetAccessTokenAsync()
+        {
+            // For your base class contract: return the Basic token string.
+            if (!IsAuthenticated)
+                throw new InvalidOperationException("Workspace ONE credentials are not set.");
+
+            var raw = $"{_username}:{_password}";
+            var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(raw));
+            return Task.FromResult(encoded);
+        }
+
+        public override Task<Dictionary<string, string>> GetAuthorizationHeaderAsync()
         {
             if (!IsAuthenticated)
                 throw new InvalidOperationException("Workspace ONE credentials are not set.");
 
-            return new Uri(_baseUri!);
-        }
-        public override async Task<Dictionary<string, string>> GetAuthorizationHeaderAsync()
-        {
+            if (_connectionInfo is null)
+                throw new InvalidOperationException("Workspace ONE connection info has not been resolved. Call SetCredentials first.");
+
             var raw = $"{_username}:{_password}";
             var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(raw));
 
-            return new Dictionary<string, string>
+            return Task.FromResult(new Dictionary<string, string>
     {
         { "Authorization", $"Basic {encoded}" },
-        { "aw-tenant-code", _apiKey }, // stored during SetCredentials(...)
+        { "aw-tenant-code", _connectionInfo.AwTenantCode }, // ✅ from resolver/env vars now
         { "Accept", "application/json" }
-    };
+    });
         }
 
-        public Task SetCredentialsAsync(string username, string password, string tenantCode)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<string> GetBearerTokenAsync()
-        {
-            throw new NotImplementedException();
-        }
-
+        // If your interface includes this, keep it. Otherwise remove it.
         public string GetTenantCode()
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(_tenantCode))
+                throw new InvalidOperationException("Workspace ONE tenant code (API key) is not set.");
+
+            return _tenantCode;
         }
     }
 }

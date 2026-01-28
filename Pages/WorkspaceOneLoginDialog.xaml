@@ -9,6 +9,11 @@
     Width="400">
 
     <StackPanel Spacing="12">
+        <ComboBox x:Name="EnvironmentCombo"
+          SelectedIndex="0">
+            <ComboBoxItem Content="Production" />
+            <ComboBoxItem Content="QA / UAT" />
+        </ComboBox>
         <TextBox x:Name="UsernameTextBox" Header="Username" PlaceholderText="Enter your username" />
         <PasswordBox x:Name="PasswordBox" Header="Password" />
         <TextBox x:Name="ApiKeyTextBox" Header="API Key" PlaceholderText="Enter API Key" />

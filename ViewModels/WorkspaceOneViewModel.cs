@@ -1,23 +1,24 @@
 ﻿using BBIHardwareSupport.MDM.IntuneConfigManager;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Helpers;
 using BBIHardwareSupport.MDM.IntuneConfigManager.Models;
+using BBIHardwareSupport.MDM.WorkspaceOne.Core.Configuration;
+using BBIHardwareSupport.MDM.WorkspaceOne.Core.Models;
+using BBIHardwareSupport.MDM.WorkspaceOne.Core.Services;
+using BBIHardwareSupport.MDM.WorkspaceOne.Core.Services.Authentication;
 using BBIHardwareSupport.MDM.WorkspaceOne.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Text.Json;
-using BBIHardwareSupport.MDM.WorkspaceOne.Core.Services.Authentication;
-using BBIHardwareSupport.MDM.WorkspaceOne.Core.Services;
-using BBIHardwareSupport.MDM.WorkspaceOne.Core.Models;
-using System.Threading.Tasks;
-using System;
-using System.Linq;
 using System.IO;
-using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace BBIHardwareSupport.MDM.ViewModels
 {
@@ -70,7 +71,15 @@ namespace BBIHardwareSupport.MDM.ViewModels
 
             return IsAuthenticated;
         }
+        public Task<bool> SetCredentialsAsync(WorkspaceOneCredentials creds)
+        {
+            if (creds is null) throw new ArgumentNullException(nameof(creds));
 
+            _authService.SetCredentials(creds.Username, creds.Password, creds.Environment);
+            IsAuthenticated = _authService.IsAuthenticated;
+
+            return Task.FromResult(IsAuthenticated);
+        }
         [ObservableProperty]
         private string username;
 

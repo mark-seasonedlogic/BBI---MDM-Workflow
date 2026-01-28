@@ -1,3 +1,4 @@
+using BBIHardwareSupport.MDM.WorkspaceOne.Core.Configuration;
 using Microsoft.UI.Xaml.Controls;
 
 namespace BBIHardwareSupport.MDM.IntuneConfigManager.Views
@@ -15,16 +16,16 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Views
 
         public WorkspaceOneCredentials EnteredCredentials => new()
         {
-            Username = this.Username,
-            Password = this.Password,
-            ApiKey = this.ApiKey
+            Username = UsernameTextBox.Text.Trim(),
+            Password = PasswordBox.Password,
+            ApiKey = ApiKeyTextBox.Text.Trim(),
+
+            // assuming you already have a selector control:
+            Environment = EnvironmentCombo.SelectedIndex == 1
+                ? WorkspaceOneEnvironment.QA
+                : WorkspaceOneEnvironment.Production
         };
     }
 
-    public class WorkspaceOneCredentials
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string ApiKey { get; set; }
-    }
+    
 }

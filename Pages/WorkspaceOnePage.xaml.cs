@@ -81,7 +81,7 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager.Pages
 
             var creds = dialog.EnteredCredentials;
 
-            var stored = await _viewModel.SetCredentialsAsync(creds.Username, creds.Password, creds.ApiKey);
+            var stored = await _viewModel.SetCredentialsAsync(creds);
             if (!stored)
             {
                 await ShowLoginFailedMessage();

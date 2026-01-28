@@ -81,9 +81,13 @@ namespace BBIHardwareSupport.MDM.IntuneConfigManager
             // services.AddTransient<WS1AndroidBatteryPage>();
             // services.AddTransient<WS1AndroidBatteryViewModel>();
 
-            // Workspace ONE services
-            services.AddSingleton<IWorkspaceOneAuthService, WorkspaceOneAuthService>();
-            services.AddSingleton<IApiAuthService, WorkspaceOneAuthService>();
+            // Workspace ONE Auth (typed client)
+            services.AddHttpClient<WorkspaceOneAuthService>();
+
+            // Expose it through interfaces
+            services.AddSingleton<IWorkspaceOneAuthService>(sp => sp.GetRequiredService<WorkspaceOneAuthService>());
+            services.AddSingleton<IApiAuthService>(sp => sp.GetRequiredService<WorkspaceOneAuthService>());
+
 
             services.AddTransient<IWorkspaceOneDeviceService, WorkspaceOneDeviceService>();
             services.AddHttpClient<IWorkspaceOneSmartGroupsService, WorkspaceOneSmartGroupsService>();
